@@ -1,0 +1,1 @@
+C:\Users\paul\wwwserv\rema\app/views/bookings/show.blade.php

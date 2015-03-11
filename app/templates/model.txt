@@ -1,0 +1,6 @@
+<?php
+
+class $NAME$ extends \Rema\BaseTable {
+	protected $fillable = ['name'];
+	protected $guarded = ['id'];
+}
