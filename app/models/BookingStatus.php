@@ -1,6 +1,6 @@
-<?php
+<?php namespace App\Models;
 
-class BookingStatus extends \Rema\BaseTable {
+class BookingStatus extends BaseTable {
 
 	// Add your validation rules here
 	public static $rules = [

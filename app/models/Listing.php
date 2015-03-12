@@ -1,10 +1,10 @@
-<?php
+<?php namespace App\Models;
 
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Listing extends \Rema\BaseTable {
+class Listing extends BaseTable {
 
-	use SoftDeletingTrait;
+	use SoftDeletes;
 
 	
 	// Add your validation rules here

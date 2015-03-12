@@ -1,6 +1,6 @@
-<?php
+<?php namespace App\Models;
 
-class Booking extends \Rema\BaseTable {
+class Booking extends BaseTable {
 
 	// Add your validation rules here
 	public static $rules = [
@@ -12,7 +12,7 @@ class Booking extends \Rema\BaseTable {
 	];
 
 	// Don't forget to fill this array
-	protected $fillable = ['guest_name','guest_country','guest_email',
+	protected $fillable = ['guest_name','guest_country','guest_email','guest_phone',
 		'listing_id','people','platform_id','booking_status_id',
 		'inquiry_date','arrival_date','arrival_time','departure_date','departure_time',
 		'airbnb_conversation_id',
