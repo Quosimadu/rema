@@ -1,6 +1,6 @@
-<?php
+<?php namespace App\Models;
 
-class Platform extends \Rema\BaseTable {
+class Platform extends BaseTable {
 
 	// Add your validation rules here
 	public static $rules = [
