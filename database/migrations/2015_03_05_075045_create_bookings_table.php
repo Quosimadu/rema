@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use App\Models\MigrationBlueprint;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateBookingsTable extends Migration {
 
@@ -12,7 +12,7 @@ class CreateBookingsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('bookings', function(MigrationBlueprint $table)
+		Schema::create('bookings', function(Blueprint $table)
 		{
 			$table->increments('id');
 			$table->integer('listing_id')->length(10)->unsigned();
