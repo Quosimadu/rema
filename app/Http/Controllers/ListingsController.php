@@ -37,7 +37,7 @@ class ListingsController extends BaseController {
 	 */
 	public function store()
 	{
-		$validator = \Validator::make($data = Input::all(), Listing::$rules);
+		$validator = \Validator::make($data = \Input::all(), Listing::$rules);
 
 		if ($validator->fails())
 		{
@@ -46,7 +46,7 @@ class ListingsController extends BaseController {
 
 		Listing::create($data);
 
-		return Redirect::route('listings.index');
+		return \Redirect::route('listings.index');
 	}
 
 	/**

@@ -58,7 +58,7 @@
 
                         <div class="form-group">
                             <div class="col-md-4 col-md-offset-2">
-                                {!! Form::submit('Save new listing', array('class' => 'btn btn-primary')) !!}
+                                {!! Form::submit('Update listing', array('class' => 'btn btn-primary')) !!}
 
                             </div>
                             <div class="pull-right"><a class="btn btn-link" href="{!! route('listings') !!}">Back to

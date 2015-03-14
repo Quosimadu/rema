@@ -38,7 +38,7 @@ class BookingsController extends BaseController {
 	 */
 	public function store()
 	{
-		$validator = \Validator::make($data = Input::all(), Booking::$rules);
+		$validator = \Validator::make($data = \Input::all(), Booking::$rules);
 
 		if ($validator->fails())
 		{

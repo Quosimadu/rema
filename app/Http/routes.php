@@ -1,5 +1,6 @@
 <?php
 
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -34,3 +35,21 @@ Route::any('booking/show/{id}',  array('as' => 'bookingShow', 'uses' => 'Booking
 Route::resource('bookings', 'BookingsController');
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+
+Route::get('fb_auth', function ($facebook = "facebook")
+{
+	// Get the provider instance
+	$provider = Socialize::with($facebook);
+
+	// Check, if the user authorised previously.
+	// If so, get the User instance with all data,
+	// else redirect to the provider auth screen.
+	if (Input::has('code'))
+	{
+		$user = $provider->user();
+
+		return var_dump($user);
+	} else {
+		return $provider->redirect();
+	}
+});

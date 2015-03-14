@@ -137,6 +137,7 @@ return [
 		'Illuminate\View\ViewServiceProvider',
 		'Philo\Translate\TranslateServiceProvider',
 		'Collective\Html\HtmlServiceProvider',
+		//'Socialize' => 'Laravel\Socialite\Facades\Socialite',
 
 		/*
 		 * Application Service Providers...

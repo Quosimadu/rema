@@ -84,7 +84,7 @@
                                 {!! Form::label('inquiry_date', 'Inquiry', array('class' => 'col-md-1 control-label'))
                                 !!}
                             <div class="col-md-2">
-                                {!! Form::text('inquiry_date', Input::old('inquiry_date'), $attributes = array('class'
+                                {!! Form::date('inquiry_date', Input::old('inquiry_date'), $attributes = array('class'
                                 => 'form-control', 'id' => 'inquiry_date', 'placeholder' => '2014-12-01')) !!}
                                 {!! $errors->first('inquiry_date', '
                                 <div class="note note-error">:message</div>
@@ -93,7 +93,7 @@
                                 {!! Form::label('arrival_date', 'Arrival', array('class' => 'col-md-1 control-label')) !!}
 
                             <div class="col-md-2">
-                                {!! Form::text('arrival_date', Input::old('arrival_date'), $attributes = array('class'
+                                {!! Form::date('arrival_date', Input::old('arrival_date'), $attributes = array('class'
                                 => 'form-control', 'id' => 'arrival_date', 'placeholder' => '2014-12-01')) !!}
                                 {!! $errors->first('arrival_date', '
                                 <div class="note note-error">:message</div>
@@ -101,7 +101,7 @@
 
                                 {!! Form::label('arrival_time', 'Arrival time', array('class' => 'sr-only')) !!}
                                 {!! Form::text('arrival_time', Input::old('arrival_time'), $attributes = array('class'
-                                => 'form-control date', 'id' => 'arrival_time', 'placeholder' => '18:00')) !!}
+                                => 'form-control', 'id' => 'arrival_time', 'placeholder' => '18:00')) !!}
                                 {!! $errors->first('arrival_time', '
                                 <div class="note note-error">:message</div>
                                 ') !!}
@@ -110,7 +110,7 @@
                                 {!! Form::label('departure_date', 'Departure', array('class' => 'col-md-1 control-label'))
                                 !!}
                             <div class="col-md-2">
-                                {!! Form::text('departure_date', Input::old('departure_date'), $attributes =
+                                {!! Form::date('departure_date', Input::old('departure_date'), $attributes =
                                 array('class' => 'form-control', 'id' => 'departure_date', 'placeholder' =>
                                 '2014-12-01')) !!}
                                 {!! $errors->first('departure_date', '
