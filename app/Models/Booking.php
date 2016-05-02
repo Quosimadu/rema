@@ -36,8 +36,15 @@ class Booking extends BaseTable {
 		return $this->belongsTo('Platform');
 	}
 
-	public function scopeFuture($query) {
-		return $query->where('arrival_date','>=','CURDATE()');
-	}
+    public function scopeOfTime($query, $time)
+    {
+        if ($time == 'future') {
+            return $query->where('arrival_date', '<=', 'CURDATE()');
+        }
+        if ($time == 'past') {
+            return $query->where('arrival_date', '>', 'CURDATE()');
+        }
+        return $query;
+    }
 
 }

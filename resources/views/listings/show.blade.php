@@ -16,6 +16,10 @@
                         <p>Beds: {!! $listing->beds !!}</p>
 
                         <p>Address: {!! $listing->address !!}</p>
+
+                        <p>Check-in: {!! $listing->checkin_time !!}</p>
+
+                        <p>Check-out: {!! $listing->checkout_time !!}</p>
                     </div>
                 </div>
             </div>

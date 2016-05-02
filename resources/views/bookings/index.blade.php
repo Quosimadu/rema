@@ -8,7 +8,18 @@
     <h1>Bookings</h1>
                 </div>
                 <div class="panel-body">
-    <table class="table">
+
+                    {!! Form::label('listing_id', 'Listing', array('class' => 'col-md-1 control-label sr-only')) !!}
+                    <div class="col-md-4">
+                    {!! Form::select('listing_id', [0=>'-- all listings --']+$listings, !empty($listing_id) ? $listing_id : '', array('class' => 'form-control', 'id' => 'listing_id')) !!}
+                    </div>
+                    {!! Form::label('time', 'Time', array('class' => 'col-md-1 control-label sr-only')) !!}
+                    <div class="col-md-4">
+                        {!! Form::select('time', $timeOptions, !empty($time) ? $time : 'future', array('class' => 'form-control', 'id' => 'time')) !!}
+                    </div>
+                    <a class="btn btn-default" href="{!! route('bookings', ['init' => 1]) !!}">Reset</a>
+
+                    <table class="table">
         <thead>
         <tr>
             <th>Arrival</th>
@@ -31,4 +42,23 @@
         </div>
     </div>
 </div>
+
+@section('javascript')
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+            $('#listing_id').change(function(e) {
+                e.preventDefault();
+                var targetUrl = '{!! route('bookings') !!}' + '?listing_id=' + $(this).val();
+                location.replace(targetUrl);
+            });
+            $('#time').change(function(e) {
+                e.preventDefault();
+                var targetUrl = '{!! route('bookings') !!}' + '?time=' + $(this).val();
+                location.replace(targetUrl);
+            });
+        })
+    </script>
+@stop
 @stop

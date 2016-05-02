@@ -27,4 +27,15 @@ class Listing extends BaseTable {
 		return $this->hasMany('Booking');
 	}
 
+	public static function boot()
+	{
+		parent::boot();
+
+		static::creating(function($listingTable)
+		{
+			#$baseTable->last_change_user_id = Auth::user()->id;
+		});
+
+	}
+
 }

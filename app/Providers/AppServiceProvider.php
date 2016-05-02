@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider {
 			'App\Services\Registrar'
 		);
 
-		if ($this->app->environment('local', 'staging')) {
+		if ($this->app->environment('local', 'dev')) {
 			$this->app->register('Laracasts\Generators\GeneratorsServiceProvider');
 			$this->app->register('Barryvdh\Debugbar\ServiceProvider');
 			$this->app->register('Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider');

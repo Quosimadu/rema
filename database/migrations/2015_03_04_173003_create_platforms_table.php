@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use App\Models\Platform;
 
 class CreatePlatformsTable extends Migration {
 
@@ -18,6 +19,11 @@ class CreatePlatformsTable extends Migration {
 			$table->string('name', 20);
 			$table->timestamps();
 		});
+
+		Platform::create([
+			'id' => 1,
+			'name' => 'airbnb'
+		]);
 	}
 
 

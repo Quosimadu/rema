@@ -15,8 +15,6 @@ class DatabaseSeeder extends Seeder {
 		Model::unguard();
 
 		$this->call('ListingsTableSeeder');
-		$this->call('BookingStatusesTableSeeder');
-		$this->call('PlatformsTableSeeder');
 		$this->call('BookingsTableSeeder');
 	}
 

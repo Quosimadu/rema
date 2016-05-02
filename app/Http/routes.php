@@ -33,4 +33,7 @@ Route::any('booking/edit/{id}',  array('as' => 'bookingEdit', 'uses' => 'Booking
 Route::any('booking/show/{id}',  array('as' => 'bookingShow', 'uses' => 'BookingsController@show'));
 Route::resource('bookings', 'BookingsController');
 
+Route::any('reports',  array('as' => 'reports', 'uses' => 'ReportsController@index'));
+Route::resource('reports', 'ReportsController');
+
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');

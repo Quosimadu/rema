@@ -4,6 +4,8 @@ use App\Http\Controllers\BaseController;
 use App\Models\Booking;
 use App\Models\BookingStatus;
 use App\Models\Listing;
+use Input;
+use Session;
 
 class BookingsController extends BaseController {
 
@@ -14,9 +16,42 @@ class BookingsController extends BaseController {
 	 */
 	public function index()
 	{
-		$bookings = Booking::query()->where('booking_status_id','=',1)->orderBy('arrival_date')->get();
 
-		return \View::make('bookings.index', compact('bookings'));
+
+		if (Input::has('init')) {
+			Session::forget('bookings');
+		}
+		if (Input::has('listing_id')) {
+			if (Input::get('listing_id') == 0) {
+				Session::forget('bookings.listing_id');
+			} else {
+				Session::put('bookings.listing_id', Input::get('listing_id'));
+		    }
+		}
+
+        $timeOptions = [
+            'future' => 'future reservations',
+            'past' => 'past reservations'
+        ];
+
+		if (Input::has('time') && isset($timeOptions[Input::get('time')])) {
+			Session::put('bookings.time', Input::get('time'));
+		}
+
+		$bookingQuery = Booking::query()->where('booking_status_id','=',1)->orderBy('arrival_date');
+		if (Session::has('bookings.listing_id')) {
+        $bookingQuery->where('listing_id','=',Session::get('bookings.listing_id'));
+         }
+        if (Session::has('bookings.time')) {
+            $bookingQuery->ofTime(Session::get('bookings.time'));
+        }
+
+		$bookings = $bookingQuery->get();
+		$listings = Listing::query()->orderBy('name')->get(['id','name'])->lists('name', 'id');
+		$listing_id =  Session::get('bookings.listing_id');
+        $time =  Session::get('bookings.time');
+
+		return \View::make('bookings.index', compact('bookings','listings','listing_id','timeOptions','time'));
 	}
 
 	/**

@@ -18,7 +18,9 @@ class ListingsTableSeeder extends Seeder {
 				'name' => $faker->firstName . ' apartment',
 				'beds' => rand(1,$guests),
 				'guests' => $guests,
-				'address' => $faker->address
+				'address' => $faker->address,
+				'checkin_time' => rand(13,18) . ':' . ( rand(0,1) == 1 ? '00' : '30'),
+				'checkout_time' => rand(9,12) . ':' . ( rand(0,1) == 1 ? '00' : '30')
 			]);
 		}
 	}

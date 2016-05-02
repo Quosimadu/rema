@@ -57,6 +57,44 @@
                         </div>
 
                         <div class="form-group">
+                            <div class="col-md-2">
+                                {!! Form::label('checkin_time', 'Check-in time', array('class' => 'control-label')) !!}
+                            </div>
+                            <div class="col-md-2">
+                                {!! Form::text('checkin_time', $listing->checkin_time, $attributes = array('class'
+                                => 'form-control date', 'id' => 'checkin_time', 'placeholder' => '16:00')) !!}
+                                {!! $errors->first('checkin_time', '
+                                <div class="note note-error">:message</div>
+                                ') !!}
+                            </div>
+                            <div class="col-md-2  col-md-offset-2">
+                                {!! Form::label('checkout_time', 'Check-out time', array('class' => 'control-label'))
+                                !!}
+                            </div>
+                            <div class="col-md-2">
+                                {!! Form::text('checkout_time', $listing->checkout_time, $attributes = array('class'
+                                => 'form-control date', 'id' => 'checkout_time', 'placeholder' => '10:00')) !!}
+                                {!! $errors->first('checkout_time', '
+                                <div class="note note-error">:message</div>
+                                ') !!}
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                {!! Form::label('airbnb_listing_id', 'AirBnB listing ID', array('class' => 'control-label')) !!}
+                            </div>
+                            <div class="col-md-2">
+                                {!! Form::text('airbnb_listing_id', $listing->airbnb_listing_id, $attributes = array('class' =>
+                                'form-control', 'id' => 'airbnb_listing_id', 'placeholder' => '172846')) !!}
+                                {!! $errors->first('airbnb_listing_id', '
+                                <div class="note note-error">:message</div>
+                                ') !!}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <div class="col-md-4 col-md-offset-2">
                                 {!! Form::submit('Update listing', array('class' => 'btn btn-primary')) !!}
 

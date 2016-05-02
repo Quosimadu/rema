@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use App\Models\BookingStatus;
 
 class CreateBookingStatusesTable extends Migration {
 
@@ -18,6 +19,19 @@ class CreateBookingStatusesTable extends Migration {
 			$table->string('name', 20);
 			$table->timestamps();
 		});
+
+		BookingStatus::create([
+			'id' => 1,
+			'name' => 'valid'
+		]);
+		BookingStatus::create([
+			'id' => 2,
+			'name' => 'cancelled'
+		]);
+		BookingStatus::create([
+			'id' => 3,
+			'name' => 'inquiry'
+		]);
 	}
 
 

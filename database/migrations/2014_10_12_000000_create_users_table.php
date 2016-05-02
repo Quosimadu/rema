@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Models\User;
 
 class CreateUsersTable extends Migration {
 
@@ -18,9 +19,17 @@ class CreateUsersTable extends Migration {
 			$table->string('name');
 			$table->string('email')->unique();
 			$table->string('password', 60);
+            $table->string('time_zone', 60);
 			$table->rememberToken();
 			$table->timestamps();
 		});
+
+		User::create([
+			'id' => 1,
+			'name' => 'admin',
+			'email' => 'john@doe.com',
+			'password' => password_hash('admin', PASSWORD_DEFAULT)
+		]);
 	}
 
 	/**
