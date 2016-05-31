@@ -11,7 +11,7 @@
 
                     {!! Form::label('listing_id', 'Listing', array('class' => 'col-md-1 control-label sr-only')) !!}
                     <div class="col-md-4">
-                    {!! Form::select('listing_id', [0=>'-- all listings --']+$listings, !empty($listing_id) ? $listing_id : '', array('class' => 'form-control', 'id' => 'listing_id')) !!}
+                    {!! Form::select('listing_id', [ 0 =>'-- all listings --']+$listings->toArray(), !empty($listing_id) ? $listing_id : null, array('class' => 'form-control', 'id' => 'listing_id')) !!}
                     </div>
                     {!! Form::label('time', 'Time', array('class' => 'col-md-1 control-label sr-only')) !!}
                     <div class="col-md-4">

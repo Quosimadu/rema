@@ -4,7 +4,7 @@ use App\Http\Controllers\BaseController;
 use App\Models\Booking;
 use App\Models\BookingStatus;
 use App\Models\Listing;
-use Input;
+use Illuminate\Support\Facades\Request;
 use Session;
 
 class BookingsController extends BaseController {
@@ -18,14 +18,14 @@ class BookingsController extends BaseController {
 	{
 
 
-		if (Input::has('init')) {
+		if (\Request::has('init')) {
 			Session::forget('bookings');
 		}
-		if (Input::has('listing_id')) {
-			if (Input::get('listing_id') == 0) {
+		if (\Request::has('listing_id')) {
+			if (\Request::get('listing_id') == 0) {
 				Session::forget('bookings.listing_id');
 			} else {
-				Session::put('bookings.listing_id', Input::get('listing_id'));
+				Session::put('bookings.listing_id', \Request::get('listing_id'));
 		    }
 		}
 
@@ -34,8 +34,8 @@ class BookingsController extends BaseController {
             'past' => 'past reservations'
         ];
 
-		if (Input::has('time') && isset($timeOptions[Input::get('time')])) {
-			Session::put('bookings.time', Input::get('time'));
+		if (\Request::has('time') && isset($timeOptions[\Request::get('time')])) {
+			Session::put('bookings.time', \Request::get('time'));
 		}
 
 		$bookingQuery = Booking::query()->where('booking_status_id','=',1)->orderBy('arrival_date');
@@ -73,7 +73,7 @@ class BookingsController extends BaseController {
 	 */
 	public function store()
 	{
-		$validator = \Validator::make($data = \Input::all(), Booking::$rules);
+		$validator = \Validator::make($data = \Request::all(), Booking::$rules);
 
 		if ($validator->fails())
 		{
@@ -123,7 +123,7 @@ class BookingsController extends BaseController {
 	{
 		$booking = Booking::findOrFail($id);
 
-		$validator = \Validator::make($data = \Input::all(), Booking::$rules);
+		$validator = \Validator::make($data = \Request::all(), Booking::$rules);
 
 		if ($validator->fails())
 		{
