@@ -37,7 +37,7 @@ class ListingsController extends BaseController {
 	 */
 	public function store()
 	{
-		$validator = \Validator::make($data = \Input::all(), Listing::$rules);
+		$validator = \Validator::make($data = \Request::all(), Listing::$rules);
 
 		if ($validator->fails())
 		{
@@ -86,7 +86,7 @@ class ListingsController extends BaseController {
 		$listing = Listing::findOrFail($id);
 		
 
-		$validator = \Validator::make($data = \Input::all(), Listing::$rules);
+		$validator = \Validator::make($data = \Request::all(), Listing::$rules);
 
 		if ($validator->fails())
 		{
