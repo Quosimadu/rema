@@ -22,8 +22,8 @@ class CreateRolesTable extends Migration {
 		});
 
 		$roles = [
-			['id' => 1, 'name' => 'admin', 'description' => 'system configuration'],
-			['id' => 2, 'name' => 'support', 'description' => 'can see and do all, system support'],
+			['id' => 1, 'name' => 'admin', 'description' => 'system configuration','requires_super' => 1],
+			['id' => 2, 'name' => 'support', 'description' => 'can see and do all, system support','requires_super' => 1],
 			['id' => 3, 'name' => 'owner', 'description' => 'listing owners','requires_super' => 0],
 			['id' => 4, 'name' => 'trustee', 'description' => 'can see all but not set things','requires_super' => 0],
 			['id' => 5, 'name' => 'accountant', 'description' => 'accounting related reports','requires_super' => 0],

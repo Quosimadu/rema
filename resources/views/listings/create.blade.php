@@ -19,7 +19,7 @@
                                 {!! Form::label('name', 'Name', array('class' => 'control-label')) !!}
                             </div>
                             <div class="col-md-8">
-                                {!! Form::text('name', Input::old('name'), $attributes = array('class' =>
+                                {!! Form::text('name', \Request::old('name'), $attributes = array('class' =>
                                 'form-control', 'id' => 'name', 'placeholder' => 'a good name')) !!}
                                 {!! $errors->first('name', '
                                 <div class="note note-error">:message</div>
@@ -31,7 +31,7 @@
                                 {!! Form::label('beds', 'Beds', array('class' => 'control-label')) !!}
                             </div>
                             <div class="col-md-2">
-                                {!! Form::number('beds', Input::old('beds'), $attributes = array('class' =>
+                                {!! Form::number('beds', \Request::old('beds'), $attributes = array('class' =>
                                 'form-control', 'id' => 'beds', 'placeholder' => 'x')) !!}
                                 {!! $errors->first('beds', '
                                 <div class="note note-error">:message</div>
@@ -41,7 +41,7 @@
                                 {!! Form::label('guests', 'Guests', array('class' => 'control-label')) !!}
                             </div>
                             <div class="col-md-2">
-                                {!! Form::number('guests', Input::old('guests'), $attributes = array('class' =>
+                                {!! Form::number('guests', \Request::old('guests'), $attributes = array('class' =>
                                 'form-control', 'id' => 'guests', 'placeholder' => 'x')) !!}
                                 {!! $errors->first('guests', '
                                 <div class="note note-error">:message</div>
@@ -53,7 +53,7 @@
                                 {!! Form::label('address', 'Address', array('class' => 'control-label')) !!}
                             </div>
                             <div class="col-md-8">
-                                {!! Form::textarea('address', Input::old('address'), $attributes = array('class' =>
+                                {!! Form::textarea('address', \Request::old('address'), $attributes = array('class' =>
                                 'form-control', 'id' => 'address', 'placeholder' => 'Street', 'rows' => 3)) !!}
                                 {!! $errors->first('address', '
                                 <div class="note note-error">:message</div>
@@ -66,7 +66,7 @@
                                 {!! Form::label('checkin_time', 'Check-in time', array('class' => 'control-label')) !!}
                             </div>
                             <div class="col-md-2">
-                                {!! Form::text('checkin_time', Input::old('checkin_time'), $attributes = array('class'
+                                {!! Form::text('checkin_time', \Request::old('checkin_time'), $attributes = array('class'
                                 => 'form-control date', 'id' => 'checkin_time', 'placeholder' => '10:00')) !!}
                                 {!! $errors->first('checkin_time', '
                                 <div class="note note-error">:message</div>
@@ -77,7 +77,7 @@
                                 !!}
                             </div>
                             <div class="col-md-2">
-                                {!! Form::text('checkout_time', Input::old('checkout_time'), $attributes = array('class'
+                                {!! Form::text('checkout_time', \Request::old('checkout_time'), $attributes = array('class'
                                 => 'form-control date', 'id' => 'checkout_time', 'placeholder' => '16:00')) !!}
                                 {!! $errors->first('checkout_time', '
                                 <div class="note note-error">:message</div>
@@ -90,7 +90,7 @@
                                 {!! Form::label('airbnb_listing_id', 'AirBnB listing ID', array('class' => 'control-label')) !!}
                             </div>
                             <div class="col-md-2">
-                                {!! Form::text('airbnb_listing_id', Input::old('airbnb_listing_id'), $attributes = array('class' =>
+                                {!! Form::text('airbnb_listing_id', \Request::old('airbnb_listing_id'), $attributes = array('class' =>
                                 'form-control', 'id' => 'airbnb_listing_id', 'placeholder' => '172846')) !!}
                                 {!! $errors->first('airbnb_listing_id', '
                                 <div class="note note-error">:message</div>
