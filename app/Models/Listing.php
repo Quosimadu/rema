@@ -33,7 +33,7 @@ class Listing extends BaseTable {
 
 		static::creating(function($listingTable)
 		{
-			#$baseTable->last_change_user_id = Auth::user()->id;
+			$baseTable->last_change_user_id = Auth::user()->id;
 		});
 
 	}

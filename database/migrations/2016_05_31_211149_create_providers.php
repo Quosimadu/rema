@@ -21,6 +21,7 @@ class CreateProviders extends Migration
             $table->string('mobile', 128)->nullable();
             $table->text('comment')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

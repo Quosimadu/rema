@@ -10,7 +10,7 @@
                     </div>
                     <div class="panel-body">
 
-                        {!! Form::open(array('route' => array('listings.update', $listing->id), 'method' => 'PUT',
+                        {!! Form::open(array('route' => array('rooms.listings.update', $listing->id), 'method' => 'PUT',
                         'class' => 'form-horizontal')) !!}
 
                         <div class="form-group">
