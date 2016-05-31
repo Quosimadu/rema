@@ -10,7 +10,7 @@ class BookingsTableSeeder extends Seeder {
 	public function run()
 	{
 		$faker = Faker::create();
-		$listings = Listing::all()->lists('id');
+		$listings = Listing::all()->pluck('id')->toArray();
 
 		for($i=1;$i<30;$i++)
 		{
