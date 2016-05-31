@@ -29,11 +29,16 @@ Route::group(array('prefix' => 'rooms', 'middleware' => 'auth'), function() {
 });
 
 Route::group(array('prefix' => 'providers', 'middleware' => 'auth'), function() {
-	Route::get('/',  array('as' => 'listings', 'uses' => 'ProviderController@index'));
-	Route::any('/add',  array('as' => 'listingCreate', 'uses' => 'ProviderController@create'));
-	Route::any('/edit/{id}',  array('as' => 'listingEdit', 'uses' => 'ProviderController@edit'));
-	Route::any('/show/{id}',  array('as' => 'listingShow', 'uses' => 'ProviderController@show'));
-	Route::resource('providers', 'ProviderController');
+	Route::get('/',  array('as' => 'providers', 'uses' => 'ProvidersController@index'));
+	Route::any('/add',  array('as' => 'providerCreate', 'uses' => 'ProvidersController@create'));
+	Route::any('/edit/{id}',  array('as' => 'providerEdit', 'uses' => 'ProvidersController@edit'));
+	Route::any('/show/{id}',  array('as' => 'providerShow', 'uses' => 'ProvidersController@show'));
+	Route::resource('providers', 'ProvidersController');
+});
+
+Route::group(array('prefix' => 'messages', 'middleware' => 'auth'), function() {
+	Route::any('/compose',  array('as' => 'messages.compose', 'uses' => 'MessagesController@compose'));
+	Route::post('/store',  array('as' => 'messages.store', 'uses' => 'MessagesController@store'));
 });
 
 
