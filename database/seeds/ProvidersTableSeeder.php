@@ -8,7 +8,7 @@ class ProvidersTableSeeder extends Seeder {
     public function run()
     {
 
-        factory(Provider::class, 10)->create();
+        factory(Provider::class, 40)->create();
 
     }
 

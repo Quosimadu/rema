@@ -11,6 +11,9 @@
 |
 */
 
+	Route::auth();
+
+
 Route::get('/', function () {
 	return view('welcome');
 });
@@ -37,8 +40,17 @@ Route::group(array('prefix' => 'providers', 'middleware' => 'auth'), function() 
 });
 
 Route::group(array('prefix' => 'messages', 'middleware' => 'auth'), function() {
-	Route::any('/compose',  array('as' => 'messages.compose', 'uses' => 'MessagesController@compose'));
-	Route::post('/store',  array('as' => 'messages.store', 'uses' => 'MessagesController@store'));
+	Route::get('/',  array('as' => 'messages', 'uses' => 'MessagesController@index'));
+	Route::any('/compose/{id?}',  array('as' => 'messages.compose', 'uses' => 'MessagesController@compose'));
+	Route::post('/send',  array('as' => 'messages.send', 'uses' => 'MessagesController@send'));
+});
+
+Route::group(array('prefix' => 'message_templates', 'middleware' => 'auth'), function() {
+	Route::get('/',  array('as' => 'message_templates', 'uses' => 'MessageTemplatesController@index'));
+	Route::any('/add',  array('as' => 'message_templates.create', 'uses' => 'MessageTemplatesController@create'));
+	Route::any('/edit/{id}',  array('as' => 'message_templates.edit', 'uses' => 'MessageTemplatesController@edit'));
+	Route::any('/show/{id}',  array('as' => 'message_templates.show', 'uses' => 'MessageTemplatesController@show'));
+	Route::resource('message_templates', 'MessageTemplatesController');
 });
 
 
@@ -48,7 +60,8 @@ Route::group(array('prefix' => 'booking', 'middleware' => 'auth'), function() {
 	Route::any('/add',  array('as' => 'bookingCreate', 'uses' => 'BookingsController@create'));
 	Route::any('/edit/{id}',  array('as' => 'bookingEdit', 'uses' => 'BookingsController@edit'));
 	Route::any('/show/{id}',  array('as' => 'bookingShow', 'uses' => 'BookingsController@show'));
-	Route::resource('bookings', 'BookingsController');
+    Route::resource('bookings', 'BookingsController');
+
 });
 
 

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class ListingsController extends BaseController {
 
 	/**
-	 * Display a listing of listings
+	 * Display a listing
 	 *
 	 * @return Response
 	 */

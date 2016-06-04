@@ -7,25 +7,40 @@ use App\Models\Provider;
 class MessagesController extends BaseController {
 
 
-
 	/**
-	 * Show the form for creating a new message
+	 * Display a listing
 	 *
 	 * @return Response
 	 */
-	public function compose()
+	public function index()
+	{
+		$messages = Message::all();
+
+		return \View::make('messages.index', compact('messages'));
+	}
+
+	/**
+	 * Show the form for creating a new item
+	 *
+	 * @return Response
+	 */
+	public function compose($id = null)
 	{
 
-		$providers = Provider::query()->orderBy('first_name')->get(['id','first_name'])->lists('first_name', 'id');
+		$providers = Provider::query()->orderBy('last_name')->get(['mobile','last_name','first_name'])->all();
+		foreach ($providers as $provider) {
+			$providers_formatted[$provider->mobile] = $provider->last_name . ', ' . $provider->first_name;
+		}
+		$providers = ['' => ''] + $providers_formatted;
 		return \View::make('messages.compose',compact('providers'));
 	}
 
 	/**
-	 * Store a newly created booking in storage.
+	 * Store a newly created item in storage
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function send()
 	{
 		$validator = \Validator::make($data = \Request::all(), Message::$rules);
 
@@ -34,9 +49,13 @@ class MessagesController extends BaseController {
 			return \Redirect::back()->withErrors($validator)->withInput();
 		}
 
-		Message::create(\Request::get('content'));
+		if (Message::send($data)) {
+			Message::create($data);
+		} else {
+			return \Redirect::back()->withErrors("Message could not be sent")->withInput();
+		}
 
-		return \Redirect::route('messages.compose');
+		return \Redirect::route('messages');
 	}
 
 }

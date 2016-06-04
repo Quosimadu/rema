@@ -21,8 +21,10 @@ class CreateListingsTable extends Migration {
 			$table->text('address');
             $table->time('checkin_time')->nullable();
             $table->time('checkout_time')->nullable();
-            $table->string('airbnb_listing_id', 20)->nullable();
+			$table->integer('created_by')->nullable();
+			$table->integer('changed_by')->nullable();
 			$table->timestamps();
+			$table->string('airbnb_listing_id', 20)->nullable();
 			$table->softDeletes();
 		});
 	}

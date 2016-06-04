@@ -2,7 +2,7 @@
 
 use SimpleSoftwareIO\SMS\Facades\SMS;
 
-class Message {
+class Message extends BaseTable {
 
 	// Add your validation rules here
 	public static $rules = [
@@ -11,11 +11,13 @@ class Message {
 	];
 
 
-	public static function create($message) {
+	public static function send($data) {
 
-        SMS::send($message, [], function($sms) {
+       /* SMS::send($data->content, [], function($sms) {
             $sms->to('+mynumber');
         });
+       */
+        return false;
 
 	}
 

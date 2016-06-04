@@ -1,6 +1,7 @@
 <?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Auth;
 
 class Listing extends BaseTable {
 
@@ -33,7 +34,9 @@ class Listing extends BaseTable {
 
 		static::creating(function($listingTable)
 		{
-			$baseTable->last_change_user_id = Auth::user()->id;
+			if (Auth::check()) {
+				$listingTable->changed_by = Auth::id();
+			}
 		});
 
 	}
