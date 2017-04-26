@@ -35,15 +35,29 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-2">
+
+                            <div class="col-md-4">
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        Templates
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        @foreach($message_templates as $template)
+                                        <li><a href="#">{!! $template->name !!} ({!! str_limit($template->content,15,'...') !!})</a></li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                                 {!! Form::label('content', 'Content', array('class' => 'control-label')) !!}
                             </div>
+
                             <div class="col-md-8">
-                                {!! Form::textarea('content', \Request::old('content'), $attributes = array('class' =>
-                                'form-control', 'id' => 'content', 'placeholder' => '', 'rows' => 6)) !!}
-                                {!! $errors->first('content', '
-                                <div class="note note-error">:message</div>
-                                ') !!}
+                                    {!! Form::textarea('content', \Request::old('content'), $attributes = array('class' =>
+                               'form-control', 'id' => 'content', 'placeholder' => '', 'rows' => 6, 'style' => '')) !!}
+                                    {!! $errors->first('content', '
+                                    <div class="note note-error">:message</div>
+                                    ') !!}
+
                             </div>
                         </div>
 

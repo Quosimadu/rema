@@ -20,7 +20,7 @@
                             </div>
                             <div class="col-md-8">
                                 {!! Form::text('name', \Request::old('name'), $attributes = array('class' =>
-                                'form-control', 'id' => 'name', 'placeholder' => '+420..')) !!}
+                                'form-control', 'id' => 'name', 'placeholder' => '')) !!}
                                 {!! $errors->first('name', '
                                 <div class="note note-error">:message</div>
                                 ') !!}
@@ -40,7 +40,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-2">
-                                {!! Form::label('comment', 'Content', array('class' => 'control-label')) !!}
+                                {!! Form::label('comment', 'Comment', array('class' => 'control-label')) !!}
                             </div>
                             <div class="col-md-8">
                                 {!! Form::textarea('comment', \Request::old('comment'), $attributes = array('class' =>

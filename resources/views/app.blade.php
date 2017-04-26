@@ -31,7 +31,15 @@
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li><a href="{{ route('bookings') }}">Bookings</a></li>
-					<li><a href="{{ route('messages') }}">Messages</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown" data-toggle="dropdown" role="button" aria-expanded="false">Messages<span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="{{ route('messages') }}">Overview</a></li>
+							<li><a href="{{ route('messages.compose') }}">New</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="{{ route('message_templates') }}">Templates</a></li>
+						</ul>
+					</li>
 					<li><a href="{{ route('providers') }}">Providers</a></li>
                     <li><a href="{{ route('listings') }}">Listings</a></li>
                     <li><a href="{{ route('reports') }}">Reports</a></li>

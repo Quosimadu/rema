@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BaseController;
 use App\Models\Message;
+use App\Models\MessageTemplate;
 use App\Models\Provider;
 
 class MessagesController extends BaseController {
@@ -32,7 +33,11 @@ class MessagesController extends BaseController {
 			$providers_formatted[$provider->mobile] = $provider->last_name . ', ' . $provider->first_name;
 		}
 		$providers = ['' => ''] + $providers_formatted;
-		return \View::make('messages.compose',compact('providers'));
+
+		$message_templates = MessageTemplate::query()->orderBy('name')->get(['id','name','content','comment'])->all();
+
+
+		return \View::make('messages.compose',compact('providers','message_templates'));
 	}
 
 	/**
