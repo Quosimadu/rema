@@ -46,7 +46,7 @@ class ListingsController extends BaseController {
 
 		Listing::create($data);
 
-		return \Redirect::route('rooms.index');
+		return \Redirect::route('listings');
 	}
 
 	/**
@@ -95,7 +95,7 @@ class ListingsController extends BaseController {
 
 		$listing->update($data);
 
-		return \Redirect::route('rooms.listings.index');
+		return \Redirect::route('listings');
 	}
 
 	/**
@@ -108,7 +108,7 @@ class ListingsController extends BaseController {
 	{
 		Listing::destroy($id);
 
-		return \Redirect::route('rooms.listings.index');
+		return \Redirect::route('listings');
 	}
 
 }

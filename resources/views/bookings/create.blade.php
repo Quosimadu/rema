@@ -11,7 +11,7 @@
                     <div class="panel-body">
 
 
-                        {!! Form::open(array('route' => 'bookings.store', 'method' => 'post', 'class' =>
+                        {!! Form::open(array('route' => 'bookingStore', 'method' => 'post', 'class' =>
                         'form-horizontal'))
                         !!}
 

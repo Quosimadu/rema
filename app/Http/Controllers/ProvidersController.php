@@ -94,7 +94,7 @@ class ProvidersController extends BaseController {
 
 		$provider->update($data);
 
-		return \Redirect::route('providers.index');
+		return \Redirect::route('providers');
 	}
 
 	/**
@@ -107,7 +107,7 @@ class ProvidersController extends BaseController {
 	{
 		Provider::destroy($id);
 
-		return \Redirect::route('providers.index');
+		return \Redirect::route('providers');
 	}
 
 }

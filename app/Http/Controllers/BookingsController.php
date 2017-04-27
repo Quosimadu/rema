@@ -47,7 +47,7 @@ class BookingsController extends BaseController {
         }
 
 		$bookings = $bookingQuery->get();
-		$listings = Listing::query()->orderBy('name')->get(['id','name'])->lists('name', 'id');
+		$listings = Listing::query()->orderBy('name')->get(['id','name'])->pluck(['name', 'id']);
 		$listing_id =  Session::get('bookings.listing_id');
         $time =  Session::get('bookings.time');
 
@@ -62,7 +62,7 @@ class BookingsController extends BaseController {
 	public function create()
 	{
 
-		$listings = Listing::query()->orderBy('name')->get(['id','name'])->lists('name', 'id');
+		$listings = Listing::query()->orderBy('name')->get(['id','name'])->pluck('name', 'id');
 		return \View::make('bookings.create',compact('listings'));
 	}
 
@@ -82,7 +82,7 @@ class BookingsController extends BaseController {
 
 		Booking::create($data);
 
-		return \Redirect::route('bookings.index');
+		return \Redirect::route('bookings');
 	}
 
 	/**
@@ -107,8 +107,8 @@ class BookingsController extends BaseController {
 	public function edit($id)
 	{
 		$booking = Booking::find($id);
-		$listings = Listing::query()->orderBy('name')->get(['id','name'])->lists('name', 'id');
-		$bookingStatuses = BookingStatus::all(['id','name'])->lists('name', 'id');
+		$listings = Listing::query()->orderBy('name')->get(['id','name'])->pluck('name', 'id');
+		$bookingStatuses = BookingStatus::all(['id','name'])->pluck('name', 'id');
 
 		return \View::make('bookings.edit', compact('booking','listings','bookingStatuses'));
 	}
@@ -132,7 +132,7 @@ class BookingsController extends BaseController {
 
 		$booking->update($data);
 
-		return \Redirect::route('bookings.index');
+		return \Redirect::route('bookings');
 	}
 
 	/**
@@ -145,7 +145,7 @@ class BookingsController extends BaseController {
 	{
 		Booking::destroy($id);
 
-		return \Redirect::route('bookings.index');
+		return \Redirect::route('bookings');
 	}
 
 }

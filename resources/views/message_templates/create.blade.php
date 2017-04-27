@@ -11,7 +11,7 @@
                     </div>
                     <div class="panel-body">
 
-                        {!! Form::open(array('route' => 'message_templates.message_templates.store', 'method' => 'post', 'class' =>
+                        {!! Form::open(array('route' => 'message_templates.store', 'method' => 'post', 'class' =>
                         'form-horizontal')) !!}
 
                         <div class="form-group">
