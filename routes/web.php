@@ -74,5 +74,6 @@ Route::group(array('prefix' => 'reports', 'middleware' => 'auth'), function() {
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 
+Route::post('receive-sms', ['uses' => 'MessageController@receiveSMS']);
 
 
