@@ -67,6 +67,7 @@ Route::group(array('prefix' => 'booking', 'middleware' => 'auth'), function() {
 
 
 Route::any('reports',  array('as' => 'reports', 'uses' => 'ReportsController@index'));
+
 Route::group(array('prefix' => 'reports', 'middleware' => 'auth'), function() {
     Route::get('/',  array('as' => 'reports', 'uses' => 'ReportsController@index'));
 });
@@ -74,6 +75,6 @@ Route::group(array('prefix' => 'reports', 'middleware' => 'auth'), function() {
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 
-Route::any('receive-sms', ['uses' => 'MessagesController@receiveSMS']);
+Route::any('receive-sms', ['as' => 'smsInboundApi', 'uses' => 'MessagesController@receiveSMS']);
 
 

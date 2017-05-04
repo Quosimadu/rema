@@ -69,10 +69,9 @@ class MessagesController extends BaseController
 
     /**
      * receive an SMS message from external API
-     * @param Request $request
      * @return $this
      */
-    public function receiveSMS(Request $request)
+    public function receiveSMS()
     {
 
         Log::info('Message request received: ');
