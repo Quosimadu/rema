@@ -5,6 +5,7 @@ use App\Models\MessageTemplate;
 use App\Models\Provider;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\SMS\SMS;
+use Log;
 
 
 class MessagesController extends BaseController
@@ -74,6 +75,7 @@ class MessagesController extends BaseController
     public function receiveSMS(Request $request)
     {
 
+        Log::info('Message request received: ');
 
         $smsService = new SMS;
         $inbound = $smsService->receive();
