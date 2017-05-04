@@ -8,7 +8,7 @@ class Provider extends BaseTable
 {
     use SoftDeletes;
 
-    protected $fillable = ['first_name','last_name','email','mobile', 'comment'];
+    protected $fillable = ['first_name','last_name','email','mobile', 'comment','address'];
 
     protected $dates = ['deleted_at'];
 

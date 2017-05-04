@@ -11,7 +11,7 @@
                     </div>
                     <div class="panel-body">
 
-                        {!! Form::open(array('route' => array('bookings.update', $booking->id), 'method' => 'PUT', 'class' => 'form-horizontal')) !!}
+                        {!! Form::open(array('route' => array('bookingUpdate', $booking->id), 'method' => 'PUT', 'class' => 'form-horizontal')) !!}
 
                         {!! Form::hidden('platform_id', $booking->platform_id) !!}
 
