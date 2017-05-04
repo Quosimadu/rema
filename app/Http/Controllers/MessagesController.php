@@ -76,8 +76,7 @@ class MessagesController extends BaseController
 
         Log::info('Message request received: ');
 
-        $smsService = new SMS;
-        $inbound = $smsService->receive();
+        $inbound = SMS::receive();
 
 
         $incomingMessage = new Message();
