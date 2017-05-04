@@ -44,8 +44,6 @@ class DropTables extends Command
             exit('Drop Tables command aborted');
         }
 
-        dd($nonInteractive);
-
         $colname = 'Tables_in_' . env('DB_DATABASE');
 
         $tables = DB::select('SHOW TABLES');
