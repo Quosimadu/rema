@@ -20,7 +20,7 @@ class CreateMessages extends Migration
             $table->text('content')->nullable();
             $table->string('source', 50)->nullable();
             $table->string('external_id', 128)->nullable();
-            $table->json('meta_info')->nullable();
+            $table->text('meta_info')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
