@@ -12,7 +12,7 @@
 	 	"barryvdh/laravel-debugbar": "*",
 	  	"rap2hpoutre/laravel-log-viewer": "*",
         "laravelcollective/html": "*",
-        "simplesoftwareio/simple-sms": "2.1.2"
+        "simplesoftwareio/simple-sms": "*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
