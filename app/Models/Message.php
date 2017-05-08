@@ -62,7 +62,7 @@ class Message extends BaseTable
             return false;
         }
 
-        foreach ($forwardingRules as $forwardingRule) {
+        foreach ($forwardingRules[$this->receiver] as $forwardingRule) {
 
             self::send($this->content, $forwardingRule['receiver'], $this->receiver);
 

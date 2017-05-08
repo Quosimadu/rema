@@ -84,6 +84,7 @@ class MessagesController extends BaseController
         $incomingMessage->receiver = '+' . $inbound->to();
         $incomingMessage->external_id = $inbound->id();
         $incomingMessage->meta_info = json_encode($inbound->raw());
+        $incomingMessage->source =  'nexmo';
 
         Log::info('Message ID '. $inbound->id());
 
