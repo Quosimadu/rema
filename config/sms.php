@@ -69,41 +69,11 @@
     |--------------------------------------------------------------------------
 */
 
-
 return [
     'driver' => env('SMS_DRIVER', 'default'),
     'from' => env('SMS_FROM', 'Your name'),
-    'callfire' => [
-        'app_login' => 'Your CallFire API Login',
-        'app_password' => 'Your CallFire API Password'
-    ],
-    'eztexting' => [
-        'username' => 'Your EZTexting Username',
-        'password' => 'Your EZTexting Password'
-    ],
-    'labsmobile' => [
-        'client' => 'Your client ID',
-        'username' => 'Your Usernbame',
-        'password' => 'Your Password',
-        'test' => false
-    ],
-    'mozeo' => [
-        'company_key' => 'Your Mozeo Company Key',
-        'username' => 'Your Mozeo Username',
-        'password' => 'Your Mozeo Password'
-    ],
     'nexmo' => [
         'api_key' => env('SMS_NEXMO_API_KEY', 'null'),
         'api_secret' => env('SMS_NEXMO_API_SECRET', 'null')
     ],
-    'twilio' => [
-        'account_sid' => 'Your SID',
-        'auth_token' => 'Your Token',
-        'verify' => true,
-    ],
-    'zenvia' => [
-        'account_key' => 'Your Zenvia account key',
-        'passcode' => 'Your code (password)',
-        'callbackOption' => 'NONE'
-    ]
 ];

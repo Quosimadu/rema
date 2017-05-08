@@ -3,8 +3,10 @@
 use App\Models\Message;
 use App\Models\MessageTemplate;
 use App\Models\Provider;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use SimpleSoftwareIO\SMS\SMS;
+use SimpleSoftwareIO\SMS\DriverManager;
+use SMS;
 use Illuminate\Http\Response;
 use Log;
 
@@ -75,28 +77,18 @@ class MessagesController extends BaseController
     public function receiveSMS()
     {
 
-        Log::info('Message request received: ');
+        Log::info('Incoming SMS request received');
 
-
-
-        $inbound = new SMS('nexmo');
-        #$inbound->driver('nexmo');
-#        $inbound->receive();
-        /*
-
+        $inbound = SMS::receive();
 
         $incomingMessage = new Message();
         $incomingMessage->content = $inbound->message();
         $incomingMessage->sender = $inbound->from();
         $incomingMessage->receiver = $inbound->to();
         $incomingMessage->external_id = $inbound->id();
-        $incomingMessage->meta_info = $inbound->raw();
+        $incomingMessage->meta_info = json_encode($inbound->raw());
 
-        Log::info('Message: ' . json_encode($incomingMessage));
         $success = $incomingMessage->save();
-*/
-        $incomingMessage = [];
-        $success = true;
 
         if (!$success) {
             Log::warning('Message saving failed: ' . json_encode($incomingMessage));
@@ -107,7 +99,6 @@ class MessagesController extends BaseController
         }
 
 
-        #Log::info('Message saved: ' . json_encode($incomingMessage));
         $response = new Response();
         return $response->setStatusCode(Response::HTTP_OK);
 
