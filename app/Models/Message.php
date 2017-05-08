@@ -1,5 +1,6 @@
 <?php namespace App\Models;
 
+use Log;
 use SimpleSoftwareIO\SMS\Facades\SMS;
 
 /**
