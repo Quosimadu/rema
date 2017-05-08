@@ -71,8 +71,8 @@
 
 
 return [
-    'driver' => env('SMS_DRIVER', 'null'),
-    'from' => 'Your Number or Email',
+    'driver' => env('SMS_DRIVER', 'default'),
+    'from' => env('SMS_FROM', 'Your name'),
     'callfire' => [
         'app_login' => 'Your CallFire API Login',
         'app_password' => 'Your CallFire API Password'

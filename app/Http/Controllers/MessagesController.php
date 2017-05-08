@@ -5,6 +5,7 @@ use App\Models\MessageTemplate;
 use App\Models\Provider;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\SMS\SMS;
+use Illuminate\Http\Response;
 use Log;
 
 
@@ -69,14 +70,19 @@ class MessagesController extends BaseController
 
     /**
      * receive an SMS message from external API
-     * @return $this
+     * @return Response
      */
     public function receiveSMS()
     {
 
         Log::info('Message request received: ');
 
-        $inbound = SMS::receive();
+
+
+        $inbound = new SMS('nexmo');
+        #$inbound->driver('nexmo');
+#        $inbound->receive();
+        /*
 
 
         $incomingMessage = new Message();
@@ -88,15 +94,22 @@ class MessagesController extends BaseController
 
         Log::info('Message: ' . json_encode($incomingMessage));
         $success = $incomingMessage->save();
-
+*/
+        $incomingMessage = [];
+        $success = true;
 
         if (!$success) {
             Log::warning('Message saving failed: ' . json_encode($incomingMessage));
-            return response()->setStatusCode(500);
+
+            $response = new Response();
+            return $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+
         }
 
-        Log::info('Message saved: ' . json_encode($incomingMessage));
-        return response()->setStatusCode(200);
+
+        #Log::info('Message saved: ' . json_encode($incomingMessage));
+        $response = new Response();
+        return $response->setStatusCode(Response::HTTP_OK);
 
 
 
