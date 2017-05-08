@@ -33,7 +33,7 @@ class Message extends BaseTable
     public static function send(string $content, string $receiver, string $sender): bool
     {
 
-        $data = new Object();
+        $data = new \stdClass();
         $data->content = $content;
         $data->receiver = $receiver;
         $data->sender = $sender;
