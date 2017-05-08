@@ -3,9 +3,6 @@
 use App\Models\Message;
 use App\Models\MessageTemplate;
 use App\Models\Provider;
-use GuzzleHttp\Client;
-use Illuminate\Http\Request;
-use SimpleSoftwareIO\SMS\DriverManager;
 use SMS;
 use Illuminate\Http\Response;
 use Log;
@@ -77,7 +74,7 @@ class MessagesController extends BaseController
     public function receiveSMS()
     {
 
-        Log::info('Incoming SMS request received');
+        Log::info('Incoming SMS request');
 
         $inbound = SMS::receive();
 
@@ -88,7 +85,11 @@ class MessagesController extends BaseController
         $incomingMessage->external_id = $inbound->id();
         $incomingMessage->meta_info = json_encode($inbound->raw());
 
+        Log::info('Message ID '. $inbound->id());
+
         $success = $incomingMessage->save();
+
+        $incomingMessage->processMessage();
 
         if (!$success) {
             Log::warning('Message saving failed: ' . json_encode($incomingMessage));
