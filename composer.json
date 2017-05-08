@@ -12,7 +12,8 @@
 	 	"barryvdh/laravel-debugbar": "*",
 	  	"rap2hpoutre/laravel-log-viewer": "*",
         "laravelcollective/html": "*",
-        "simplesoftwareio/simple-sms": "dev-develop"
+        "simplesoftwareio/simple-sms": "dev-develop",
+        "jeremeamia/superclosure": "~2.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
