@@ -87,7 +87,10 @@ class MessagesController extends BaseController
 
         Log::info('Message ID '. $inbound->id());
 
+        Log::info('JSON'. json_encode($incomingMessage));
+
         $success = $incomingMessage->save();
+
 
         $incomingMessage->processMessage();
 

@@ -58,7 +58,7 @@ class Message extends BaseTable
 
         $forwardingRules = MessagingRules::forwardingRules();
 
-        if (!in_array($this->receiver, $forwardingRules)) {
+        if (!isset($forwardingRules[$this->receiver])) {
             return false;
         }
 
