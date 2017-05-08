@@ -42,6 +42,8 @@ class Message extends BaseTable
             $sms->from($data->sender);
         });
 
+        Log::info('Message sent to '. $data->receiver());
+
         return true;
 
     }

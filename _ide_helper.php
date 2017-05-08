@@ -103,7 +103,7 @@ namespace {
          * @return \Illuminate\Support\ServiceProvider 
          * @static 
          */
-        public static function forceRegister($provider, $options = array()){
+        public static function forceRegister($provider, $options = []){
             return \Illuminate\Foundation\Application::forceRegister($provider, $options);
         }
         
@@ -116,7 +116,7 @@ namespace {
          * @return \Illuminate\Support\ServiceProvider 
          * @static 
          */
-        public static function register($provider, $options = array(), $force = false){
+        public static function register($provider, $options = [], $force = false){
             return \Illuminate\Foundation\Application::register($provider, $options, $force);
         }
         
@@ -174,7 +174,7 @@ namespace {
          * @return mixed 
          * @static 
          */
-        public static function make($abstract, $parameters = array()){
+        public static function make($abstract, $parameters = []){
             return \Illuminate\Foundation\Application::make($abstract, $parameters);
         }
         
@@ -322,7 +322,7 @@ namespace {
          * @return $this 
          * @static 
          */
-        public static function middleware($class, $parameters = array()){
+        public static function middleware($class, $parameters = []){
             return \Illuminate\Foundation\Application::middleware($class, $parameters);
         }
         
@@ -453,7 +453,7 @@ namespace {
          * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
          * @static 
          */
-        public static function abort($code, $message = '', $headers = array()){
+        public static function abort($code, $message = '', $headers = []){
             \Illuminate\Foundation\Application::abort($code, $message, $headers);
         }
         
@@ -592,7 +592,7 @@ namespace {
          * @return mixed 
          * @static 
          */
-        public static function onRequest($method, $parameters = array()){
+        public static function onRequest($method, $parameters = []){
             return \Illuminate\Foundation\Application::onRequest($method, $parameters);
         }
         
@@ -779,7 +779,7 @@ namespace {
          * @throws BindingResolutionException
          * @static 
          */
-        public static function build($concrete, $parameters = array()){
+        public static function build($concrete, $parameters = []){
             //Method inherited from \Illuminate\Container\Container            
             return \Illuminate\Foundation\Application::build($concrete, $parameters);
         }
@@ -950,7 +950,7 @@ namespace {
          * @return void 
          * @static 
          */
-        public static function call($command, $parameters = array(), $output = null){
+        public static function call($command, $parameters = [], $output = null){
             \Illuminate\Console\Application::call($command, $parameters, $output);
         }
         
@@ -1531,7 +1531,7 @@ namespace {
          * @return bool 
          * @static 
          */
-        public static function once($credentials = array()){
+        public static function once($credentials = []){
             return \Illuminate\Auth\Guard::once($credentials);
         }
         
@@ -1542,7 +1542,7 @@ namespace {
          * @return bool 
          * @static 
          */
-        public static function validate($credentials = array()){
+        public static function validate($credentials = []){
             return \Illuminate\Auth\Guard::validate($credentials);
         }
         
@@ -1579,7 +1579,7 @@ namespace {
          * @return bool 
          * @static 
          */
-        public static function attempt($credentials = array(), $remember = false, $login = true){
+        public static function attempt($credentials = [], $remember = false, $login = true){
             return \Illuminate\Auth\Guard::attempt($credentials, $remember, $login);
         }
         
@@ -2849,7 +2849,7 @@ namespace {
          * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|static 
          * @static 
          */
-        public static function findMany($id, $columns = array()){
+        public static function findMany($id, $columns = []){
             return \Illuminate\Database\Eloquent\Builder::findMany($id, $columns);
         }
         
@@ -2860,7 +2860,7 @@ namespace {
          * @return \Illuminate\Database\Eloquent\Model|static|null 
          * @static 
          */
-        public static function first($columns = array()){
+        public static function first($columns = []){
             return \Illuminate\Database\Eloquent\Builder::first($columns);
         }
         
@@ -2872,7 +2872,7 @@ namespace {
          * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
          * @static 
          */
-        public static function firstOrFail($columns = array()){
+        public static function firstOrFail($columns = []){
             return \Illuminate\Database\Eloquent\Builder::firstOrFail($columns);
         }
         
@@ -2883,7 +2883,7 @@ namespace {
          * @return \Illuminate\Database\Eloquent\Collection|static[] 
          * @static 
          */
-        public static function get($columns = array()){
+        public static function get($columns = []){
             return \Illuminate\Database\Eloquent\Builder::get($columns);
         }
         
@@ -2930,7 +2930,7 @@ namespace {
          * @return \Illuminate\Pagination\Paginator 
          * @static 
          */
-        public static function paginate($perPage = null, $columns = array()){
+        public static function paginate($perPage = null, $columns = []){
             return \Illuminate\Database\Eloquent\Builder::paginate($perPage, $columns);
         }
         
@@ -2944,7 +2944,7 @@ namespace {
          * @return \Illuminate\Pagination\Paginator 
          * @static 
          */
-        public static function simplePaginate($perPage = null, $columns = array()){
+        public static function simplePaginate($perPage = null, $columns = []){
             return \Illuminate\Database\Eloquent\Builder::simplePaginate($perPage, $columns);
         }
         
@@ -2966,7 +2966,7 @@ namespace {
          * @return \Illuminate\Database\Eloquent\Model[] 
          * @static 
          */
-        public static function getModels($columns = array()){
+        public static function getModels($columns = []){
             return \Illuminate\Database\Eloquent\Builder::getModels($columns);
         }
         
@@ -3182,7 +3182,7 @@ namespace {
          * @return $this 
          * @static 
          */
-        public static function select($columns = array()){
+        public static function select($columns = []){
             return \Illuminate\Database\Query\Builder::select($columns);
         }
         
@@ -3325,7 +3325,7 @@ namespace {
          * @return $this 
          * @static 
          */
-        public static function whereRaw($sql, $bindings = array(), $boolean = 'and'){
+        public static function whereRaw($sql, $bindings = [], $boolean = 'and'){
             return \Illuminate\Database\Query\Builder::whereRaw($sql, $bindings, $boolean);
         }
         
@@ -3337,7 +3337,7 @@ namespace {
          * @return \Illuminate\Database\Query\Builder|static 
          * @static 
          */
-        public static function orWhereRaw($sql, $bindings = array()){
+        public static function orWhereRaw($sql, $bindings = []){
             return \Illuminate\Database\Query\Builder::orWhereRaw($sql, $bindings);
         }
         
@@ -3663,7 +3663,7 @@ namespace {
          * @return $this 
          * @static 
          */
-        public static function havingRaw($sql, $bindings = array(), $boolean = 'and'){
+        public static function havingRaw($sql, $bindings = [], $boolean = 'and'){
             return \Illuminate\Database\Query\Builder::havingRaw($sql, $bindings, $boolean);
         }
         
@@ -3675,7 +3675,7 @@ namespace {
          * @return \Illuminate\Database\Query\Builder|static 
          * @static 
          */
-        public static function orHavingRaw($sql, $bindings = array()){
+        public static function orHavingRaw($sql, $bindings = []){
             return \Illuminate\Database\Query\Builder::orHavingRaw($sql, $bindings);
         }
         
@@ -3721,7 +3721,7 @@ namespace {
          * @return $this 
          * @static 
          */
-        public static function orderByRaw($sql, $bindings = array()){
+        public static function orderByRaw($sql, $bindings = []){
             return \Illuminate\Database\Query\Builder::orderByRaw($sql, $bindings);
         }
         
@@ -3897,7 +3897,7 @@ namespace {
          * @return array|static[] 
          * @static 
          */
-        public static function getFresh($columns = array()){
+        public static function getFresh($columns = []){
             return \Illuminate\Database\Query\Builder::getFresh($columns);
         }
         
@@ -3908,7 +3908,7 @@ namespace {
          * @return array 
          * @static 
          */
-        public static function getCached($columns = array()){
+        public static function getCached($columns = []){
             return \Illuminate\Database\Query\Builder::getCached($columns);
         }
         
@@ -4040,7 +4040,7 @@ namespace {
          * @return mixed 
          * @static 
          */
-        public static function aggregate($function, $columns = array()){
+        public static function aggregate($function, $columns = []){
             return \Illuminate\Database\Query\Builder::aggregate($function, $columns);
         }
         
@@ -4224,7 +4224,7 @@ namespace {
          * @return void 
          * @static 
          */
-        public static function queue($event, $payload = array()){
+        public static function queue($event, $payload = []){
             \Illuminate\Events\Dispatcher::queue($event, $payload);
         }
         
@@ -4247,7 +4247,7 @@ namespace {
          * @return mixed 
          * @static 
          */
-        public static function until($event, $payload = array()){
+        public static function until($event, $payload = []){
             return \Illuminate\Events\Dispatcher::until($event, $payload);
         }
         
@@ -4281,7 +4281,7 @@ namespace {
          * @return array|null 
          * @static 
          */
-        public static function fire($event, $payload = array(), $halt = false){
+        public static function fire($event, $payload = [], $halt = false){
             return \Illuminate\Events\Dispatcher::fire($event, $payload, $halt);
         }
         
@@ -4658,7 +4658,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function open($options = array()){
+        public static function open($options = []){
             return \Illuminate\Html\FormBuilder::open($options);
         }
         
@@ -4670,7 +4670,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function model($model, $options = array()){
+        public static function model($model, $options = []){
             return \Illuminate\Html\FormBuilder::model($model, $options);
         }
         
@@ -4714,7 +4714,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function label($name, $value = null, $options = array()){
+        public static function label($name, $value = null, $options = []){
             return \Illuminate\Html\FormBuilder::label($name, $value, $options);
         }
         
@@ -4728,7 +4728,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function input($type, $name, $value = null, $options = array()){
+        public static function input($type, $name, $value = null, $options = []){
             return \Illuminate\Html\FormBuilder::input($type, $name, $value, $options);
         }
         
@@ -4741,7 +4741,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function text($name, $value = null, $options = array()){
+        public static function text($name, $value = null, $options = []){
             return \Illuminate\Html\FormBuilder::text($name, $value, $options);
         }
         
@@ -4753,7 +4753,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function password($name, $options = array()){
+        public static function password($name, $options = []){
             return \Illuminate\Html\FormBuilder::password($name, $options);
         }
         
@@ -4766,7 +4766,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function hidden($name, $value = null, $options = array()){
+        public static function hidden($name, $value = null, $options = []){
             return \Illuminate\Html\FormBuilder::hidden($name, $value, $options);
         }
         
@@ -4779,7 +4779,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function email($name, $value = null, $options = array()){
+        public static function email($name, $value = null, $options = []){
             return \Illuminate\Html\FormBuilder::email($name, $value, $options);
         }
         
@@ -4792,7 +4792,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function url($name, $value = null, $options = array()){
+        public static function url($name, $value = null, $options = []){
             return \Illuminate\Html\FormBuilder::url($name, $value, $options);
         }
         
@@ -4804,7 +4804,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function file($name, $options = array()){
+        public static function file($name, $options = []){
             return \Illuminate\Html\FormBuilder::file($name, $options);
         }
         
@@ -4817,7 +4817,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function textarea($name, $value = null, $options = array()){
+        public static function textarea($name, $value = null, $options = []){
             return \Illuminate\Html\FormBuilder::textarea($name, $value, $options);
         }
         
@@ -4829,7 +4829,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function number($name, $value = null, $options = array()){
+        public static function number($name, $value = null, $options = []){
             return \Illuminate\Html\FormBuilder::number($name, $value, $options);
         }
         
@@ -4843,7 +4843,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function select($name, $list = array(), $selected = null, $options = array()){
+        public static function select($name, $list = [], $selected = null, $options = []){
             return \Illuminate\Html\FormBuilder::select($name, $list, $selected, $options);
         }
         
@@ -4858,7 +4858,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function selectRange($name, $begin, $end, $selected = null, $options = array()){
+        public static function selectRange($name, $begin, $end, $selected = null, $options = []){
             return \Illuminate\Html\FormBuilder::selectRange($name, $begin, $end, $selected, $options);
         }
         
@@ -4887,7 +4887,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function selectMonth($name, $selected = null, $options = array(), $format = '%B'){
+        public static function selectMonth($name, $selected = null, $options = [], $format = '%B'){
             return \Illuminate\Html\FormBuilder::selectMonth($name, $selected, $options, $format);
         }
         
@@ -4914,7 +4914,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function checkbox($name, $value = 1, $checked = null, $options = array()){
+        public static function checkbox($name, $value = 1, $checked = null, $options = []){
             return \Illuminate\Html\FormBuilder::checkbox($name, $value, $checked, $options);
         }
         
@@ -4928,7 +4928,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function radio($name, $value = null, $checked = null, $options = array()){
+        public static function radio($name, $value = null, $checked = null, $options = []){
             return \Illuminate\Html\FormBuilder::radio($name, $value, $checked, $options);
         }
         
@@ -4940,7 +4940,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function reset($value, $attributes = array()){
+        public static function reset($value, $attributes = []){
             return \Illuminate\Html\FormBuilder::reset($value, $attributes);
         }
         
@@ -4953,7 +4953,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function image($url, $name = null, $attributes = array()){
+        public static function image($url, $name = null, $attributes = []){
             return \Illuminate\Html\FormBuilder::image($url, $name, $attributes);
         }
         
@@ -4965,7 +4965,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function submit($value = null, $options = array()){
+        public static function submit($value = null, $options = []){
             return \Illuminate\Html\FormBuilder::submit($value, $options);
         }
         
@@ -4977,7 +4977,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function button($value = null, $options = array()){
+        public static function button($value = null, $options = []){
             return \Illuminate\Html\FormBuilder::button($value, $options);
         }
         
@@ -5084,7 +5084,7 @@ namespace {
          * @throws \RuntimeException
          * @static 
          */
-        public static function make($value, $options = array()){
+        public static function make($value, $options = []){
             return \Illuminate\Hashing\BcryptHasher::make($value, $options);
         }
         
@@ -5097,7 +5097,7 @@ namespace {
          * @return bool 
          * @static 
          */
-        public static function check($value, $hashedValue, $options = array()){
+        public static function check($value, $hashedValue, $options = []){
             return \Illuminate\Hashing\BcryptHasher::check($value, $hashedValue, $options);
         }
         
@@ -5109,7 +5109,7 @@ namespace {
          * @return bool 
          * @static 
          */
-        public static function needsRehash($hashedValue, $options = array()){
+        public static function needsRehash($hashedValue, $options = []){
             return \Illuminate\Hashing\BcryptHasher::needsRehash($hashedValue, $options);
         }
         
@@ -5160,7 +5160,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function script($url, $attributes = array(), $secure = null){
+        public static function script($url, $attributes = [], $secure = null){
             return \Illuminate\Html\HtmlBuilder::script($url, $attributes, $secure);
         }
         
@@ -5173,7 +5173,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function style($url, $attributes = array(), $secure = null){
+        public static function style($url, $attributes = [], $secure = null){
             return \Illuminate\Html\HtmlBuilder::style($url, $attributes, $secure);
         }
         
@@ -5187,7 +5187,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function image($url, $alt = null, $attributes = array(), $secure = null){
+        public static function image($url, $alt = null, $attributes = [], $secure = null){
             return \Illuminate\Html\HtmlBuilder::image($url, $alt, $attributes, $secure);
         }
         
@@ -5201,7 +5201,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function link($url, $title = null, $attributes = array(), $secure = null){
+        public static function link($url, $title = null, $attributes = [], $secure = null){
             return \Illuminate\Html\HtmlBuilder::link($url, $title, $attributes, $secure);
         }
         
@@ -5214,7 +5214,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function secureLink($url, $title = null, $attributes = array()){
+        public static function secureLink($url, $title = null, $attributes = []){
             return \Illuminate\Html\HtmlBuilder::secureLink($url, $title, $attributes);
         }
         
@@ -5228,7 +5228,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function linkAsset($url, $title = null, $attributes = array(), $secure = null){
+        public static function linkAsset($url, $title = null, $attributes = [], $secure = null){
             return \Illuminate\Html\HtmlBuilder::linkAsset($url, $title, $attributes, $secure);
         }
         
@@ -5241,7 +5241,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function linkSecureAsset($url, $title = null, $attributes = array()){
+        public static function linkSecureAsset($url, $title = null, $attributes = []){
             return \Illuminate\Html\HtmlBuilder::linkSecureAsset($url, $title, $attributes);
         }
         
@@ -5255,7 +5255,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function linkRoute($name, $title = null, $parameters = array(), $attributes = array()){
+        public static function linkRoute($name, $title = null, $parameters = [], $attributes = []){
             return \Illuminate\Html\HtmlBuilder::linkRoute($name, $title, $parameters, $attributes);
         }
         
@@ -5269,7 +5269,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function linkAction($action, $title = null, $parameters = array(), $attributes = array()){
+        public static function linkAction($action, $title = null, $parameters = [], $attributes = []){
             return \Illuminate\Html\HtmlBuilder::linkAction($action, $title, $parameters, $attributes);
         }
         
@@ -5282,7 +5282,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function mailto($email, $title = null, $attributes = array()){
+        public static function mailto($email, $title = null, $attributes = []){
             return \Illuminate\Html\HtmlBuilder::mailto($email, $title, $attributes);
         }
         
@@ -5305,7 +5305,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function ol($list, $attributes = array()){
+        public static function ol($list, $attributes = []){
             return \Illuminate\Html\HtmlBuilder::ol($list, $attributes);
         }
         
@@ -5317,7 +5317,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function ul($list, $attributes = array()){
+        public static function ul($list, $attributes = []){
             return \Illuminate\Html\HtmlBuilder::ul($list, $attributes);
         }
         
@@ -5682,7 +5682,7 @@ namespace {
          * @return void 
          * @static 
          */
-        public static function flash($filter = null, $keys = array()){
+        public static function flash($filter = null, $keys = []){
             \Illuminate\Http\Request::flash($filter, $keys);
         }
         
@@ -5820,7 +5820,7 @@ namespace {
          * @api 
          * @static 
          */
-        public static function initialize($query = array(), $request = array(), $attributes = array(), $cookies = array(), $files = array(), $server = array(), $content = null){
+        public static function initialize($query = [], $request = [], $attributes = [], $cookies = [], $files = [], $server = [], $content = null){
             //Method inherited from \Symfony\Component\HttpFoundation\Request            
             return \Illuminate\Http\Request::initialize($query, $request, $attributes, $cookies, $files, $server, $content);
         }
@@ -5854,7 +5854,7 @@ namespace {
          * @api 
          * @static 
          */
-        public static function create($uri, $method = 'GET', $parameters = array(), $cookies = array(), $files = array(), $server = array(), $content = null){
+        public static function create($uri, $method = 'GET', $parameters = [], $cookies = [], $files = [], $server = [], $content = null){
             //Method inherited from \Symfony\Component\HttpFoundation\Request            
             return \Illuminate\Http\Request::create($uri, $method, $parameters, $cookies, $files, $server, $content);
         }
@@ -6746,7 +6746,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function get($key, $replace = array(), $locale = null){
+        public static function get($key, $replace = [], $locale = null){
             return \Illuminate\Translation\Translator::get($key, $replace, $locale);
         }
         
@@ -6760,7 +6760,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function choice($key, $number, $replace = array(), $locale = null){
+        public static function choice($key, $number, $replace = [], $locale = null){
             return \Illuminate\Translation\Translator::choice($key, $number, $replace, $locale);
         }
         
@@ -6774,7 +6774,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function trans($id, $parameters = array(), $domain = 'messages', $locale = null){
+        public static function trans($id, $parameters = [], $domain = 'messages', $locale = null){
             return \Illuminate\Translation\Translator::trans($id, $parameters, $domain, $locale);
         }
         
@@ -6789,7 +6789,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function transChoice($id, $number, $parameters = array(), $domain = 'messages', $locale = null){
+        public static function transChoice($id, $number, $parameters = [], $domain = 'messages', $locale = null){
             return \Illuminate\Translation\Translator::transChoice($id, $number, $parameters, $domain, $locale);
         }
         
@@ -6938,7 +6938,7 @@ namespace {
          * @return Boolean Whether the record has been processed
          * @static 
          */
-        public static function debug($message, $context = array()){
+        public static function debug($message, $context = []){
             return \Monolog\Logger::debug($message, $context);
         }
         
@@ -6950,7 +6950,7 @@ namespace {
          * @return Boolean Whether the record has been processed
          * @static 
          */
-        public static function info($message, $context = array()){
+        public static function info($message, $context = []){
             return \Monolog\Logger::info($message, $context);
         }
         
@@ -6962,7 +6962,7 @@ namespace {
          * @return Boolean Whether the record has been processed
          * @static 
          */
-        public static function notice($message, $context = array()){
+        public static function notice($message, $context = []){
             return \Monolog\Logger::notice($message, $context);
         }
         
@@ -6974,7 +6974,7 @@ namespace {
          * @return Boolean Whether the record has been processed
          * @static 
          */
-        public static function warning($message, $context = array()){
+        public static function warning($message, $context = []){
             return \Monolog\Logger::warning($message, $context);
         }
         
@@ -6986,7 +6986,7 @@ namespace {
          * @return Boolean Whether the record has been processed
          * @static 
          */
-        public static function error($message, $context = array()){
+        public static function error($message, $context = []){
             return \Monolog\Logger::error($message, $context);
         }
         
@@ -6998,7 +6998,7 @@ namespace {
          * @return Boolean Whether the record has been processed
          * @static 
          */
-        public static function critical($message, $context = array()){
+        public static function critical($message, $context = []){
             return \Monolog\Logger::critical($message, $context);
         }
         
@@ -7010,7 +7010,7 @@ namespace {
          * @return Boolean Whether the record has been processed
          * @static 
          */
-        public static function alert($message, $context = array()){
+        public static function alert($message, $context = []){
             return \Monolog\Logger::alert($message, $context);
         }
         
@@ -7022,7 +7022,7 @@ namespace {
          * @return Boolean Whether the record has been processed
          * @static 
          */
-        public static function emergency($message, $context = array()){
+        public static function emergency($message, $context = []){
             return \Monolog\Logger::emergency($message, $context);
         }
         
@@ -7662,7 +7662,7 @@ namespace {
          * @return mixed 
          * @static 
          */
-        public static function pushRaw($payload, $queue = null, $options = array()){
+        public static function pushRaw($payload, $queue = null, $options = []){
             return \Illuminate\Queue\SyncQueue::pushRaw($payload, $queue, $options);
         }
         
@@ -7775,7 +7775,7 @@ namespace {
          * @return \Illuminate\Http\RedirectResponse 
          * @static 
          */
-        public static function back($status = 302, $headers = array()){
+        public static function back($status = 302, $headers = []){
             return \Illuminate\Routing\Redirector::back($status, $headers);
         }
         
@@ -7787,7 +7787,7 @@ namespace {
          * @return \Illuminate\Http\RedirectResponse 
          * @static 
          */
-        public static function refresh($status = 302, $headers = array()){
+        public static function refresh($status = 302, $headers = []){
             return \Illuminate\Routing\Redirector::refresh($status, $headers);
         }
         
@@ -7801,7 +7801,7 @@ namespace {
          * @return \Illuminate\Http\RedirectResponse 
          * @static 
          */
-        public static function guest($path, $status = 302, $headers = array(), $secure = null){
+        public static function guest($path, $status = 302, $headers = [], $secure = null){
             return \Illuminate\Routing\Redirector::guest($path, $status, $headers, $secure);
         }
         
@@ -7815,7 +7815,7 @@ namespace {
          * @return \Illuminate\Http\RedirectResponse 
          * @static 
          */
-        public static function intended($default = '/', $status = 302, $headers = array(), $secure = null){
+        public static function intended($default = '/', $status = 302, $headers = [], $secure = null){
             return \Illuminate\Routing\Redirector::intended($default, $status, $headers, $secure);
         }
         
@@ -7829,7 +7829,7 @@ namespace {
          * @return \Illuminate\Http\RedirectResponse 
          * @static 
          */
-        public static function to($path, $status = 302, $headers = array(), $secure = null){
+        public static function to($path, $status = 302, $headers = [], $secure = null){
             return \Illuminate\Routing\Redirector::to($path, $status, $headers, $secure);
         }
         
@@ -7842,7 +7842,7 @@ namespace {
          * @return \Illuminate\Http\RedirectResponse 
          * @static 
          */
-        public static function away($path, $status = 302, $headers = array()){
+        public static function away($path, $status = 302, $headers = []){
             return \Illuminate\Routing\Redirector::away($path, $status, $headers);
         }
         
@@ -7855,7 +7855,7 @@ namespace {
          * @return \Illuminate\Http\RedirectResponse 
          * @static 
          */
-        public static function secure($path, $status = 302, $headers = array()){
+        public static function secure($path, $status = 302, $headers = []){
             return \Illuminate\Routing\Redirector::secure($path, $status, $headers);
         }
         
@@ -7869,7 +7869,7 @@ namespace {
          * @return \Illuminate\Http\RedirectResponse 
          * @static 
          */
-        public static function route($route, $parameters = array(), $status = 302, $headers = array()){
+        public static function route($route, $parameters = [], $status = 302, $headers = []){
             return \Illuminate\Routing\Redirector::route($route, $parameters, $status, $headers);
         }
         
@@ -7883,7 +7883,7 @@ namespace {
          * @return \Illuminate\Http\RedirectResponse 
          * @static 
          */
-        public static function action($action, $parameters = array(), $status = 302, $headers = array()){
+        public static function action($action, $parameters = [], $status = 302, $headers = []){
             return \Illuminate\Routing\Redirector::action($action, $parameters, $status, $headers);
         }
         
@@ -7932,7 +7932,7 @@ namespace {
          * @return mixed 
          * @static 
          */
-        public static function command($method, $parameters = array()){
+        public static function command($method, $parameters = []){
             return \Illuminate\Redis\Database::command($method, $parameters);
         }
         
@@ -8252,7 +8252,7 @@ namespace {
          * @return void 
          * @static 
          */
-        public static function flash($filter = null, $keys = array()){
+        public static function flash($filter = null, $keys = []){
             \Illuminate\Http\Request::flash($filter, $keys);
         }
         
@@ -8390,7 +8390,7 @@ namespace {
          * @api 
          * @static 
          */
-        public static function initialize($query = array(), $request = array(), $attributes = array(), $cookies = array(), $files = array(), $server = array(), $content = null){
+        public static function initialize($query = [], $request = [], $attributes = [], $cookies = [], $files = [], $server = [], $content = null){
             //Method inherited from \Symfony\Component\HttpFoundation\Request            
             return \Illuminate\Http\Request::initialize($query, $request, $attributes, $cookies, $files, $server, $content);
         }
@@ -8424,7 +8424,7 @@ namespace {
          * @api 
          * @static 
          */
-        public static function create($uri, $method = 'GET', $parameters = array(), $cookies = array(), $files = array(), $server = array(), $content = null){
+        public static function create($uri, $method = 'GET', $parameters = [], $cookies = [], $files = [], $server = [], $content = null){
             //Method inherited from \Symfony\Component\HttpFoundation\Request            
             return \Illuminate\Http\Request::create($uri, $method, $parameters, $cookies, $files, $server, $content);
         }
@@ -9417,7 +9417,7 @@ namespace {
          * @return void 
          * @static 
          */
-        public static function controller($uri, $controller, $names = array()){
+        public static function controller($uri, $controller, $names = []){
             \Illuminate\Routing\Router::controller($uri, $controller, $names);
         }
         
@@ -9430,7 +9430,7 @@ namespace {
          * @return void 
          * @static 
          */
-        public static function resource($name, $controller, $options = array()){
+        public static function resource($name, $controller, $options = []){
             \Illuminate\Routing\Router::resource($name, $controller, $options);
         }
         
@@ -10714,7 +10714,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function to($path, $extra = array(), $secure = null){
+        public static function to($path, $extra = [], $secure = null){
             return \Illuminate\Routing\UrlGenerator::to($path, $extra, $secure);
         }
         
@@ -10726,7 +10726,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function secure($path, $parameters = array()){
+        public static function secure($path, $parameters = []){
             return \Illuminate\Routing\UrlGenerator::secure($path, $parameters);
         }
         
@@ -10775,7 +10775,7 @@ namespace {
          * @throws \InvalidArgumentException
          * @static 
          */
-        public static function route($name, $parameters = array(), $absolute = true, $route = null){
+        public static function route($name, $parameters = [], $absolute = true, $route = null){
             return \Illuminate\Routing\UrlGenerator::route($name, $parameters, $absolute, $route);
         }
         
@@ -10788,7 +10788,7 @@ namespace {
          * @return string 
          * @static 
          */
-        public static function action($action, $parameters = array(), $absolute = true){
+        public static function action($action, $parameters = [], $absolute = true){
             return \Illuminate\Routing\UrlGenerator::action($action, $parameters, $absolute);
         }
         
@@ -10850,7 +10850,7 @@ namespace {
          * @return \Illuminate\Validation\Validator 
          * @static 
          */
-        public static function make($data, $rules, $messages = array(), $customAttributes = array()){
+        public static function make($data, $rules, $messages = [], $customAttributes = []){
             return \Illuminate\Validation\Factory::make($data, $rules, $messages, $customAttributes);
         }
         
@@ -10948,7 +10948,7 @@ namespace {
          * @return \Illuminate\View\View 
          * @static 
          */
-        public static function make($view, $data = array(), $mergeData = array()){
+        public static function make($view, $data = [], $mergeData = []){
             return \Illuminate\View\Factory::make($view, $data, $mergeData);
         }
         
@@ -10960,7 +10960,7 @@ namespace {
          * @return \Illuminate\View\View 
          * @static 
          */
-        public static function of($view, $data = array()){
+        public static function of($view, $data = []){
             return \Illuminate\View\Factory::of($view, $data);
         }
         
