@@ -80,8 +80,8 @@ class MessagesController extends BaseController
 
         $incomingMessage = new Message();
         $incomingMessage->content = $inbound->message();
-        $incomingMessage->sender = $inbound->from();
-        $incomingMessage->receiver = $inbound->to();
+        $incomingMessage->sender = '+' . $inbound->from();
+        $incomingMessage->receiver = '+' . $inbound->to();
         $incomingMessage->external_id = $inbound->id();
         $incomingMessage->meta_info = json_encode($inbound->raw());
 
