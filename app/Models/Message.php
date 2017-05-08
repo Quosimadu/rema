@@ -70,6 +70,8 @@ class Message extends BaseTable
 
         }
 
+        return true;
+
 
     }
 
