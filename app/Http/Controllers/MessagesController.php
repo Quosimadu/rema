@@ -33,6 +33,7 @@ class MessagesController extends BaseController
     {
 
         $providers = Provider::query()->orderBy('last_name')->get(['mobile', 'last_name', 'first_name'])->all();
+        $providers_formatted = [];
         foreach ($providers as $provider) {
             $providers_formatted[$provider->mobile] = $provider->last_name . ', ' . $provider->first_name;
         }
