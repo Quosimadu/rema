@@ -40,6 +40,7 @@ Route::group(['prefix' => 'messages', 'middleware' => 'auth'], function() {
     Route::get('/',  ['as' => 'messages', 'uses' => 'MessagesController@index']);
     Route::any('/compose/{id?}',  ['as' => 'messages.compose', 'uses' => 'MessagesController@compose']);
     Route::post('/send',  ['as' => 'messages.send', 'uses' => 'MessagesController@send']);
+    Route::get('/show/{id}',  ['as' => 'messages.show', 'uses' => 'MessagesController@show']);
 });
 
 Route::group(['prefix' => 'message_templates', 'middleware' => 'auth'], function() {

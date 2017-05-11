@@ -21,7 +21,7 @@
                                 <tr>
                                     <td>{!! $message->created_at !!}</td>
                                     <td>{!! $message->receiver !!}</td>
-                                    <td><a href="{!! route('messages.compose', $message->id) !!}">{!! $message->content !!}</a></td>
+                                    <td><a href="{!! route('messages.show', $message->id) !!}">{!! $message->content !!}</a></td>
                                 </tr>
 
                             @endforeach

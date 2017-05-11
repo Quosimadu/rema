@@ -112,4 +112,17 @@ class MessagesController extends BaseController
 
     }
 
+    /**
+     * Display the specified message.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function show($id)
+    {
+        $message = Message::findOrFail($id);
+
+        return \View::make('messages.show', compact('message'));
+    }
+
 }
