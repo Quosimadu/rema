@@ -10,11 +10,10 @@
                     </div>
                     <div class="panel-body">
                         <p><a class="btn btn-link" href="{!! route('messages') !!}">Back to messages overview</a></p>
-                        <p>Sender: {!! $message->sender !!} &gt;</p>
+                        <p>Sender: {!! $message->sender !!}</p>
                         <p>Receiver: {!! $message->receiver !!}</p>
                         <p><i>Sent: {!! $message->created_at !!}</i></p>
-                        <p>{!! $message->content !!}</p>
-
+                        <p>Message: {!! $message->content !!}</p>
                     </div>
                 </div>
             </div>
