@@ -73,7 +73,7 @@ class MessagesController extends BaseController
 
 
 
-        if (Message::send($data['content'], $data['receiver'], $messageSender['sender'])) {
+        if (Message::send($data['content'], $data['receiver'], $messageSender['number'])) {
             Message::create($data);
         } else {
             return \Redirect::back()->withErrors("Message could not be sent")->withInput();
