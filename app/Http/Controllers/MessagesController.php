@@ -69,7 +69,7 @@ class MessagesController extends BaseController
         $messageSender = MessageSender::findOrFail($data['sender_id'])->get(['number'])->first();
 
         $data['sender'] = $messageSender->number;
-        unset($data['sender_id']);
+        unset($data['sender_id'], $data['provider_id']);
 
 
 
