@@ -19,6 +19,10 @@ class MessagingRules
     {
 
         $forwardingTargets = [];
+
+
+        $forwardingTargets['+447520635886'][] = ['receiver' => '+420778001155'];
+        $forwardingTargets['+447520635886'][] = ['receiver' => '+420776202246'];
         $forwardingTargets['+420234095676'][] = ['receiver' => '+420778001155'];
         #$forwardingTargets['+420234095676'][] = ['receiver' => '+420778001199'];
         $forwardingTargets['+420234095676'][] = ['receiver' => '+420776202246'];
