@@ -20,7 +20,8 @@ class Message extends BaseTable
     // Add your validation rules here
     public static $rules = [
         'receiver' => 'required',
-        'content' => 'required'
+        'content' => 'required',
+        'sender_id' => 'required'
     ];
 
 

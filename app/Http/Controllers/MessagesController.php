@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Models\MessageSender;
 use App\Models\MessageTemplate;
 use App\Models\Provider;
 use SMS;
@@ -29,7 +30,7 @@ class MessagesController extends BaseController
      *
      * @return Response
      */
-    public function compose($id = null)
+    public function compose()
     {
 
         $providers = Provider::query()->orderBy('last_name')->get(['mobile', 'last_name', 'first_name'])->all();
@@ -41,8 +42,15 @@ class MessagesController extends BaseController
 
         $message_templates = MessageTemplate::query()->orderBy('name')->get(['id', 'name', 'content', 'comment'])->all();
 
+        $messageSenders = MessageSender::query()->orderBy('name')->get(['id', 'name', 'number'])->all();
+        $messageSendersFormatted = [];
+        foreach ($messageSenders as $messageSender) {
+            $messageSendersFormatted[$messageSender->id] = $messageSender->name . ' (' . $messageSender->number . ')';
+        }
+        $messageSenders = ['' => ''] + $messageSendersFormatted;
 
-        return \View::make('messages.compose', compact('providers', 'message_templates'));
+
+        return \View::make('messages.compose', compact('providers', 'message_templates', 'messageSenders'));
     }
 
     /**
@@ -58,7 +66,14 @@ class MessagesController extends BaseController
             return \Redirect::back()->withErrors($validator)->withInput();
         }
 
-        if (Message::send($data)) {
+        $messageSender = MessageSender::findOrFail($data['sender_id'])->get(['number'])->first();
+
+        $data['sender'] = $messageSender->number;
+        unset($data['sender_id']);
+
+
+
+        if (Message::send($data['content'], $data['receiver'], $messageSender['sender'])) {
             Message::create($data);
         } else {
             return \Redirect::back()->withErrors("Message could not be sent")->withInput();
