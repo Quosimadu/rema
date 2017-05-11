@@ -1,10 +1,7 @@
 <?php namespace App\Http\Controllers;
 
-use App\Http\Controllers\BaseController;
 use App\Models\MessageTemplate;
-use App\Models\Provider;
-use Illuminate\Support\Facades\Request;
-use Session;
+use Illuminate\Http\Request;
 
 class MessageTemplatesController extends BaseController {
 

@@ -53,6 +53,14 @@ Route::group(['prefix' => 'message_templates', 'middleware' => 'auth'], function
     Route::post('/store', ['as' => 'message_templates.store', 'uses' => 'MessageTemplatesController@store']);
 });
 
+Route::group(['prefix' => 'message_senders', 'middleware' => 'auth'], function() {
+    Route::get('/',  ['as' => 'message_senders', 'uses' => 'MessageSenderController@index']);
+    Route::any('/add',  ['as' => 'message_senders.create', 'uses' => 'MessageSenderController@create']);
+    Route::any('/edit/{id}',  ['as' => 'message_senders.edit', 'uses' => 'MessageSenderController@edit']);
+    Route::any('/update/{id}', ['as' => 'message_senders.update', 'uses' => 'MessageSenderController@update']);
+    Route::post('/store', ['as' => 'message_senders.store', 'uses' => 'MessageSenderController@store']);
+});
+
 
 Route::group(['prefix' => 'booking', 'middleware' => 'auth'], function() {
     Route::get('/',  ['as' => 'bookings', 'uses' => 'BookingsController@index']);

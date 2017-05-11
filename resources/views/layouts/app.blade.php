@@ -46,6 +46,7 @@
 							<li><a href="{{ route('messages.compose') }}">New</a></li>
 							<li role="separator" class="divider"></li>
 							<li><a href="{{ route('message_templates') }}">Templates</a></li>
+							<li><a href="{{ route('message_senders') }}">Senders</a></li>
 						</ul>
 					</li>
 					<li><a href="{{ route('providers') }}">Providers</a></li>
