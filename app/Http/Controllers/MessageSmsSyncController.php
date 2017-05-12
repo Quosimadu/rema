@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Log;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Psy\Util\Json;
 
 
 class MessageSmsSyncController extends Controller
@@ -23,10 +25,13 @@ class MessageSmsSyncController extends Controller
 
     ];
 
-    public function request(): Response
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|JsonResponse|Response
+     */
+    public function request()
     {
 
-        $task = Request::get('task');
+        $task = \Request::get('task');
 
         Log::info('SMSsync task received: ' . $task);
 
@@ -42,8 +47,6 @@ class MessageSmsSyncController extends Controller
 
             return $response->json($response)->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-
 
 
         if ($task == '' && \Request::isMethod('POST')) {
@@ -110,8 +113,8 @@ class MessageSmsSyncController extends Controller
 
             $return = [
                 'message_uuids' => [
-                    "12",
-                    "13"
+                    '12',
+                    '13'
                 ]
             ];
 
@@ -134,7 +137,7 @@ class MessageSmsSyncController extends Controller
      * receive an SMS message from external API
      * @return Response
      */
-    public function receiveSMS(): Response
+    public function receiveSMS(): JsonResponse
     {
 
 
@@ -226,7 +229,7 @@ class MessageSmsSyncController extends Controller
      * external app requests delivery reports
      * @return Response
      */
-    public function requestDeliveryReports(): Response
+    public function requestDeliveryReports(): JsonResponse
     {
 
         $return = [
@@ -236,8 +239,6 @@ class MessageSmsSyncController extends Controller
             ]
         ];
 
-        $data = \Request::all();
-        Log::info('SMSsync delivery report request received: ' . json_encode($data));
 
         return response()->json($return);
 
@@ -247,7 +248,7 @@ class MessageSmsSyncController extends Controller
      * send a task list to server
      * @return Response
      */
-    public function sendTasks(): Response
+    public function sendTasks(): JsonResponse
     {
 
         #$messages = Message::query()->where('sender', '', 'senderIdForsync')->get(['id', 'sender', 'receiver', 'content'])->all();
@@ -276,14 +277,13 @@ class MessageSmsSyncController extends Controller
         }
         */
 
-        // Send JSON response back to SMSsync
-        $response = json_encode(
-            ["payload" => [
-                "success" => true,
-                "task" => "send",
-                "secret" => env('SMS_SMSSYNC_SECRET'),
-                "messages" => array_values($messageQueue)]
-            ]);
+        $response = [
+            'payload' => [
+                'success' => true,
+                'task' => "send",
+                'secret' => env('SMS_SMSSYNC_SECRET'),
+                'messages' => array_values($messageQueue)]
+        ];
 
         return response()->json($response);
 
