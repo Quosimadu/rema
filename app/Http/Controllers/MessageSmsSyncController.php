@@ -11,7 +11,6 @@ class MessageSmsSyncController extends Controller
 {
 
 
-
     public static $syncSmsReceiveRules = [
         'from' => 'required',
         'sent_to' => '',
@@ -27,6 +26,8 @@ class MessageSmsSyncController extends Controller
     {
 
         $task = \Request::get('task');
+
+        Log::info('SMSsync task received: ' . $task);
 
         $allowedTasks = ['send', 'sent', 'result'];
 
@@ -170,6 +171,8 @@ class MessageSmsSyncController extends Controller
      */
     public function sendTasks()
     {
+
+        Log::info('SMSsync sendTask request received');
 
         $messages = [];
         $content = "Sample Task Message";
