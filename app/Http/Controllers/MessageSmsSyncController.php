@@ -14,12 +14,12 @@ class MessageSmsSyncController extends Controller
 
     public static $syncSmsReceiveRules = [
         'from' => 'required',
-        'sent_to' => 'required',
+        'sent_to' => '',
         'message' => 'required',
         'secret' => 'required',
-        'sent_timestamp' => 'required',
-        'message_id' => 'required',
-        'device_id' => 'required'
+        'sent_timestamp' => '',
+        'message_id' => '',
+        'device_id' => ''
 
     ];
 
@@ -94,6 +94,16 @@ class MessageSmsSyncController extends Controller
         }
 
         Log::info('Validator passed');
+
+        if (!isset($data['device_id'])) {
+            $data['device_id'] = null;
+        }
+        if (!isset($data['sent_to'])) {
+            $data['sent_to'] = null;
+        }
+        if (!isset($data['message_id'])) {
+            $data['message_id'] = null;
+        }
 
         $incomingMessage = new Message();
         $incomingMessage->content = $data['message'];
