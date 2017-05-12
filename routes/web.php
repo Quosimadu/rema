@@ -43,6 +43,10 @@ Route::group(['prefix' => 'messages', 'middleware' => 'auth'], function() {
     Route::get('/show/{id}',  ['as' => 'messages.show', 'uses' => 'MessagesController@show']);
 });
 
+Route::post('/messages/smssync',  ['uses' => 'MessageSmsSyncController@request']);
+Route::get('/messages/smssync',  ['uses' => 'MessageSmsSyncController@sendTasks']);
+
+
 Route::group(['prefix' => 'message_templates', 'middleware' => 'auth'], function() {
     Route::get('/',  ['as' => 'message_templates', 'uses' => 'MessageTemplatesController@index']);
     Route::any('/add',  ['as' => 'message_templates.create', 'uses' => 'MessageTemplatesController@create']);
