@@ -33,7 +33,10 @@ class MessageSmsSyncController extends Controller
 
         $task = \Request::get('task');
 
-        Log::info('SMSsync task received: ' . $task);
+        Log::info('SMSsync task received: ' . $task . ' with method: ' . \Request::method());
+
+        $data = \Request::all();
+        Log::info('Data: ' . json_encode($data));
 
         $allowedTasks = ['send', 'sent', 'result'];
 
@@ -63,16 +66,12 @@ class MessageSmsSyncController extends Controller
 
         if ($task == 'result' && \Request::isMethod('GET')) {
 
-            $data = \Request::all();
-            Log::info('SMSsync result GET task received: ' . json_encode($data));
-
             return self::requestDeliveryReports();
         }
 
         if ($task == 'result' && \Request::isMethod('POST')) {
 
-            $data = \Request::all();
-            Log::info('SMSsync result POST task received: ' . json_encode($data));
+
 
             $samplePostValues = [
                 "message_result" => [
@@ -99,9 +98,6 @@ class MessageSmsSyncController extends Controller
         /* app confirms that messages were queued for sending */
         if ($task == 'sent' && \Request::isMethod('POST')) {
 
-            $data = \Request::all();
-            Log::info('SMSsync sent task POST received: ' . json_encode($data));
-
             $example = [
                 "queued_messages" => [
                     "aada21b0-0615-4957-bcb3",
@@ -124,9 +120,6 @@ class MessageSmsSyncController extends Controller
         /* app asks for jobs */
         if ($task == 'sent' && \Request::isMethod('GET')) {
 
-            $data = \Request::all();
-            Log::info('SMSsync sent GET task received: ' . json_encode($data));
-
             return self::sendTasks();
         }
 
@@ -142,10 +135,6 @@ class MessageSmsSyncController extends Controller
 
 
         $data = \Request::all();
-
-
-        Log::info('SMSsync receiveSMS task received: ' . json_encode($data));
-
 
         if (env('SMS_SYNCSMS_SECRET') != $data['secret']) {
             Log::info('Secret passed');
