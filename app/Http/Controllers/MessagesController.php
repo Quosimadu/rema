@@ -92,15 +92,51 @@ class MessagesController extends BaseController
 
         Log::info('Incoming SMS request');
 
-        $inbound = SMS::receive();
+        $data = \Request::all();
 
-        $incomingMessage = new Message();
-        $incomingMessage->content = $inbound->message();
-        $incomingMessage->sender = '+' . $inbound->from();
-        $incomingMessage->receiver = '+' . $inbound->to();
-        $incomingMessage->external_id = $inbound->id();
-        $incomingMessage->meta_info = json_encode($inbound->raw());
-        $incomingMessage->source =  'nexmo';
+        if (isset($data['service']) && $data['service'] == 'smssync' &&
+            isset($data['secret'])) {
+
+            if (env('SMS_SYNCSMS_SECRET') != $data['secret']) {
+                $response = new Response();
+                return $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
+            }
+
+            $validator = \Validator::make($data = \Request::all(), Message::$syncSmsRules);
+
+            if ($validator->fails()) {
+                return \Redirect::back()->withErrors($validator)->withInput();
+            }
+
+
+
+            $inbound = new \stdClass();
+            $incomingMessage = new Message();
+            $incomingMessage->content = $data['message'];
+            $incomingMessage->sender = $data['from'];
+            $incomingMessage->receiver = $data['sent_to'];
+            $incomingMessage->external_id = $data['message_id'];
+
+            unset($data['secret']);
+            $incomingMessage->meta_info = json_encode($data);
+            $incomingMessage->source =  'syncsms';
+
+        }
+
+        if (!isset($data['service'])) {
+            $inbound = SMS::receive();
+            $incomingMessage = new Message();
+            $incomingMessage->content = $inbound->message();
+            $incomingMessage->sender = '+' . $inbound->from();
+            $incomingMessage->receiver = '+' . $inbound->to();
+            $incomingMessage->external_id = $inbound->id();
+            $incomingMessage->meta_info = json_encode($inbound->raw());
+            $incomingMessage->source =  'nexmo';
+        }
+
+
+
+
 
         Log::info('Message ID '. $inbound->id());
 
@@ -119,9 +155,21 @@ class MessagesController extends BaseController
 
         }
 
+        if (!isset($data['service'])) {
 
-        $response = new Response();
-        return $response->setStatusCode(Response::HTTP_OK);
+            $response = new Response();
+            return $response->setStatusCode(Response::HTTP_OK);
+
+        }
+
+        $response = [
+            "payload"=> [
+                "success" => true,
+                "error" => ''
+            ]
+        ];
+
+        return response()->json($response);
 
 
 

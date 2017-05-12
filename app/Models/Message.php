@@ -24,6 +24,17 @@ class Message extends BaseTable
         'sender_id' => 'required'
     ];
 
+    public static $syncSmsRules = [
+        'from' => 'required',
+        'sent_to' => 'required',
+        'message' => 'required',
+        'secret' => 'required',
+        'sent_timestamp' => 'required',
+        'message_id' => 'required',
+        'device_id' => 'required'
+
+    ];
+
 
     /**
      * send a message
