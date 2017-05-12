@@ -118,7 +118,7 @@ class MessageSmsSyncController extends Controller
         }
 
         /* app asks for jobs */
-        if ($task == 'sent' && \Request::isMethod('GET')) {
+        if ($task == 'send' && \Request::isMethod('GET')) {
 
             return self::sendTasks();
         }
