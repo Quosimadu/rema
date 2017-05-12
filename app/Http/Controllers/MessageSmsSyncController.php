@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Log;
 use App\Models\Message;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+
 
 class MessageSmsSyncController extends Controller
 {
-
 
 
     public static $syncSmsReceiveRules = [
@@ -23,10 +23,10 @@ class MessageSmsSyncController extends Controller
 
     ];
 
-    public function request()
+    public function request(): Response
     {
 
-        $task = \Request::get('task');
+        $task = Request::get('task');
 
         Log::info('SMSsync task received: ' . $task);
 
@@ -43,20 +43,88 @@ class MessageSmsSyncController extends Controller
             return $response->json($response)->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        if ($task == '') {
+
+
+
+        if ($task == '' && \Request::isMethod('POST')) {
 
             return self::receiveSMS();
 
         }
 
-        if ($task == 'result') {
+        if ($task == 'send' && \Request::isMethod('POST')) {
 
-            return self::receiveDeliveryReport();
+            return self::receiveSMS();
         }
 
-        if ($task == 'sent') {
+
+        if ($task == 'result' && \Request::isMethod('GET')) {
+
             $data = \Request::all();
-            Log::info('SMSsync sent task received: ' . json_encode($data));
+            Log::info('SMSsync result GET task received: ' . json_encode($data));
+
+            return self::requestDeliveryReports();
+        }
+
+        if ($task == 'result' && \Request::isMethod('POST')) {
+
+            $data = \Request::all();
+            Log::info('SMSsync result POST task received: ' . json_encode($data));
+
+            $samplePostValues = [
+                "message_result" => [
+                    [
+                        "uuid" => "052bf515-ef6b-f424-c4ee",
+                        "sent_result_code" => 0,
+                        "sent_result_message" => "SMSSync Message Sent",
+                        "delivered_result_code" => -1,
+                        "delivered_result_message" => ""
+                    ],
+                    [
+                        "uuid" => "aada21b0-0615-4957-bcb3",
+                        "sent_result_code" => 0,
+                        "sent_result_message" => "SMSSync Message Sent",
+                        "delivered_result_code" => 0,
+                        "delivered_result_message" => "SMS Delivered"
+                    ],
+                ]
+            ];
+
+            return response();
+        }
+
+        /* app confirms that messages were queued for sending */
+        if ($task == 'sent' && \Request::isMethod('POST')) {
+
+            $data = \Request::all();
+            Log::info('SMSsync sent task POST received: ' . json_encode($data));
+
+            $example = [
+                "queued_messages" => [
+                    "aada21b0-0615-4957-bcb3",
+                    "1ba368bd-c467-4374-bf28",
+                    "95df126b-ee80-4175-a6fb"
+                ]
+            ];
+
+
+            $return = [
+                'message_uuids' => [
+                    "12",
+                    "13"
+                ]
+            ];
+
+            return response()->json($return);
+        }
+
+        /* app asks for jobs */
+        if ($task == 'sent' && \Request::isMethod('GET')) {
+
+            $data = \Request::all();
+            Log::info('SMSsync sent GET task received: ' . json_encode($data));
+
+            return self::sendTasks();
         }
 
 
@@ -66,11 +134,12 @@ class MessageSmsSyncController extends Controller
      * receive an SMS message from external API
      * @return Response
      */
-    public function receiveSMS()
+    public function receiveSMS(): Response
     {
 
 
         $data = \Request::all();
+
 
         Log::info('SMSsync receiveSMS task received: ' . json_encode($data));
 
@@ -95,7 +164,6 @@ class MessageSmsSyncController extends Controller
             return response()->json($response)->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        Log::info('Validator passed');
 
         if (!isset($data['device_id'])) {
             $data['device_id'] = null;
@@ -155,14 +223,23 @@ class MessageSmsSyncController extends Controller
     }
 
     /**
-     * receive delivery report from external API
+     * external app requests delivery reports
      * @return Response
      */
-    public function receiveDeliveryReport()
+    public function requestDeliveryReports(): Response
     {
-        $data = \Request::all();
 
-        Log::info('SMSsync delivery report received: ' . json_encode($data));
+        $return = [
+            'message_uuids' => [
+                "12",
+                "13"
+            ]
+        ];
+
+        $data = \Request::all();
+        Log::info('SMSsync delivery report request received: ' . json_encode($data));
+
+        return response()->json($return);
 
     }
 
@@ -170,37 +247,46 @@ class MessageSmsSyncController extends Controller
      * send a task list to server
      * @return Response
      */
-    public function sendTasks()
+    public function sendTasks(): Response
     {
 
-        Log::info('SMSsync sendTask request received');
+        #$messages = Message::query()->where('sender', '', 'senderIdForsync')->get(['id', 'sender', 'receiver', 'content'])->all();
 
-        $messages = [];
-        $content = "Sample Task Message";
-        $receiver = "+420234095676";
 
-        $messages[] = [
-            "to" => $receiver,
-            "message" => $content,
-            "uuid" => "1ba368bd-c467-4374-bf28"
+        $messageQueue = [];
+
+        $messageQueue[] = [
+            "to" => '+420234095676',
+            "message" => 'Test12',
+            "uuid" => '12',
         ];
+        $messageQueue[] = [
+            "to" => '+420234095676',
+            "message" => 'Test13',
+            "uuid" => '13',
+        ];
+
+        /*
+        foreach ($messages as $message) {
+            $messageQueue[] = [
+                "to" => $message['receiver'],
+                "message" => $message['content'],
+                "uuid" => $message['id'],
+            ];
+        }
+        */
+
         // Send JSON response back to SMSsync
         $response = json_encode(
             ["payload" => [
                 "success" => true,
                 "task" => "send",
                 "secret" => env('SMS_SMSSYNC_SECRET'),
-                "messages" => array_values($messages)]
+                "messages" => array_values($messageQueue)]
             ]);
 
         return response()->json($response);
 
-        /*
-                $requestDeliveryReports = json_encode(
-                    [
-                        "message_uuids" => ['1ba368bd-c467-4374-bf28']
-                    ]);
 
-        */
     }
 }

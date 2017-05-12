@@ -32,17 +32,22 @@ class Message extends BaseTable
      * @param string $sender
      * @return bool
      */
-    public static function send(string $content, string $receiver, string $sender): bool
+    public static function send(string $content, string $receiver, string $sender, string $provider): bool
     {
 
-        $data = new \stdClass();
-        $data->content = $content;
-        $data->receiver = $receiver;
-        $data->sender = $sender;
-        SMS::queue($content, $data, function ($sms) use ($data) {
-            $sms->to($data->receiver);
-            $sms->from($data->sender);
-        });
+        if ($provider != 'smssync') {
+            $data = new \stdClass();
+            $data->content = $content;
+            $data->receiver = $receiver;
+            $data->sender = $sender;
+            SMS::queue($content, $data, function ($sms) use ($data) {
+                $sms->to($data->receiver);
+                $sms->from($data->sender);
+            });
+
+        }
+
+
 
         Log::info('Message sent to '. $data->receiver);
 

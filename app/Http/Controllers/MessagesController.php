@@ -66,13 +66,13 @@ class MessagesController extends BaseController
             return \Redirect::back()->withErrors($validator)->withInput();
         }
 
-        $messageSender = MessageSender::findOrFail($data['sender_id'])->get(['number'])->first();
+        $messageSender = MessageSender::findOrFail($data['sender_id'])->get(['number','provider'])->first();
 
         $data['sender'] = $messageSender->number;
         unset($data['sender_id'], $data['provider_id']);
 
 
-        if (Message::send($data['content'], $data['receiver'], $messageSender['number'])) {
+        if (Message::send($data['content'], $data['receiver'], $messageSender['number'], $messageSender['provider'])) {
             Message::create($data);
         } else {
             return \Redirect::back()->withErrors("Message could not be sent")->withInput();
