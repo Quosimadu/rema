@@ -11,6 +11,7 @@ class MessageSmsSyncController extends Controller
 {
 
 
+
     public static $syncSmsReceiveRules = [
         'from' => 'required',
         'sent_to' => '',
@@ -44,13 +45,13 @@ class MessageSmsSyncController extends Controller
 
         if ($task == '') {
 
-            self::receiveSMS();
+            return self::receiveSMS();
 
         }
 
         if ($task == 'result') {
 
-            self::receiveDeliveryReport();
+            return self::receiveDeliveryReport();
         }
 
         if ($task == 'sent') {
