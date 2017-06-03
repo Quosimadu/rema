@@ -91,33 +91,7 @@ class MessageSmsSyncController extends Controller
 
         if ($task == 'result' && \Request::isMethod('POST')) {
 
-            $samplePostValues = [
-                "message_result" => [
-                    [
-                        "uuid" => "052bf515-ef6b-f424-c4ee",
-                        "sent_result_code" => 0,
-                        "sent_result_message" => "SMSSync Message Sent",
-                        "delivered_result_code" => -1,
-                        "delivered_result_message" => ""
-                    ],
-                    [
-                        "uuid" => "aada21b0-0615-4957-bcb3",
-                        "sent_result_code" => 0,
-                        "sent_result_message" => "SMSSync Message Sent",
-                        "delivered_result_code" => 0,
-                        "delivered_result_message" => "SMS Delivered"
-                    ],
-                ]
-            ];
-
-            $response = [
-                "payload" => [
-                    "success" => false,
-                    "error" => ''
-                ]
-            ];
-
-            return response()->json($response);
+            return self::receiveDeliveryReports();
         }
 
         /* app confirms that messages were queued for sending */
@@ -136,6 +110,49 @@ class MessageSmsSyncController extends Controller
             return self::sendTasks();
 
         }
+
+
+    }
+
+    /**
+     *
+     * @return JsonResponse
+     */
+    public static function receiveDeliveryReports() : JsonResponse
+    {
+        $data = \Request::all();
+
+
+        if (is_array($data['message_result']) && count($data['queued_messages']) > 0) {
+
+            foreach ($data['queued_messages'] as $message_result) {
+
+                if ($message_result['delivered_result_code'] < 0) {
+                    continue;
+                }
+
+                $message = Message::where('id','=',$message_result['uuid'])
+                    ->where('is_sent', '=', 'true')
+                    ->where('is_incoming', '=', 'false')
+                    ->whereNull('received_at')
+                    ->where('source', '=', 'smssync')
+                    ->first();
+                if ($message) {
+                    $message->received_at = DB::raw('NOW()');
+                    $message->save();
+                }
+            }
+
+        }
+
+        $response = [
+            "payload" => [
+                "success" => true,
+                "error" => ''
+            ]
+        ];
+
+        return response()->json($response);
 
 
     }
