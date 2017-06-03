@@ -153,7 +153,7 @@ class MessageSmsSyncController extends Controller
                     ->where('is_sent', '=', 'false')
                     ->where('is_incoming', '=', 'false')
                     ->where('source', '=', 'smssync')
-                    ->get(['id']);
+                    ->first();
                 if ($message) {
                     $message->is_sent = true;
                     $message->save();
