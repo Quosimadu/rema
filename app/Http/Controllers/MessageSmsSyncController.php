@@ -116,23 +116,8 @@ class MessageSmsSyncController extends Controller
         /* app confirms that messages were queued for sending */
         if ($task == 'sent' && \Request::isMethod('POST')) {
 
-            $example = [
-                "queued_messages" => [
-                    "aada21b0-0615-4957-bcb3",
-                    "1ba368bd-c467-4374-bf28",
-                    "95df126b-ee80-4175-a6fb"
-                ]
-            ];
 
-
-            $return = [
-                'message_uuids' => [
-                    '12',
-                    '13'
-                ]
-            ];
-
-            return response()->json($return);
+            return self::confirmQueuedMessages();
         }
 
         /* app asks for jobs */
@@ -145,6 +130,38 @@ class MessageSmsSyncController extends Controller
             return self::sendTasks();
 
         }
+
+
+    }
+
+    public static function confirmQueuedMessages() : JsonResponse
+    {
+        $data = \Request::all();
+
+        $confirmedMessages = [];
+
+        if (is_array($data['queued_messages']) && count($data['queued_messages']) > 0) {
+
+            foreach ($data['queued_messages'] as $message_id) {
+                $message = Message::where('id','=',$message_id)
+                    ->where('is_sent', '=', 'false')
+                    ->where('is_incoming', '=', 'false')
+                    ->where('source', '=', 'smssync')
+                    ->get(['id']);
+                if ($message) {
+                    $message->is_sent = true;
+                    $message->save();
+                    $confirmedMessages[] = $message_id;
+                }
+            }
+
+        }
+
+        $response = [
+            'message_uuids' => $confirmedMessages
+        ];
+
+        return response()->json($response);
 
 
     }
