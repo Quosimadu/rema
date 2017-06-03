@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Log;
 use App\Models\Message;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Psy\Util\Json;
 
 
 class MessageSmsSyncController extends Controller
@@ -70,8 +68,6 @@ class MessageSmsSyncController extends Controller
         }
 
         if ($task == 'result' && \Request::isMethod('POST')) {
-
-
 
             $samplePostValues = [
                 "message_result" => [
@@ -167,15 +163,21 @@ class MessageSmsSyncController extends Controller
             $data['message_id'] = null;
         }
 
+        if (empty($data['sent_to']) && !empty($data['device_id'])) {
+            $data['sent_to'] = '+' . $data['device_id'];
+        }
+
         $incomingMessage = new Message();
         $incomingMessage->content = $data['message'];
         $incomingMessage->sender = $data['from'];
         $incomingMessage->receiver = $data['sent_to'];
         $incomingMessage->external_id = $data['message_id'];
+        $incomingMessage->is_incoming = true;
+
 
         unset($data['secret']);
         $incomingMessage->meta_info = json_encode($data);
-        $incomingMessage->source = 'syncsms';
+        $incomingMessage->source = 'smssync';
 
 
         Log::info('Message ID ' . $data['message_id']);
@@ -240,23 +242,17 @@ class MessageSmsSyncController extends Controller
     public function sendTasks(): JsonResponse
     {
 
-        #$messages = Message::query()->where('sender', '', 'senderIdForsync')->get(['id', 'sender', 'receiver', 'content'])->all();
+
+        $messages = DB::table('message_senders')
+            ->join('messages','message_senders.number','=','messages.sender')
+            ->select('messages.*')
+            ->where('messages.is_sent','=','false')
+            ->where('messages.is_incoming','=','false')
+            ->get(['id', 'sender', 'receiver', 'content']);
 
 
         $messageQueue = [];
 
-        $messageQueue[] = [
-            "to" => '+420234095676',
-            "message" => 'Test12',
-            "uuid" => '12',
-        ];
-        $messageQueue[] = [
-            "to" => '+420234095676',
-            "message" => 'Test13',
-            "uuid" => '13',
-        ];
-
-        /*
         foreach ($messages as $message) {
             $messageQueue[] = [
                 "to" => $message['receiver'],
@@ -264,7 +260,7 @@ class MessageSmsSyncController extends Controller
                 "uuid" => $message['id'],
             ];
         }
-        */
+
 
         $response = [
             'payload' => [

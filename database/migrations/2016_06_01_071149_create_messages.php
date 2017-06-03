@@ -21,6 +21,9 @@ class CreateMessages extends Migration
             $table->string('source', 50)->nullable();
             $table->string('external_id', 128)->nullable();
             $table->text('meta_info')->nullable();
+            $this->boolean('is_sent')->default(false);
+            $this->boolean('is_incoming');
+            $this->timestamp('received_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

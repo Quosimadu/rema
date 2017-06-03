@@ -12,6 +12,9 @@ use SimpleSoftwareIO\SMS\Facades\SMS;
  * @property string $external_id
  * @property string $source
  * @property string $meta_info
+ * @property boolean $is_sent
+ * @property boolean $is_incoming
+ * @property \DateTime $received_at
  */
 class Message extends BaseTable
 {
@@ -21,7 +24,8 @@ class Message extends BaseTable
     public static $rules = [
         'receiver' => 'required',
         'content' => 'required',
-        'sender_id' => 'required'
+        'sender_id' => 'required',
+        'is_incoming' => 'required'
     ];
 
 

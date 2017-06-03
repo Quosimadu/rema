@@ -69,6 +69,8 @@ class MessagesController extends BaseController
         $messageSender = MessageSender::findOrFail($data['sender_id'])->get(['number','provider'])->first();
 
         $data['sender'] = $messageSender->number;
+        $data['is_incoming'] = false;
+        $data['is_sent'] = false;
         unset($data['sender_id'], $data['provider_id']);
 
 
