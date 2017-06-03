@@ -28,7 +28,7 @@ class MessageSmsSyncController extends Controller
     {
         $secret = \Request::get('secret');
         if (env('SMS_SYNCSMS_SECRET') != $secret) {
-            return true;
+            return false;
         }
 
         return true;
