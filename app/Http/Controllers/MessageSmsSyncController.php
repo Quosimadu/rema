@@ -24,6 +24,24 @@ class MessageSmsSyncController extends Controller
 
     ];
 
+    public static function authorizeRequest(): bool
+    {
+        $secret = \Request::get('secret');
+        if (env('SMS_SYNCSMS_SECRET') != $secret) {
+            return true;
+        }
+
+        return true;
+    }
+
+    public static function returnNotAuthorized(): Response
+    {
+
+        $response = new Response();
+        return $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
+
+    }
+
     /**
      * @return \Illuminate\Contracts\Routing\ResponseFactory|JsonResponse|Response
      */
@@ -53,6 +71,9 @@ class MessageSmsSyncController extends Controller
 
         if ($task == '' && \Request::isMethod('POST')) {
 
+            if (!self::authorizeRequest()) {
+                return self::returnNotAuthorized();
+            }
             return self::receiveSMS();
 
         }
@@ -117,7 +138,12 @@ class MessageSmsSyncController extends Controller
         /* app asks for jobs */
         if ($task == 'send' && \Request::isMethod('GET')) {
 
+            if (!self::authorizeRequest()) {
+                return self::returnNotAuthorized();
+
+            }
             return self::sendTasks();
+
         }
 
 
@@ -131,13 +157,6 @@ class MessageSmsSyncController extends Controller
     {
 
 
-        $data = \Request::all();
-
-        if (env('SMS_SYNCSMS_SECRET') != $data['secret']) {
-            Log::info('Secret passed');
-            $response = new Response();
-            return $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
-        }
 
         $validator = \Validator::make($data = \Request::all(), self::$syncSmsReceiveRules);
 
@@ -245,10 +264,11 @@ class MessageSmsSyncController extends Controller
 
 
         $messages = DB::table('message_senders')
-            ->join('messages','message_senders.number','=','messages.sender')
+            ->join('messages', 'message_senders.number', '=', 'messages.sender')
             ->select('messages.*')
-            ->where('messages.is_sent','=','false')
-            ->where('messages.is_incoming','=','false')
+            ->where('messages.is_sent', '=', 'false')
+            ->where('messages.is_incoming', '=', 'false')
+            ->where('messages.source', '=', 'smssync')
             ->get(['id', 'sender', 'receiver', 'content']);
 
 
@@ -267,7 +287,7 @@ class MessageSmsSyncController extends Controller
             'payload' => [
                 'success' => true,
                 'task' => "send",
-                'secret' => env('SMS_SMSSYNC_SECRET'),
+                'secret' => env('SMS_SYNCSMS_SECRET'),
                 'messages' => array_values($messageQueue)]
         ];
 
