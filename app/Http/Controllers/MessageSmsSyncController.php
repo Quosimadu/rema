@@ -256,9 +256,9 @@ class MessageSmsSyncController extends Controller
 
         foreach ($messages as $message) {
             $messageQueue[] = [
-                "to" => $message['receiver'],
-                "message" => $message['content'],
-                "uuid" => $message['id'],
+                "to" => $message->receiver,
+                "message" => $message->content,
+                "uuid" => $message->id,
             ];
         }
 
