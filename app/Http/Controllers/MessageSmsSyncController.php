@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use Illuminate\Http\JsonResponse;
 use Log;
 use App\Models\Message;
