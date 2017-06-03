@@ -110,12 +110,18 @@ class MessageSmsSyncController extends Controller
                 ]
             ];
 
-            return response();
+            $response = [
+                "payload" => [
+                    "success" => false,
+                    "error" => ''
+                ]
+            ];
+
+            return response()->json($response);
         }
 
         /* app confirms that messages were queued for sending */
         if ($task == 'sent' && \Request::isMethod('POST')) {
-
 
             return self::confirmQueuedMessages();
         }
