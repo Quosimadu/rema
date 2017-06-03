@@ -140,6 +140,11 @@ class MessageSmsSyncController extends Controller
 
     }
 
+    /**
+     * SMSSync confirms queuing messages after fetching them with send()
+     * it'll not send them out unless it gets green here
+     * @return JsonResponse
+     */
     public static function confirmQueuedMessages() : JsonResponse
     {
         $data = \Request::all();
@@ -266,11 +271,24 @@ class MessageSmsSyncController extends Controller
     public function requestDeliveryReports(): JsonResponse
     {
 
+        $messages = DB::table('message_senders')
+            ->join('messages', 'message_senders.number', '=', 'messages.sender')
+            ->select('messages.*')
+            ->where('messages.is_sent', '=', 'true')
+            ->where('messages.is_incoming', '=', 'false')
+            ->whereNull('messages.received_at')
+            ->where('messages.source', '=', 'smssync')
+            ->get(['id']);
+
+        $outstandingDeliveryReports = [];
+
+        foreach ($messages as $message) {
+            $outstandingDeliveryReports[] =  $message->id;
+
+        }
+
         $return = [
-            'message_uuids' => [
-                "12",
-                "13"
-            ]
+            'message_uuids' => $outstandingDeliveryReports
         ];
 
 
