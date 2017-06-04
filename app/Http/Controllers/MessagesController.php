@@ -66,7 +66,7 @@ class MessagesController extends BaseController
             return \Redirect::back()->withErrors($validator)->withInput();
         }
 
-        $messageSender = MessageSender::findOrFail($data['sender_id'])->get(['number','provider'])->first();
+        $messageSender = MessageSender::findOrFail($data['sender_id']);
 
         $data['sender'] = $messageSender->number;
         $data['is_incoming'] = false;
