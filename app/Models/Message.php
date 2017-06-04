@@ -24,8 +24,7 @@ class Message extends BaseTable
     public static $rules = [
         'receiver' => 'required',
         'content' => 'required',
-        'sender_id' => 'required',
-        'is_incoming' => 'required'
+        'sender_id' => 'required'
     ];
 
 
