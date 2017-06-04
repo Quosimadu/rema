@@ -152,6 +152,9 @@ class MessageSmsSyncController extends Controller
             ]
         ];
 
+        Log::info('JSON response: ' . json_encode($response));
+
+
         return response()->json($response);
 
 
@@ -307,6 +310,8 @@ class MessageSmsSyncController extends Controller
         $return = [
             'message_uuids' => $outstandingDeliveryReports
         ];
+
+        Log::info('JSON return: ' . json_encode($return));
 
 
         return response()->json($return);
