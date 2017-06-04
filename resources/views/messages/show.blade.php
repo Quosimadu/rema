@@ -14,6 +14,10 @@
                         <p>Receiver: {!! $message->receiver !!}</p>
                         <p><i>Sent: {!! $message->created_at !!}</i></p>
                         <p>Message: {!! $message->content !!}</p>
+                        @if ($message->is_incoming == 0)
+                            <p><i>Has been sent: {!! $message->is_sent !!}</i></p>
+                            <p><i>Received: {!! $message->received_at !!}</i></p>
+                        @endif
                     </div>
                 </div>
             </div>
