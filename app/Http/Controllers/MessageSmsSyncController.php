@@ -142,14 +142,14 @@ class MessageSmsSyncController extends Controller
 
         foreach ($messageResults as $messageResult) {
 
-            if ($messageResult['sent_result_code'] > 0
-                || $messageResult['delivered_result_code'] > 0
-                || $messageResult['delivered_result_message'] != "SMS delivered"
+            if ($messageResult->sent_result_code > 0
+                || $messageResult->delivered_result_code > 0
+                || $messageResult->delivered_result_message != "SMS delivered"
             ) {
                 continue;
             }
 
-            $message = Message::where('id', '=', $messageResult['uuid'])
+            $message = Message::where('id', '=', $messageResult->uuid)
                 ->where('is_sent', '=', '1')
                 ->where('is_incoming', '=', '0')
                 ->whereNull('received_at')
