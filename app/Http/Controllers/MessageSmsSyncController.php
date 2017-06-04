@@ -294,11 +294,12 @@ class MessageSmsSyncController extends Controller
         $messages = DB::table('message_senders')
             ->join('messages', 'message_senders.number', '=', 'messages.sender')
             ->select('messages.*')
-            ->where('messages.is_sent', '=', 'true')
-            ->where('messages.is_incoming', '=', 'false')
+            ->where('messages.is_sent', '=', '1')
+            ->where('messages.is_incoming', '=', '0')
             ->whereNull('messages.received_at')
             ->where('messages.source', '=', 'smssync')
             ->get(['id']);
+
 
         $outstandingDeliveryReports = [];
 
@@ -329,8 +330,8 @@ class MessageSmsSyncController extends Controller
         $messages = DB::table('message_senders')
             ->join('messages', 'message_senders.number', '=', 'messages.sender')
             ->select('messages.*')
-            ->where('messages.is_sent', '=', 'false')
-            ->where('messages.is_incoming', '=', 'false')
+            ->where('messages.is_sent', '=', '0')
+            ->where('messages.is_incoming', '=', '0')
             ->where('messages.source', '=', 'smssync')
             ->get(['id', 'sender', 'receiver', 'content']);
 
