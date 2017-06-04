@@ -122,34 +122,46 @@ class MessageSmsSyncController extends Controller
      *
      * @return JsonResponse
      */
-    public static function receiveDeliveryReports() : JsonResponse
+    public static function receiveDeliveryReports(): JsonResponse
     {
         $data = \Request::all();
 
+        $response = [
+            "payload" => [
+                "success" => false,
+                "error" => ''
+            ]
+        ];
 
-        if (is_array($data['message_result']) && count($data['queued_messages']) > 0) {
+        if (empty($data['message_result'])) {
+            return response()->json($response);
+        }
 
-            foreach ($data['queued_messages'] as $message_result) {
+        $messageResults = json_decode($data['message_result']);
 
-                if ($message_result['sent_result_code'] > 0
-                    || $message_result['delivered_result_code'] > 0
-                    || $message_result['delivered_result_message'] != "SMS delivered") {
-                    continue;
-                }
 
-                $message = Message::where('id','=',$message_result['uuid'])
-                    ->where('is_sent', '=', '1')
-                    ->where('is_incoming', '=', '0')
-                    ->whereNull('received_at')
-                    ->where('source', '=', 'smssync')
-                    ->first();
-                if ($message) {
-                    $message->received_at = DB::raw('NOW()');
-                    $message->save();
-                }
+        foreach ($messageResults as $messageResult) {
+
+            if ($messageResult['sent_result_code'] > 0
+                || $messageResult['delivered_result_code'] > 0
+                || $messageResult['delivered_result_message'] != "SMS delivered"
+            ) {
+                continue;
             }
 
+            $message = Message::where('id', '=', $messageResult['uuid'])
+                ->where('is_sent', '=', '1')
+                ->where('is_incoming', '=', '0')
+                ->whereNull('received_at')
+                ->where('source', '=', 'smssync')
+                ->first();
+
+            if ($message) {
+                $message->received_at = DB::raw('NOW()');
+                $message->save();
+            }
         }
+
 
         $response = [
             "payload" => [
@@ -171,7 +183,7 @@ class MessageSmsSyncController extends Controller
      * it'll not send them out unless it gets green here
      * @return JsonResponse
      */
-    public static function confirmQueuedMessages() : JsonResponse
+    public static function confirmQueuedMessages(): JsonResponse
     {
         $data = \Request::all();
 
@@ -180,7 +192,7 @@ class MessageSmsSyncController extends Controller
         if (is_array($data['queued_messages']) && count($data['queued_messages']) > 0) {
 
             foreach ($data['queued_messages'] as $message_id) {
-                $message = Message::where('id','=',$message_id)
+                $message = Message::where('id', '=', $message_id)
                     ->where('is_sent', '=', 'false')
                     ->where('is_incoming', '=', 'false')
                     ->where('source', '=', 'smssync')
@@ -209,7 +221,6 @@ class MessageSmsSyncController extends Controller
      */
     public function receiveSMS(): JsonResponse
     {
-
 
 
         $validator = \Validator::make($data = \Request::all(), self::$syncSmsReceiveRules);
@@ -310,7 +321,7 @@ class MessageSmsSyncController extends Controller
         $outstandingDeliveryReports = [];
 
         foreach ($messages as $message) {
-            $outstandingDeliveryReports[] =  $message->id;
+            $outstandingDeliveryReports[] = $message->id;
 
         }
 
