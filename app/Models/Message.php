@@ -52,7 +52,7 @@ class Message extends BaseTable
 
 
 
-        Log::info('Message sent to '. $data->receiver);
+        Log::info('Message sent to '. $receiver);
 
         return true;
 

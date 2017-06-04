@@ -20,7 +20,7 @@ class MessagesController extends BaseController
      */
     public function index()
     {
-        $messages = Message::all();
+        $messages = Message::orderBy('created_at','desc')->get();
 
         return \View::make('messages.index', compact('messages'));
     }
@@ -74,7 +74,7 @@ class MessagesController extends BaseController
         unset($data['sender_id'], $data['provider_id']);
 
 
-        if (Message::send($data['content'], $data['receiver'], $messageSender['number'], $messageSender['provider'])) {
+        if (Message::send($data['content'], $data['receiver'], $messageSender->number, $messageSender->provider)) {
             Message::create($data);
         } else {
             return \Redirect::back()->withErrors("Message could not be sent")->withInput();
