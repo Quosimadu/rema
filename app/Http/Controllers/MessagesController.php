@@ -71,6 +71,7 @@ class MessagesController extends BaseController
         $data['sender'] = $messageSender->number;
         $data['is_incoming'] = false;
         $data['is_sent'] = false;
+        $data['source'] = $messageSender->provider;
         unset($data['sender_id'], $data['provider_id']);
 
 
