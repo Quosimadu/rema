@@ -86,6 +86,10 @@ class MessageSmsSyncController extends Controller
 
         if ($task == 'result' && \Request::isMethod('GET')) {
 
+            if (!self::authorizeRequest()) {
+                return self::returnNotAuthorized();
+            }
+
             return self::requestDeliveryReports();
         }
 
@@ -136,6 +140,7 @@ class MessageSmsSyncController extends Controller
         if (empty($data['message_result'])) {
             return response()->json($response);
         }
+
 
         $messageResults = json_decode($data['message_result']);
 
