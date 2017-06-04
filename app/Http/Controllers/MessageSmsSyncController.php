@@ -91,6 +91,10 @@ class MessageSmsSyncController extends Controller
 
         if ($task == 'result' && \Request::isMethod('POST')) {
 
+            if (!self::authorizeRequest()) {
+                return self::returnNotAuthorized();
+            }
+
             return self::receiveDeliveryReports();
         }
 
@@ -127,7 +131,9 @@ class MessageSmsSyncController extends Controller
 
             foreach ($data['queued_messages'] as $message_result) {
 
-                if ($message_result['delivered_result_code'] < 0) {
+                if ($message_result['sent_result_code'] > 0
+                    || $message_result['delivered_result_code'] > 0
+                    || $message_result['delivered_result_message'] != "SMS delivered") {
                     continue;
                 }
 
