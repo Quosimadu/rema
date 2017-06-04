@@ -138,8 +138,8 @@ class MessageSmsSyncController extends Controller
                 }
 
                 $message = Message::where('id','=',$message_result['uuid'])
-                    ->where('is_sent', '=', 'true')
-                    ->where('is_incoming', '=', 'false')
+                    ->where('is_sent', '=', '1')
+                    ->where('is_incoming', '=', '0')
                     ->whereNull('received_at')
                     ->where('source', '=', 'smssync')
                     ->first();
