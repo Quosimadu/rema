@@ -19,7 +19,7 @@ class MessagesController extends BaseController
      */
     public function index()
     {
-        $messages = Message::orderBy('created_at','desc')->get();
+        $messages = Message::orderBy('created_at', 'desc')->get();
 
         return \View::make('messages.index', compact('messages'));
     }
@@ -32,12 +32,6 @@ class MessagesController extends BaseController
     public function compose()
     {
 
-        $providers = Provider::query()->orderBy('last_name')->get(['mobile', 'last_name', 'first_name'])->all();
-        $providers_formatted = [];
-        foreach ($providers as $provider) {
-            $providers_formatted[$provider->mobile] = $provider->last_name . ', ' . $provider->first_name;
-        }
-        $providers = ['' => ''] + $providers_formatted;
 
         $message_templates = MessageTemplate::query()->orderBy('name')->get(['id', 'name', 'content', 'comment'])->all();
 
@@ -49,7 +43,7 @@ class MessagesController extends BaseController
         $messageSenders = ['' => ''] + $messageSendersFormatted;
 
 
-        return \View::make('messages.compose', compact('providers', 'message_templates', 'messageSenders'));
+        return \View::make('messages.compose', compact('message_templates', 'messageSenders'));
     }
 
     /**
@@ -71,13 +65,20 @@ class MessagesController extends BaseController
         $data['is_incoming'] = false;
         $data['is_sent'] = false;
         $data['source'] = $messageSender->provider;
+        $receivers = $data['receiver'];
         unset($data['sender_id'], $data['provider_id']);
 
 
-        if (Message::send($data['content'], $data['receiver'], $messageSender->number, $messageSender->provider)) {
-            Message::create($data);
-        } else {
-            return \Redirect::back()->withErrors("Message could not be sent")->withInput();
+
+        foreach ($receivers as $receiver) {
+
+            $data['receiver'] = $receiver;
+            if (Message::send($data['content'], $receiver, $messageSender->number, $messageSender->provider)) {
+                Message::create($data);
+            } else {
+                return \Redirect::back()->withErrors("Message could not be sent")->withInput();
+            }
+
         }
 
         return \Redirect::route('messages');

@@ -15,7 +15,7 @@ class CreateRolesTable extends Migration {
 		Schema::create('roles', function(Blueprint $table)
 		{
 			$table->tinyInteger('id')->unsigned()->autoIncrement();
-			$table->string('name', 20);
+			$table->string('name', 20)->index();
 			$table->text('description');
 			$table->tinyInteger('requires_super')->length(1)->default(1)->unsigned();
             $table->integer('created_by')->unsigned()->nullable();
@@ -34,26 +34,6 @@ class CreateRolesTable extends Migration {
 
 		DB::table('roles')->insert($roles);
 
-		/*Schema::create('listing_role_users', function(Blueprint $table)
-		{
-			$table->integer('listing_id')->unsigned();
-			$table->foreign('listing_id')
-				->references('id')->on('listings')
-				->onDelete('cascade');
-			$table->integer('user_id')->unsigned();
-			$table->foreign('user_id')
-				->references('id')->on('users')
-				->onDelete('cascade');
-			$table->integer('role_id')->unsigned();
-			$table->foreign('role_id')
-				->references('id')->on('roles')
-				->onDelete('cascade');
-			$table->integer('created_by')->unsigned();
-			$table->foreign('created_by')
-				->references('id')->on('users')
-				->onDelete('cascade');
-			$table->timestamps();
-		});*/
 	}
 
 	/**

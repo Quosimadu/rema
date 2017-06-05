@@ -2,112 +2,142 @@
 
 use App\Http\Controllers\BaseController;
 use App\Models\Provider;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Session;
 
-class ProvidersController extends BaseController {
+class ProvidersController extends BaseController
+{
 
-	/**
-	 * Display a listing of providers
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
-		$providers = Provider::all();
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function find(Request $request)
+    {
 
-		return \View::make('providers.index', compact('providers'));
-	}
 
-	/**
-	 * Show the form for creating a new provider
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
+        $term = trim($request->input('q'));
 
-		return \View::make('providers.create');
-	}
+        if (empty($term)) {
+            return \Response::json([]);
+        }
 
-	/**
-	 * Store a newly created provider in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		$validator = \Validator::make($data = \Request::all(), Provider::$rules);
+        $providers = Provider::search($term)->where('mobile','!=','')->limit(5)->get();
 
-		if ($validator->fails())
-		{
-			return \Redirect::back()->withErrors($validator)->withInput();
-		}
+        $formatted_tags = [];
 
-		Provider::create($data);
+        $mobileNumberPattern = '/^[0-9\.\-+]{9,}+$/';
+        if (preg_match($mobileNumberPattern, $term)) {
+            $formatted_tags[] = ['id' => $term, 'text' => $term];
+        }
 
-		return \Redirect::route('providers.index');
-	}
 
-	/**
-	 * Display the specified provider.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		$provider = Provider::findOrFail($id);
+        foreach ($providers as $provider) {
+            $formatted_tags[] = ['id' => $provider->mobile, 'text' => $provider->first_name . ' ' . $provider->last_name];
+        }
 
-		return \View::make('providers.show', compact('provider'));
-	}
+        return \Response::json($formatted_tags);
+    }
 
-	/**
-	 * Show the form for editing the specified provider.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		$provider = Provider::find($id);
+    /**
+     * Display a listing of providers
+     *
+     * @return Response
+     */
+    public function index()
+    {
+        $providers = Provider::all();
 
-		return \View::make('providers.edit', compact('provider'));
-	}
+        return \View::make('providers.index', compact('providers'));
+    }
 
-	/**
-	 * Update the specified provider in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		$provider = Provider::findOrFail($id);
+    /**
+     * Show the form for creating a new provider
+     *
+     * @return Response
+     */
+    public function create()
+    {
 
-		$validator = \Validator::make($data = Request::all(), Provider::$rules);
+        return \View::make('providers.create');
+    }
 
-		if ($validator->fails())
-		{
-			return \Redirect::back()->withErrors($validator)->withInput();
-		}
+    /**
+     * Store a newly created provider in storage.
+     *
+     * @return Response
+     */
+    public function store()
+    {
+        $validator = \Validator::make($data = \Request::all(), Provider::$rules);
 
-		$provider->update($data);
+        if ($validator->fails()) {
+            return \Redirect::back()->withErrors($validator)->withInput();
+        }
 
-		return \Redirect::route('providers');
-	}
+        Provider::create($data);
 
-	/**
-	 * Remove the specified provider from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		Provider::destroy($id);
+        return \Redirect::route('providers.index');
+    }
 
-		return \Redirect::route('providers');
-	}
+    /**
+     * Display the specified provider.
+     *
+     * @param  int $id
+     * @return Response
+     */
+    public function show($id)
+    {
+        $provider = Provider::findOrFail($id);
+
+        return \View::make('providers.show', compact('provider'));
+    }
+
+    /**
+     * Show the form for editing the specified provider.
+     *
+     * @param  int $id
+     * @return Response
+     */
+    public function edit($id)
+    {
+        $provider = Provider::find($id);
+
+        return \View::make('providers.edit', compact('provider'));
+    }
+
+    /**
+     * Update the specified provider in storage.
+     *
+     * @param  int $id
+     * @return Response
+     */
+    public function update($id)
+    {
+        $provider = Provider::findOrFail($id);
+
+        $validator = \Validator::make($data = Request::all(), Provider::$rules);
+
+        if ($validator->fails()) {
+            return \Redirect::back()->withErrors($validator)->withInput();
+        }
+
+        $provider->update($data);
+
+        return \Redirect::route('providers');
+    }
+
+    /**
+     * Remove the specified provider from storage.
+     *
+     * @param  int $id
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        Provider::destroy($id);
+
+        return \Redirect::route('providers');
+    }
 
 }

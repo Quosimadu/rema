@@ -20,3 +20,7 @@ Vue.component('example', require('./components/Example.vue'));
 const app = new Vue({
     el: '#app'
 });
+
+/** TODO: include select2 properly
+ * require('../../../node_modules/select2/src/js/jquery.select2');
+ */

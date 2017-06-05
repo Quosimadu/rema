@@ -5,7 +5,6 @@
 @stop
 
 @section('content')
-
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
@@ -30,28 +29,30 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
-                            {!! Form::select('provider_id', $providers, \Request::old('provider_id'), array('class' =>
-                            'form-control', 'id' => 'providers')) !!}
-                            {!! $errors->first('provider_id', '
-                            <div class="note note-error">:message</div>
-                            ') !!}
-                        </div>
-
                         <div class="form-group">
                             <div class="col-md-2">
                                 {!! Form::label('receiver', 'Receiver', array('class' => 'control-label')) !!}
                             </div>
-                            <div class="col-md-8">
-                                {!! Form::text('receiver', \Request::old('receiver'), $attributes = array('class' =>
-                                'form-control', 'id' => 'receiver', 'placeholder' => '+420..')) !!}
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <select name="receiver[]" id="receiver" class="form-control select2-multiple" multiple>
+
+                                    </select>
+                                    <span class="input-group-btn">
+						<button class="btn btn-default" type="button" data-select2-open="receiver">
+							<span class="glyphicon glyphicon-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
                                 {!! $errors->first('receiver', '
-                                <div class="note note-error">:message</div>
-                                ') !!}
+                            <div class="note note-error">:message</div>
+                            ') !!}
+
+
                             </div>
                         </div>
                         <div class="form-group">
-<!--
+                        <!--
                             <div class="col-md-4">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
@@ -61,14 +62,14 @@
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                         @foreach($message_templates as $template)
-                                            <li><a href="#">{!! $template->name !!}
-                                                    ({!! str_limit($template->content,15,'...') !!})</a></li>
+                            <li><a href="#">{!! $template->name !!}
+                                    ({!! str_limit($template->content,15,'...') !!})</a></li>
                                         @endforeach
-                                    </ul>
-                                </div>
-                                {!! Form::label('content', 'Content', array('class' => 'control-label')) !!}
+                                </ul>
                             </div>
-//-->
+{!! Form::label('content', 'Content', array('class' => 'control-label')) !!}
+                                </div>
+    //-->
                             <div class="col-md-8">
                                 {!! Form::textarea('content', \Request::old('content'), $attributes = array('class' =>
                            'form-control', 'id' => 'content', 'placeholder' => '', 'rows' => 6, 'style' => '')) !!}
@@ -98,13 +99,24 @@
 
 @section('javascript')
     <script>
-        $('#providers').change(function () {
-            var selected_value = $(this).val();
-            ;
-            var new_receivers = $('#receiver').val() + ', ' + selected_value;
-            $('#receiver').val(new_receivers);
-            $(this).val('');
-            $(this).find('option[value="' + selected_value + '"]').remove();
+        $('#receiver').select2({
+            placeholder: "Chose receiver(s)",
+            minimumInputLength: 2,
+            ajax: {
+                url: '{!! route('providerFind') !!}',
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        q: $.trim(params.term)
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            }
         });
     </script>
 @stop

@@ -14,7 +14,8 @@
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "*",
         "rap2hpoutre/laravel-log-viewer": "*",
-        "simplesoftwareio/simple-sms": "dev-develop"
+        "simplesoftwareio/simple-sms": "dev-develop",
+        "sofa/eloquence": "~5.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

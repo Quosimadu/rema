@@ -22,7 +22,7 @@ Route::group(['prefix' => 'rooms', 'middleware' => 'auth'], function() {
     Route::get('/', ['as' => 'listings', 'uses' => 'ListingsController@index']);
     Route::any('/add', ['as' => 'listingCreate', 'uses' => 'ListingsController@create']);
     Route::any('/edit/{id}', ['as' => 'listingEdit', 'uses' => 'ListingsController@edit']);
-    Route::any('/show/{id}', ['as' => 'listingShow', 'uses' => 'ListingsController@show']);
+    Route::get('/show/{id}', ['as' => 'listingShow', 'uses' => 'ListingsController@show']);
     Route::any('/update/{id}', ['as' => 'listingUpdate', 'uses' => 'ListingsController@update']);
     Route::post('/store', ['as' => 'listingStore', 'uses' => 'ListingsController@store']);
 });
@@ -31,7 +31,8 @@ Route::group(['prefix' => 'providers', 'middleware' => 'auth'], function() {
     Route::get('/',  ['as' => 'providers', 'uses' => 'ProvidersController@index']);
     Route::any('/add',  ['as' => 'providerCreate', 'uses' => 'ProvidersController@create']);
     Route::any('/edit/{id}',  ['as' => 'providerEdit', 'uses' => 'ProvidersController@edit']);
-    Route::any('/show/{id}',  ['as' => 'providerShow', 'uses' => 'ProvidersController@show']);
+    Route::get('/find',  ['as' => 'providerFind', 'uses' => 'ProvidersController@find']);
+    Route::get('/show/{id}',  ['as' => 'providerShow', 'uses' => 'ProvidersController@show']);
     Route::any('/update/{id}', ['as' => 'providerUpdate', 'uses' => 'ProvidersController@update']);
     Route::post('/store', ['as' => 'providerStore', 'uses' => 'ProvidersController@store']);
 });

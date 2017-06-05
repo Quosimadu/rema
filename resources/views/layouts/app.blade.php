@@ -21,6 +21,7 @@
             'csrfToken' => csrf_token(),
         ]) !!};
     </script>
+
 </head>
 <body>
 <div id="app">
@@ -83,11 +84,18 @@
             </div>
         </div>
     </nav>
-
+    @if (count($errors))
+        <div class="alert alert-warning">
+            @foreach ($errors->all() as $error)
+                {{ $error }}<br/>
+            @endforeach
+        </div>
+    @endif
 @yield('content')
 </div>
 <!-- Scripts -->
     <script src="{{ elixir('js/app.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     @yield('javascript')
 
 </body>

@@ -6,6 +6,7 @@ use SimpleSoftwareIO\SMS\Facades\SMS;
 /**
  * Class Message
  * @package App\Models
+ * @property int $id
  * @property string $sender
  * @property string $receiver
  * @property string $content
@@ -17,6 +18,8 @@ use SimpleSoftwareIO\SMS\Facades\SMS;
  * @property \DateTime $received_at
  * @property int $created_by
  * @property int $changed_by
+ * @property \DateTime $created_at
+ * @property \DateTime $changed_at
  */
 class Message extends BaseTable
 {
