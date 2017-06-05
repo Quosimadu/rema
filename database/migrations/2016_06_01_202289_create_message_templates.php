@@ -18,6 +18,8 @@ class CreateMessageTemplates extends Migration
             $table->string('name', 50);
             $table->text('content');
             $table->text('comment')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('changed_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

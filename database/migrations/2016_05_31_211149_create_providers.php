@@ -20,6 +20,8 @@ class CreateProviders extends Migration
             $table->string('email', 128)->nullable();
             $table->string('mobile', 128)->nullable();
             $table->text('comment')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('changed_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

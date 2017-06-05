@@ -16,6 +16,8 @@ class CreateAccountsTable extends Migration {
             $table->increments('id');
             $table->string('name', 50);
             $table->text('description')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('changed_by')->nullable();
             $table->timestamps();
         });
 	}

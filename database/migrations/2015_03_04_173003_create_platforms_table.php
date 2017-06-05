@@ -17,6 +17,8 @@ class CreatePlatformsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name', 20);
+            $table->integer('created_by')->nullable();
+            $table->integer('changed_by')->nullable();
 			$table->timestamps();
 		});
 

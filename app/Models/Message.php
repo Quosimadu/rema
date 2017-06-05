@@ -15,6 +15,8 @@ use SimpleSoftwareIO\SMS\Facades\SMS;
  * @property boolean $is_sent
  * @property boolean $is_incoming
  * @property \DateTime $received_at
+ * @property int $created_by
+ * @property int $changed_by
  */
 class Message extends BaseTable
 {

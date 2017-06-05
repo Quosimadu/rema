@@ -20,6 +20,8 @@ class CreateMessageSenders extends Migration
             $table->string('number', 128);
             $table->string('provider', 50);
             $table->softDeletes();
+            $table->integer('created_by')->nullable();
+            $table->integer('changed_by')->nullable();
             $table->timestamps();
         });
     }
