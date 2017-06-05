@@ -27,4 +27,20 @@ class BaseTable extends Model {
         });
 	}
 
+
+
+    public function createdBy()
+    {
+
+        return $this->belongsTo('App\User','created_by','id');
+
+    }
+
+    public function changedBy()
+    {
+
+        return $this->belongsTo('App\User','changed_by','id');
+
+    }
+
 }

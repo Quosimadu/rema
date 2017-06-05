@@ -53,8 +53,7 @@ class Message extends BaseTable
         }
 
 
-
-        Log::info('Message sent to '. $receiver);
+        Log::info('Message sent to ' . $receiver);
 
         return true;
 
@@ -64,7 +63,7 @@ class Message extends BaseTable
      * apply rules to a message
      * @return bool
      */
-    public function processMessage() : bool
+    public function processMessage(): bool
     {
 
 

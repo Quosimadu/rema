@@ -14,7 +14,7 @@
                             @foreach($messages as $message)
                                 <tr>
                                     <td><a href="{!! route('messages.show', $message->id) !!}">{!! \Illuminate\Support\Str::words($message->content, 4, "...") !!}</a></td>
-                                    <td>{!! $message->sender !!} <i class="fa fa-arrow-right" aria-hidden="true"></i> {!! $message->receiver !!}</td>
+                                    <td>{!! $message->sender !!} <i class="fa fa-angle-double-right" aria-hidden="true"></i> {!! $message->receiver !!}</td>
                                     <td>{!! $message->created_at !!}</td>
                                 </tr>
 
