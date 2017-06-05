@@ -36,7 +36,7 @@
 
                         <div class="form-group">
                             <div class="col-md-2">
-                                {!! Form::label('receiver', 'Receiver (separate multiple by comma)', array('class' => 'control-label')) !!}
+                                {!! Form::label('receiver', 'Receiver', array('class' => 'control-label')) !!}
                             </div>
                             <div class="col-md-8">
                                 {!! Form::text('receiver', \Request::old('receiver'), $attributes = array('class' =>
