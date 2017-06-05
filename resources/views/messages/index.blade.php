@@ -9,22 +9,13 @@
                         <h1>Messages</h1>
                     </div>
                     <div class="panel-body">
-                        <p><a class="btn btn-primary" href="{!! route('messages.compose') !!}">Compose message</a></p>
+                        <p><a class="" href="{!! route('messages.compose') !!}" title="Compose message"><i class="fa fa-plus-circle fa-2x" aria-hidden="true"></i></a></p>
                         <table class="table">
-                            <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Sender</th>
-                                <th>Receiver</th>
-                                <th>Content</th>
-                            </tr>
-                            <thead>
                             @foreach($messages as $message)
                                 <tr>
+                                    <td><a href="{!! route('messages.show', $message->id) !!}">{!! \Illuminate\Support\Str::words($message->content, 4, "...") !!}</a></td>
+                                    <td>{!! $message->sender !!} <i class="fa fa-arrow-right" aria-hidden="true"></i> {!! $message->receiver !!}</td>
                                     <td>{!! $message->created_at !!}</td>
-                                    <td>{!! $message->sender !!}</td>
-                                    <td>{!! $message->receiver !!}</td>
-                                    <td><a href="{!! route('messages.show', $message->id) !!}">{!! $message->content !!}</a></td>
                                 </tr>
 
                             @endforeach

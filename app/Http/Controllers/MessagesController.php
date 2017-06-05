@@ -8,7 +8,6 @@ use SMS;
 use Illuminate\Http\Response;
 use Log;
 
-
 class MessagesController extends BaseController
 {
 

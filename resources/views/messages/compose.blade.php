@@ -47,7 +47,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-
+<!--
                             <div class="col-md-4">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
@@ -64,7 +64,7 @@
                                 </div>
                                 {!! Form::label('content', 'Content', array('class' => 'control-label')) !!}
                             </div>
-
+//-->
                             <div class="col-md-8">
                                 {!! Form::textarea('content', \Request::old('content'), $attributes = array('class' =>
                            'form-control', 'id' => 'content', 'placeholder' => '', 'rows' => 6, 'style' => '')) !!}

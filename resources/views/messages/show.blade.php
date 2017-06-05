@@ -9,14 +9,14 @@
                         <h1>Message details</h1>
                     </div>
                     <div class="panel-body">
-                        <p><a class="btn btn-link" href="{!! route('messages') !!}">Back to messages overview</a></p>
-                        <p>Sender: {!! $message->sender !!}</p>
-                        <p>Receiver: {!! $message->receiver !!}</p>
-                        <p><i>Sent: {!! $message->created_at !!}</i></p>
+                        <p><a class="" href="{!! route('messages') !!}"><i class="fa fa-arrow-left" aria-hidden="true"></i>
+                                 Back to messages overview</a></p>
                         <p>Message: {!! $message->content !!}</p>
+                        <p>{!! $message->sender !!} <i class="fa fa-arrow-right" aria-hidden="true"></i> {!! $message->receiver !!}</p>
+                        <p><i>Sent: {!! $message->created_at !!}</i></p>
                         @if ($message->is_incoming == 0)
                             <p><i>Has been sent: {!! $message->is_sent !!}</i></p>
-                            <p><i>Received: {!! $message->received_at !!}</i></p>
+                            <p><i>Reception confirmed: {!! $message->received_at !!}</i></p>
                         @endif
                     </div>
                 </div>

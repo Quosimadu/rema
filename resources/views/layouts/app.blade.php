@@ -1,84 +1,90 @@
 <!DOCTYPE html>
 <html lang="{{ config('app.locale') }}">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<!-- CSRF Token -->
-	<meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-	<title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Laravel') }}</title>
 
-	<!-- Styles -->
-	<link href="{{ elixir('css/app.css') }}" rel="stylesheet">
+    <!-- Styles -->
+    <link href="{{ elixir('css/app.css') }}" rel="stylesheet">
 
-	<!-- Scripts -->
-	<script>
+    <!-- Scripts -->
+    <script>
         window.Laravel = {!! json_encode([
             'csrfToken' => csrf_token(),
         ]) !!};
-	</script>
+    </script>
 </head>
 <body>
 <div id="app">
-	<nav class="navbar navbar-default navbar-static-top">
-		<div class="container">
-			<div class="navbar-header">
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
 
-				<!-- Collapsed Hamburger -->
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
-				<span class="sr-only">Toggle Navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="{{ url('/') }}">Rental Management</a>
-			</div>
+                <!-- Collapsed Hamburger -->
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#app-navbar-collapse">
+                    <span class="sr-only">Toggle Navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url('/') }}">Rental Management</a>
+            </div>
 
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav">
-					<li><a href="{{ route('bookings') }}">Bookings</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown" data-toggle="dropdown" role="button" aria-expanded="false">Messages<span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="{{ route('messages') }}">Overview</a></li>
-							<li><a href="{{ route('messages.compose') }}">New</a></li>
-							<li role="separator" class="divider"></li>
-							<li><a href="{{ route('message_templates') }}">Templates</a></li>
-							<li><a href="{{ route('message_senders') }}">Senders</a></li>
-						</ul>
-					</li>
-					<li><a href="{{ route('providers') }}">Providers</a></li>
+            <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <!-- <li><a href="{{ route('bookings') }}">Bookings</a></li> //-->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown" data-toggle="dropdown" role="button" aria-expanded="false">Messages<span
+                                    class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{{ route('messages') }}">Overview</a></li>
+                            <li><a href="{{ route('messages.compose') }}">New</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="{{ route('message_templates') }}">Templates</a></li>
+                            <li><a href="{{ route('message_senders') }}">Senders</a></li>
+                        </ul>
+                    </li>
+                    <!--
+                    <li><a href="{{ route('providers') }}">Providers</a></li>
                     <li><a href="{{ route('listings') }}">Listings</a></li>
                     <li><a href="{{ route('reports') }}">Reports</a></li>
-				</ul>
+                    //-->
+                </ul>
 
-				<ul class="nav navbar-nav navbar-right">
-					@if (Auth::guest())
-						<li><a href="{{ url('/auth/login') }}">Login</a></li>
-						<li><a href="{{ url('/auth/register') }}">Register</a></li>
-					@else
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
-							<ul class="dropdown-menu" role="menu">
-								<li><a href="{{ url('/logout') }}" onclick="
+                <ul class="nav navbar-nav navbar-right">
+                    @if (Auth::guest())
+                        <li><a href="{{ url('/auth/login') }}">Login</a></li>
+                        <li><a href="{{ url('/auth/register') }}">Register</a></li>
+                    @else
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{ url('/logout') }}" onclick="
 								event.preventDefault();
 								document.getElementById('logout-form').submit();">
-										Logout</a></li>
+                                        Logout</a></li>
 
-							</ul>
-						</li>
-					@endif
-				</ul>
-			</div>
-		</div>
-	</nav>
+                            </ul>
+                        </li>
+                    @endif
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-	@yield('content')
+@yield('content')
+</div>
+<!-- Scripts -->
+    <script src="{{ elixir('js/app.js') }}"></script>
+    @yield('javascript')
 
-	<!-- Scripts -->
-	<script src="{{ elixir('js/app.js') }}"></script>
-	@yield('javascript')
 </body>
 </html>
