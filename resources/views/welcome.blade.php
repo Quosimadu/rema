@@ -79,15 +79,15 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    Rema
                 </div>
 
                 <div class="links">
-                    <a href="{{ route('bookings') }}">Bookings</a>
+                    <!-- <a href="{{ route('bookings') }}">Bookings</a> //-->
                     <a href="{{ route('messages') }}">Messages</a>
-                    <a href="{{ route('providers') }}">Providers</a>
+                    <!-- <a href="{{ route('providers') }}">Providers</a>
                     <a href="{{ route('listings') }}">Listings</a>
-                    <a href="{{ route('reports') }}">Reports</a>
+                    <a href="{{ route('reports') }}">Reports</a>//-->
                 </div>
             </div>
         </div>
