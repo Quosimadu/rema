@@ -1,6 +1,7 @@
 <?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\User;
 
 class ListingRoleUser extends BaseTable {
 
@@ -11,24 +12,26 @@ class ListingRoleUser extends BaseTable {
         'role_id' => 'required'
     ];
 
+    protected $table = 'listings_roles_users';
+
     // Don't forget to fill this array
     protected $fillable = ['listing_id','user_id','role_id','created_by'];
 
     protected $guarded = [''];
 
-    public function booking()
+    public function listings()
     {
-        return $this->hasOne('Listing');
+        return $this->hasOne('App\Models\Listing','id','listing_id');
     }
 
-    public function role()
+    public function roles()
     {
-        return $this->hasOne('Role');
+        return $this->hasOne('App\Models\Role','id','role_id');
     }
 
-    public function user()
+    public function users()
     {
-        return $this->hasOne('User');
+        return $this->hasOne('App\User','id','user_id');
     }
 
 

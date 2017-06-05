@@ -17,6 +17,8 @@ class CreateBookingStatusesTable extends Migration {
 		{
 			$table->tinyInteger('id')->unsigned()->autoIncrement();
 			$table->string('name', 20);
+            $table->integer('created_by')->unsigned()->nullable();
+            $table->integer('changed_by')->unsigned()->nullable();
 			$table->timestamps();
 		});
 

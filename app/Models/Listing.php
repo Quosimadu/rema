@@ -28,17 +28,4 @@ class Listing extends BaseTable {
 		return $this->hasMany('Booking');
 	}
 
-	public static function boot()
-	{
-		parent::boot();
-
-		static::creating(function($listingTable)
-		{
-			if (Auth::check()) {
-				$listingTable->changed_by = Auth::id();
-			}
-		});
-
-	}
-
 }

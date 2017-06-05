@@ -24,8 +24,8 @@ class CreateMessages extends Migration
             $table->boolean('is_sent')->default(false);
             $table->boolean('is_incoming');
             $table->timestamp('received_at')->nullable();
-            $table->integer('created_by')->nullable();
-            $table->integer('changed_by')->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
+            $table->integer('changed_by')->unsigned()->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

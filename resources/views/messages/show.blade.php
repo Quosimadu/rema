@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('title')
+    Message :: Details :: @parent
+@stop
+
 @section('content')
     <div class="container-fluid">
         <div class="row">
@@ -12,7 +16,7 @@
                         <p><a class="" href="{!! route('messages') !!}"><i class="fa fa-arrow-left"
                                                                            aria-hidden="true"></i>
                                 Back to messages overview</a></p>
-                        <div class="jumbotron"><strong>{!! $message->content !!}</strong><br/><br/>
+                        <div class="well"><strong>{!! $message->content !!}</strong><br/><br/>
 
                             <i>{!! $message->sender !!} <i class="fa fa-angle-double-right"
                                                            aria-hidden="true"></i> {!! $message->receiver !!}</i><br/>

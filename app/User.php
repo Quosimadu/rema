@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Models\ListingRoleUser;
+use App\Models\Role;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -35,4 +37,38 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * @param int $listing_id
+     * @param string $role
+     * @return bool
+     */
+    public function hasListingRole(int $listing_id, string $role): bool
+    {
+
+
+        $userListingRole = ListingRoleUser::whereHas('roles', function ($query) use ($role) {
+            $query->where('name', '=', $role);
+        })->where('user_id', '=', $this->id)
+            ->where('listing_id', '=', $listing_id)
+            ->first();
+
+        if ($userListingRole) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    public function assignListingRole(int $listing_id, string $role)
+    {
+
+
+    }
+
+    public function removeListingRole(int $listing_id, string $role)
+    {
+
+    }
 }

@@ -18,8 +18,8 @@ class CreateRolesTable extends Migration {
 			$table->string('name', 20);
 			$table->text('description');
 			$table->tinyInteger('requires_super')->length(1)->default(1)->unsigned();
-            $table->integer('created_by')->nullable();
-            $table->integer('changed_by')->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
+            $table->integer('changed_by')->unsigned()->nullable();
 			$table->timestamps();
 		});
 

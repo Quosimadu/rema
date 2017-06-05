@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('title')
+    Message templates :: @parent
+@stop
+
 @section('content')
     <div class="container-fluid">
         <div class="row">

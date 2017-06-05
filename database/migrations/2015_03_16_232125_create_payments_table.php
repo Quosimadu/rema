@@ -20,8 +20,8 @@ class CreatePaymentsTable extends Migration {
             $table->integer('account_id')->unsigned();
             $table->foreign('account_id')->references('id')->on('accounts');
             $table->string('comment', 50)->nullable();
-            $table->integer('created_by')->nullable();
-            $table->integer('changed_by')->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
+            $table->integer('changed_by')->unsigned()->nullable();
             $table->timestamps();
         });
 	}

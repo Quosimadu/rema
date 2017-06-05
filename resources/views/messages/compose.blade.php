@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('title')
+    Message :: Compose :: @parent
+@stop
+
 @section('content')
 
     <div class="container-fluid">

@@ -31,8 +31,8 @@ class CreateBookingsTable extends Migration {
 			$table->time('departure_time')->nullable();
 			$table->string('airbnb_conversation_id', 20)->nullable();
 			$table->text('comment')->nullable();
-            $table->integer('created_by')->nullable();
-            $table->integer('changed_by')->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
+            $table->integer('changed_by')->unsigned()->nullable();
 			$table->timestamps();
 			$table->foreign('listing_id')
 				->references('id')->on('listings')

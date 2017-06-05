@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('title')
+    Bookings :: @parent
+@stop
+
 @section('content') <div class="container-fluid">
     <div class="row">
         <div class="col-md-12 col">

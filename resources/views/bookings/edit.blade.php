@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('title')
+    Bookings :: Edit :: @parent
+@stop
+
 @section('content')
 
     <div class="container-fluid">
