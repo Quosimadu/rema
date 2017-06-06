@@ -38,34 +38,10 @@
 
 
 @section('javascript')
+    <script src='{{ elixir('js/jquery.p2r.min.js') }}' type='text/javascript' defer></script>
     <script>
-        /** pull to reload **/
-        var mouseY = 0;
-        var startMouseY = 0;
-        $('body').on('mousedown', function (ev) {
-            mouseY = ev.pageY;
-            startMouseY = mouseY;
-            $(document).mousemove(function (e) {
-                if (e.pageY > mouseY) {
-                    var d = e.pageY - startMouseY;
-                    console.log("d: " + d);
-                    if (d >= 200)
-                        location.reload();
-                    $('body').css('margin-top', d / 4 + 'px');
-                }
-                else
-                    $(document).unbind("mousemove");
-
-
-            });
-        });
-        $('body').on('mouseup', function () {
-            $('body').css('margin-top', '0px');
-            $(document).unbind("mousemove");
-        });
-        $('body').on('mouseleave', function () {
-            $('body').css('margin-top', '0px');
-            $(document).unbind("mousemove");
-        });
+        $(document).ready(function () {
+            $("body").pullToRefresh();
+        })
     </script>
 @stop
