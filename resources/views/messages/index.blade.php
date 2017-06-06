@@ -38,10 +38,11 @@
 
 
 @section('javascript')
-    <script src='{{ elixir('js/jquery.p2r.min.js') }}' type='text/javascript' defer></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/pulltorefreshjs/0.1.3/pulltorefresh.min.js' type='text/javascript'></script>
     <script>
-        $(document).ready(function () {
-            $("body").pullToRefresh();
-        })
+        PullToRefresh.init({
+            mainElement: 'body',
+            onRefresh: function(){ window.location.reload(); }
+        });
     </script>
 @stop
