@@ -19,7 +19,7 @@ class MessagesController extends BaseController
      */
     public function index()
     {
-        $messages = Message::orderBy('created_at', 'desc')->get();
+        $messages = Message::orderBy('created_at', 'desc')->simplePaginate(20);
 
         return \View::make('messages.index', compact('messages'));
     }
