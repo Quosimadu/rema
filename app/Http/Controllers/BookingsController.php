@@ -47,7 +47,7 @@ class BookingsController extends BaseController {
         }
 
 		$bookings = $bookingQuery->get();
-		$listings = Listing::query()->orderBy('name')->get(['id','name'])->pluck(['name', 'id']);
+		$listings = Listing::query()->orderBy('name')->get(['name','id'])->pluck('name', 'id');
 		$listing_id =  Session::get('bookings.listing_id');
         $time =  Session::get('bookings.time');
 

@@ -103,8 +103,10 @@
                                 {!! Form::submit('Save new listing', array('class' => 'btn btn-primary')) !!}
 
                             </div>
-                            <div class="pull-right"><a class="btn btn-link" href="{!! route('listings') !!}">Back to
-                                    listings overview</a></div>
+                            <div class="pull-right"><a class="btn btn-link" href="{!! route('listings') !!}"><i
+                                            class="fa fa-arrow-left"
+                                            aria-hidden="true"></i>
+                                    {{ trans('listings/edit.link_text_back_to_overview') }}</a></div>
                         </div>
 
                         {!! Form::close() !!}

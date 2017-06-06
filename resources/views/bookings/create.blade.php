@@ -209,8 +209,10 @@
                             <div class="col-md-4 col-md-offset-1">
                                 {!! Form::submit('Save new booking', array('class' => 'btn btn-primary')) !!}
                             </div>
-                            <div class="pull-right"><a class="btn btn-link" href="{!! route('bookings') !!}">Back to
-                                    bookings overview</a></div>
+                            <div class="pull-right"><a class="btn btn-link" href="{!! route('bookings') !!}"><i
+                                            class="fa fa-arrow-left"
+                                            aria-hidden="true"></i>
+                                        {{ trans('bookings/edit.link_text_back_to_overview') }}</a></div>
                         </div>
                         {!! Form::close() !!}
                     </div>
