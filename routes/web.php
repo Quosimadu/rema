@@ -66,7 +66,7 @@ Route::group(['prefix' => 'message_senders', 'middleware' => 'auth'], function()
 });
 
 
-Route::group(['prefix' => 'booking', 'middleware' => 'auth'], function() {
+Route::group(['prefix' => 'bookings', 'middleware' => 'auth'], function() {
     Route::get('/',  ['as' => 'bookings', 'uses' => 'BookingsController@index']);
     Route::any('/delete/{id}',  ['as' => 'bookingDelete', 'uses' => 'BookingsController@destroy']);
     Route::any('/add',  ['as' => 'bookingCreate', 'uses' => 'BookingsController@create']);

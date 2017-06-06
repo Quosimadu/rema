@@ -9,6 +9,8 @@
                         <h1>Listings</h1>
                     </div>
                     <div class="panel-body">
+                        <p class=""><a class="" href="{!! route('listingCreate') !!}" title="New listing"><i
+                                        class="fa fa-plus-circle fa-2x" aria-hidden="true"></i></a></p>
                         <table class="table">
                             <thead>
                             <tr>
@@ -16,6 +18,8 @@
                                 <th>Guests</th>
                                 <th>Beds</th>
                                 <th>Address</th>
+                                <th>AirBnB</th>
+                                <th>Fnc</th>
                             </tr>
                             <thead>
                             @foreach($listings as $listing)
@@ -25,12 +29,15 @@
                                     <td>{!! $listing->guests !!}</td>
                                     <td>{!! $listing->beds !!}</td>
                                     <td>{!! $listing->address !!}</td>
+                                    <td>
+                                        @if (!empty($listing->airbnb_listing_id))
+                                        <a href="https://www.airbnb.com/manage-listing/{!! $listing->airbnb_listing_id !!}/calendar" title="AirBnB calendar">A-C</a>
+                                        @endif
+                                    </td>
                                     <td><a href="{!! route('listingEdit', $listing->id) !!}">edit</a></td>
                                 </tr>
-
                             @endforeach
                         </table>
-                        <p><a class="btn btn-primary" href="{!! route('listingCreate') !!}">Add new listing</a></p>
                     </div>
                 </div>
             </div>

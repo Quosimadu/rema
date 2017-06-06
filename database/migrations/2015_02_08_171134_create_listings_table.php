@@ -19,8 +19,8 @@ class CreateListingsTable extends Migration {
 			$table->tinyInteger('guests')->length(4);
 			$table->tinyInteger('beds')->length(4);
 			$table->text('address');
-            $table->time('checkin_time')->nullable();
-            $table->time('checkout_time')->nullable();
+            $table->time('check_in_time')->nullable();
+            $table->time('check_out_time')->nullable();
             $table->integer('created_by')->unsigned()->nullable();
             $table->integer('changed_by')->unsigned()->nullable();
 			$table->timestamps();

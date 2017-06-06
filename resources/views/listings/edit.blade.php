@@ -58,23 +58,23 @@
 
                         <div class="form-group">
                             <div class="col-md-2">
-                                {!! Form::label('checkin_time', 'Check-in time', array('class' => 'control-label')) !!}
+                                {!! Form::label('check_in_time', 'Check-in time', array('class' => 'control-label')) !!}
                             </div>
                             <div class="col-md-2">
-                                {!! Form::text('checkin_time', $listing->checkin_time, $attributes = array('class'
-                                => 'form-control date', 'id' => 'checkin_time', 'placeholder' => '16:00')) !!}
-                                {!! $errors->first('checkin_time', '
+                                {!! Form::text('check_in_time', $listing->check_in_time, $attributes = array('class'
+                                => 'form-control date', 'id' => 'check_in_time', 'placeholder' => '16:00')) !!}
+                                {!! $errors->first('check_in_time', '
                                 <div class="note note-error">:message</div>
                                 ') !!}
                             </div>
                             <div class="col-md-2  col-md-offset-2">
-                                {!! Form::label('checkout_time', 'Check-out time', array('class' => 'control-label'))
+                                {!! Form::label('check_out_time', 'Check-out time', array('class' => 'control-label'))
                                 !!}
                             </div>
                             <div class="col-md-2">
-                                {!! Form::text('checkout_time', $listing->checkout_time, $attributes = array('class'
-                                => 'form-control date', 'id' => 'checkout_time', 'placeholder' => '10:00')) !!}
-                                {!! $errors->first('checkout_time', '
+                                {!! Form::text('check_out_time', $listing->check_out_time, $attributes = array('class'
+                                => 'form-control date', 'id' => 'check_out_time', 'placeholder' => '10:00')) !!}
+                                {!! $errors->first('check_out_time', '
                                 <div class="note note-error">:message</div>
                                 ') !!}
                             </div>

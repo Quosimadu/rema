@@ -20,7 +20,6 @@
                         {!! Form::hidden('platform_id', $booking->platform_id) !!}
 
 
-
                         <div class="form-group">
                             {!! Form::label('listing_id', 'Listing', array('class' => 'col-md-1 control-label')) !!}
 
@@ -133,8 +132,6 @@
                         </div>
 
 
-
-
                         <div class="form-group">
                             {!! Form::label('comment', 'Comment', array('class' => 'col-md-1 control-label')) !!}
 
@@ -145,7 +142,6 @@
                                 <div class="note note-error">:message</div>
                                 ') !!}
                             </div>
-
 
 
                             {!! Form::label('airbnb_conversation_id', 'AirBnB Conversation ID', array('class' =>
@@ -161,23 +157,26 @@
                         </div>
 
                         <div class="form-group">
-                        {!! Form::label('booking_status_id', 'Status', array('class' => 'col-md-1 control-label')) !!}
+                            {!! Form::label('booking_status_id', 'Status', array('class' => 'col-md-1 control-label')) !!}
                             <div class="col-md-2">
-                        {!! Form::select('booking_status_id', $bookingStatuses, $booking->booking_status_id,array('class' =>
-                                'form-control')) !!}
-                        {!! $errors->first('booking_status_id', '<div class="note note-error">:message</div>') !!} </div>
-                            </div>
+                                {!! Form::select('booking_status_id', $bookingStatuses, $booking->booking_status_id,array('class' =>
+                                        'form-control')) !!}
+                                {!! $errors->first('booking_status_id', '<div class="note note-error">:message</div>') !!} </div>
+                        </div>
 
                         <div class="form-group">
                             <div class="col-md-4 col-md-offset-1">
                                 {!! Form::submit('Update booking', array('class' => 'btn btn-primary')) !!}
                             </div>
                             <div class="col-md-2 col-md-offset-1">
-                                <a  class="btn btn-default" href="{!! route('bookingDelete', $booking->id) !!}">Delete booking</a>
+                                <a class="btn btn-default" href="{!! route('bookingDelete', $booking->id) !!}">Delete
+                                    booking</a>
                             </div>
 
-                            <div class="pull-right"><a class="btn btn-link" href="{!! route('bookings') !!}">Back to
-                                    bookings overview</a></div>
+                            <div class="pull-right"><a class="btn btn-link" href="{!! route('bookings') !!}"><i
+                                            class="fa fa-arrow-left"
+                                            aria-hidden="true"></i>
+                                    {{ trans('bookings/edit.link_text_back_to_overview') }}</a></div>
                         </div>
                         {!! Form::close() !!}
                     </div>
