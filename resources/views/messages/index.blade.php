@@ -13,12 +13,17 @@
                         <h1>Messages</h1>
                     </div>
                     <div class="panel-body">
-                        <p><a class="" href="{!! route('messages.compose') !!}" title="Compose message"><i class="fa fa-plus-circle fa-2x" aria-hidden="true"></i></a></p>
+                        <p><a class="" href="{!! route('messages.compose') !!}" title="Compose message"><i
+                                        class="fa fa-plus-circle fa-2x" aria-hidden="true"></i></a></p>
                         <table class="table">
                             @foreach($messages as $message)
                                 <tr>
-                                    <td><a href="{!! route('messages.show', $message->id) !!}">{!! \Illuminate\Support\Str::words($message->content, 4, "...") !!}</a></td>
-                                    <td>{!! $message->sender !!} <i class="fa fa-angle-double-right" aria-hidden="true"></i> {!! $message->receiver !!}</td>
+                                    <td>
+                                        <a href="{!! route('messages.show', $message->id) !!}">{!! \Illuminate\Support\Str::words($message->content, 4, "...") !!}</a>
+                                    </td>
+                                    <td>{!! $message->sender !!} <i class="fa fa-angle-double-right"
+                                                                    aria-hidden="true"></i> {!! $message->receiver !!}
+                                    </td>
                                     <td>{!! $message->created_at !!}</td>
                                 </tr>
 
@@ -29,4 +34,38 @@
             </div>
         </div>
     </div>
+@stop
+
+
+@section('javascript')
+    <script>
+        /** pull to reload **/
+        var mouseY = 0;
+        var startMouseY = 0;
+        $('body').on('mousedown', function (ev) {
+            mouseY = ev.pageY;
+            startMouseY = mouseY;
+            $(document).mousemove(function (e) {
+                if (e.pageY > mouseY) {
+                    var d = e.pageY - startMouseY;
+                    console.log("d: " + d);
+                    if (d >= 200)
+                        location.reload();
+                    $('body').css('margin-top', d / 4 + 'px');
+                }
+                else
+                    $(document).unbind("mousemove");
+
+
+            });
+        });
+        $('body').on('mouseup', function () {
+            $('body').css('margin-top', '0px');
+            $(document).unbind("mousemove");
+        });
+        $('body').on('mouseleave', function () {
+            $('body').css('margin-top', '0px');
+            $(document).unbind("mousemove");
+        });
+    </script>
 @stop

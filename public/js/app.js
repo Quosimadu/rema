@@ -788,12 +788,35 @@ window.Vue = __webpack_require__(37);
 Vue.component('example', __webpack_require__(34));
 
 var app = new Vue({
-  el: '#app'
+    el: '#app'
 });
 
 /** TODO: include select2 properly
  * require('../../../node_modules/select2/src/js/jquery.select2');
  */
+
+var mouseY = 0;
+var startMouseY = 0;
+$('body').on('mousedown', function (ev) {
+    mouseY = ev.pageY;
+    startMouseY = mouseY;
+    $(document).mousemove(function (e) {
+        if (e.pageY > mouseY) {
+            var d = e.pageY - startMouseY;
+            console.log("d: " + d);
+            if (d >= 200) location.reload();
+            $('body').css('margin-top', d / 4 + 'px');
+        } else $(document).unbind("mousemove");
+    });
+});
+$('body').on('mouseup', function () {
+    $('body').css('margin-top', '0px');
+    $(document).unbind("mousemove");
+});
+$('body').on('mouseleave', function () {
+    $('body').css('margin-top', '0px');
+    $(document).unbind("mousemove");
+});
 
 /***/ }),
 /* 9 */
