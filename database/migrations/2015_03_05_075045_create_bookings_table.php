@@ -24,7 +24,7 @@ class CreateBookingsTable extends Migration {
 			$table->string('guest_language', 2)->nullable();
 			$table->integer('platform_id')->length(10)->default(1)->unsigned();
 			$table->tinyInteger('booking_status_id')->default(1)->unsigned();
-			$table->date('inquiry_date')->nullable();
+			$table->dateTime('inquiry_date')->nullable();
 			$table->date('arrival_date');
 			$table->time('arrival_time')->nullable();
 			$table->date('departure_date')->nullable();

@@ -1,5 +1,30 @@
 <?php namespace App\Models;
 
+/**
+ * Class Booking
+ * @package App\Models
+ * @property int $id
+ * @property string $guest_name
+ * @property string $guest_country
+ * @property string $guest_email
+ * @property string $guest_phone
+ * @property int $listing_id
+ * @property int $people
+ * @property int $platform_id
+ * @property int $booking_status_id
+ * @property \DateTime $inquiry_date
+ * @property string $arrival_date
+ * @property string $arrival_time
+ * @property string $departure_date
+ * @property string $departure_time
+ * @property int $airbnb_conversation_id
+ * @property string $comment *
+ * @property int $created_by
+ * @property int $changed_by
+ * @property \DateTime $created_at
+ * @property \DateTime $changed_at
+ * @property \DateTime $deleted_at
+ */
 class Booking extends BaseTable {
 
 	// Add your validation rules here

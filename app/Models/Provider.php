@@ -33,14 +33,4 @@ class Provider extends BaseTable
     protected $searchableColumns = ['first_name', 'last_name', 'mobile'];
 
 
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function($providerTable)
-        {
-            #$baseTable->last_change_user_id = Auth::user()->id;
-        });
-
-    }
 }
