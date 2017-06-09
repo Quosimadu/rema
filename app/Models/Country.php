@@ -16,7 +16,6 @@ use Sofa\Eloquence\Eloquence;
  * @property string $iso_number
  * @property string $name
  * @property int|null $currency_id
- * @property int $status
  * @property int|null $phone_code
  * @property int $created_by
  * @property int $changed_by
@@ -29,6 +28,14 @@ class Country extends BaseTable
     use SoftDeletes;
     use Eloquence;
 
+    protected $guarded = ['id'];
+
     protected $searchableColumns = ['is_code_2', 'is_code_3', 'name'];
+
+    public function currency()
+    {
+
+        return $this->belongsTo('Currency');
+    }
 
 }

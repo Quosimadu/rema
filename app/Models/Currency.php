@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $code
  * @property string|null $symbol_left
  * @property string $symbol_right
- * @property string|null $decimal_point
- * @property string|null $thousands_point
  * @property integer $decimal_places
  * @property int $created_by
  * @property int $changed_by
@@ -23,4 +21,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Currency extends BaseTable
 {
     use SoftDeletes;
+
+    protected $guarded = ['id'];
+
+    // Add your validation rules here
+    public static $rules = [
+        'name' => 'required',
+        'code' => 'required'
+    ];
 }
