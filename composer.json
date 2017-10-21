@@ -19,7 +19,7 @@
     "laravelcollective/html": "*",
     "rap2hpoutre/laravel-log-viewer": "*",
     "simplesoftwareio/simple-sms": "dev-develop",
-    "sofa/eloquence": "~5.3"
+    "sofa/eloquence": "~5.5"
   },
   "require-dev": {
     "filp/whoops": "~2.0",
