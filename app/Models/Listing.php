@@ -46,4 +46,9 @@ class Listing extends BaseTable
         return $this->hasMany('Booking');
     }
 
+    public function timeLogs()
+    {
+        return $this->hasMany('TimeLog');
+    }
+
 }

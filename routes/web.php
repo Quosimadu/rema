@@ -27,6 +27,13 @@ Route::group(['prefix' => 'rooms', 'middleware' => 'auth'], function() {
     Route::post('/store', ['as' => 'listingStore', 'uses' => 'ListingsController@store']);
 });
 
+
+Route::group(['prefix' => 'time_logs', 'middleware' => 'auth'], function() {
+    Route::get('/', ['as' => 'time_logs', 'uses' => 'TimeLogController@index']);
+    Route::any('/add', ['as' => 'timeLogCreate', 'uses' => 'TimeLogController@create']);
+    Route::post('/store', ['as' => 'timeLogStore', 'uses' => 'TimeLogController@store']);
+});
+
 Route::group(['prefix' => 'providers', 'middleware' => 'auth'], function() {
     Route::get('/',  ['as' => 'providers', 'uses' => 'ProvidersController@index']);
     Route::any('/add',  ['as' => 'providerCreate', 'uses' => 'ProvidersController@create']);

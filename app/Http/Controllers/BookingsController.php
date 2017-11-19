@@ -39,9 +39,9 @@ class BookingsController extends BaseController {
 		}
 
 		$bookingQuery = Booking::query()->where('booking_status_id','=',1)->orderBy('arrival_date');
-		if (Session::has('bookings.listing_id')) {
-        $bookingQuery->where('listing_id','=',Session::get('bookings.listing_id'));
-         }
+        if (Session::has('bookings.listing_id')) {
+            $bookingQuery->where('listing_id', '=', Session::get('bookings.listing_id'));
+        }
         if (Session::has('bookings.time')) {
             $bookingQuery->ofTime(Session::get('bookings.time'));
         }

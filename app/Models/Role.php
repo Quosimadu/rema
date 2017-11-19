@@ -2,7 +2,8 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Role extends BaseTable {
+class Role extends BaseTable
+{
 
     // Add your validation rules here
     public static $rules = [
