@@ -70,6 +70,16 @@ class Message extends BaseTable
     {
 
 
+        return $this->forwardMessage();
+
+
+    }
+
+    /**
+     * @return bool
+     */
+    public function forwardMessage(): bool
+    {
         $forwardingRules = MessagingRules::forwardingRules();
 
         if (!isset($forwardingRules[$this->receiver])) {
@@ -84,8 +94,6 @@ class Message extends BaseTable
         }
 
         return true;
-
-
     }
 
 }

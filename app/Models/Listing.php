@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \DateTime $check_in_time
  * @property \DateTime $check_out_time
  * @property int $airbnb_listing_id
+ * @property int $is_active
  * @property int $created_by
  * @property int $changed_by
  * @property \DateTime $created_at
@@ -34,7 +35,7 @@ class Listing extends BaseTable
     ];
 
     // Don't forget to fill this array
-    protected $fillable = ['name', 'guests', 'beds', 'address', 'check_in_time', 'check_out_time', 'airbnb_listing_id'];
+    protected $fillable = ['name', 'guests', 'beds', 'address', 'check_in_time', 'check_out_time', 'airbnb_listing_id', 'is_active'];
 
     protected $guarded = ['id'];
 

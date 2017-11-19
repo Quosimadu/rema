@@ -95,6 +95,17 @@
                         </div>
 
                         <div class="form-group">
+                            <div class="col-md-2">
+                                {!! Form::label('is_active', 'Status', ['class' => 'control-label']) !!}
+                            </div>
+                            <div class="col-md-6">
+                                {!! Form::hidden('is_active', 0) !!}
+                                {!! Form::checkbox('is_active', 1, $listing->is_active, $attributes = ['class' =>
+                                'checkbox', 'id' => 'is_active']) !!}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <div class="col-md-4 col-md-offset-2">
                                 {!! Form::submit('Update listing', array('class' => 'btn btn-primary')) !!}
 

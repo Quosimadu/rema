@@ -25,6 +25,7 @@ class CreateListingsTable extends Migration {
             $table->integer('changed_by')->unsigned()->nullable();
 			$table->timestamps();
 			$table->string('airbnb_listing_id', 20)->nullable();
+            $table->tinyInteger('is_active')->default(1)->unsigned();
 			$table->softDeletes();
 		});
 	}

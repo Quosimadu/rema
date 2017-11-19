@@ -28,6 +28,10 @@
                                 <a href="https://www.airbnb.com/manage-listing/{!! $listing->airbnb_listing_id !!}/calendar">AirBnB calendar</a>
                             </p>
                         @endif
+                        @if (!$listing->is_active)
+                            <p>Listing is inactive
+                            </p>
+                        @endif
                     </div>
                 </div>
             </div>
