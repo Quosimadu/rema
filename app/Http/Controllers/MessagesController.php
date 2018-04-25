@@ -111,8 +111,7 @@ class MessagesController extends BaseController
 
         $success = $incomingMessage->save();
 
-
-        $incomingMessage->processMessage();
+        event(new IncomingMessageEvent($incomingMessage));
 
         if (!$success) {
             Log::warning('Message saving failed: ' . json_encode($incomingMessage));

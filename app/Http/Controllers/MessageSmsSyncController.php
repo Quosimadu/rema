@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\IncomingMessageEvent;
 use DB;
 use Illuminate\Http\JsonResponse;
 use Log;
@@ -276,8 +277,7 @@ class MessageSmsSyncController extends Controller
 
         $success = $incomingMessage->save();
 
-
-        $incomingMessage->processMessage();
+        event(new IncomingMessageEvent($incomingMessage));
 
         if (!$success) {
             Log::warning('Message saving failed: ' . json_encode($incomingMessage));

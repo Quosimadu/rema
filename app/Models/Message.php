@@ -1,5 +1,6 @@
 <?php namespace App\Models;
 
+use App\Mail\ForwardedSms;
 use Log;
 use SimpleSoftwareIO\SMS\Facades\SMS;
 
@@ -80,20 +81,39 @@ class Message extends BaseTable
      */
     public function forwardMessage(): bool
     {
-        $forwardingRules = MessagingRules::forwardingRules();
 
-        if (!isset($forwardingRules[$this->receiver])) {
+        $forwardingRules = MessageForwardingRule::where('incoming_destination','=',$this->receiver)
+            ->get(['provider', 'forwarding_destination']);
+
+        if (!$forwardingRules) {
             return false;
         }
 
-        foreach ($forwardingRules[$this->receiver] as $forwardingRule) {
+        foreach ($forwardingRules as $forwardingRule) {
 
-            self::send($this->content, $forwardingRule['receiver'], $this->receiver);
+            if (MessageForwardingRule::isMobile($forwardingRule->forwarding_destination)) {
+                self::send($this->content, $forwardingRule['receiver'], $this->receiver);
+            }
+
+            if (MessageForwardingRule::isEMail($forwardingRule->forwarding_destination)) {
+                $this->forwardAsEmail($forwardingRule->forwarding_destination);
+            }
 
 
         }
 
         return true;
+    }
+
+    public function forwardAsEmail ($mailReceiver)
+    {
+
+            Mail::to($mailReceiver)
+                ->send(new ForwardedSms($this));
+
+            Log::info('Forwarded message from ' . $this->sender . ' to ' . $mailReceiver);
+
+
     }
 
 }
