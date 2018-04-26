@@ -1,6 +1,6 @@
 <h2>SMS message received</h2>
 @component('mail::panel')
-    Message: {{ $textMessage->content }}
+    {{ $textMessage->content }}
 @endcomponent
 <p>At: {{ $textMessage->created_at }}<br/>
     From: {{ $textMessage->sender }}<br/>
