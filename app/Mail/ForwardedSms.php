@@ -15,16 +15,16 @@ class ForwardedSms extends Mailable
     /**
      * @var Message
      */
-    public $message;
+    public $textMessage;
+
 
     /**
-     * Create a new message instance.
-     *
-     * @return void
+     * ForwardedSms constructor.
+     * @param Message $message
      */
-    public function __construct(Message $message)
+    public function __construct(Message $textMessage)
     {
-        $this->message = $message;
+        $this->textMessage = $textMessage;
     }
 
     /**
