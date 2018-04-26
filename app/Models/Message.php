@@ -95,7 +95,7 @@ class Message extends BaseTable
         foreach ($forwardingRules as $forwardingRule) {
 
             if (MessageForwardingRule::isMobile($forwardingRule->forwarding_destination)) {
-                self::send($this->content, $forwardingRule->forwarding_destination, $this->receiver);
+                self::send($this->content, $forwardingRule->forwarding_destination, $this->receiver, $forwardingRule->provider);
             }
 
             if (MessageForwardingRule::isEMail($forwardingRule->forwarding_destination)) {
