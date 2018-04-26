@@ -3,7 +3,7 @@
 use App\Mail\ForwardedSms;
 use Log;
 use SimpleSoftwareIO\SMS\Facades\SMS;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Class Message

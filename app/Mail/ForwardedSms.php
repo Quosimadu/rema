@@ -34,6 +34,6 @@ class ForwardedSms extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.message_to_email');
+        return $this->markdown('emails.message_to_email');
     }
 }
