@@ -34,6 +34,10 @@ class ForwardedSms extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.message_to_email');
+
+        $subject = trans('messages/forwarding.email_subject', ['sender' => $this->textMessage->sender]);
+
+        return $this->subject($subject)
+            ->markdown('emails.message_to_email');
     }
 }

@@ -1,10 +1,10 @@
-SMS message received
+<h2>SMS message received</h2>
 
 @component('mail::panel')
-At: {{ $textMessage->created_at }}
-From: {{ $textMessage->sender }}
-To: {{ $textMessage->receiver }}
-Message: {{ $textMessage->content }}
+<p>At: {{ $textMessage->created_at }}<br/>
+From: {{ $textMessage->sender }}<br/>
+To: {{ $textMessage->receiver }}<br/>
+Message: {{ $textMessage->content }}</p>
 @endcomponent
 
-Sent by {{ config('app.name') }}
+<p><i>Sent by {{ config('app.name') }}</i></p>
