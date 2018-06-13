@@ -72,4 +72,9 @@ class Booking extends BaseTable {
         return $query;
     }
 
+    public function resolution()
+    {
+        return $this->hasOne(Resolution::class, 'booking_id');
+    }
+
 }

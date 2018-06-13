@@ -87,6 +87,10 @@ Route::group(['middleware' => ['auth', 'permissions:admin']], function () {
     });
 
     Route::get('logs', ['uses' => '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index']);
+
+    Route::group(['prefix' => 'accounting'], function () {
+        Route::get('/', ['as' => 'accounting', 'uses' => 'AccountingController@index']);
+    });
 });
 
 

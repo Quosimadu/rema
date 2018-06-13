@@ -165,6 +165,13 @@
                         </div>
 
                         <div class="form-group">
+                            {!! Form::label('resolution_id', 'Resolution', array('class' => 'col-md-1 control-label')) !!}
+                            <div class="col-md-2">
+                                {!! Form::select('resolution_id', $resolutions->prepend('', ''), optional($booking->resolution)->id, array('class' => 'form-control')) !!}
+                                {!! $errors->first('resolution_id', '<div class="note note-error">:message</div>') !!} </div>
+                        </div>
+
+                        <div class="form-group">
                             <div class="col-md-4 col-md-offset-1">
                                 {!! Form::submit('Update booking', array('class' => 'btn btn-primary')) !!}
                             </div>

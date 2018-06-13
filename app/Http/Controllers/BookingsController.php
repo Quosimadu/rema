@@ -4,7 +4,8 @@ use App\Http\Controllers\BaseController;
 use App\Models\Booking;
 use App\Models\BookingStatus;
 use App\Models\Listing;
-use Illuminate\Support\Facades\Request;
+use App\Models\Resolution;
+use Illuminate\Http\Request;
 use Session;
 
 class BookingsController extends BaseController {
@@ -107,10 +108,13 @@ class BookingsController extends BaseController {
 	public function edit($id)
 	{
 		$booking = Booking::find($id);
+
 		$listings = Listing::query()->orderBy('name')->get(['id','name'])->pluck('name', 'id');
 		$bookingStatuses = BookingStatus::all(['id','name'])->pluck('name', 'id');
 
-		return \View::make('bookings.edit', compact('booking','listings','bookingStatuses'));
+		$resolutions = Resolution::pluck('code', 'id');
+
+		return \View::make('bookings.edit', compact('booking','listings','bookingStatuses', 'resolutions'));
 	}
 
 	/**
@@ -119,7 +123,7 @@ class BookingsController extends BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $request, $id)
 	{
 		$booking = Booking::findOrFail($id);
 
@@ -131,6 +135,14 @@ class BookingsController extends BaseController {
 		}
 
 		$booking->update($data);
+
+		if ($request->filled('resolution_id')) {
+		    $resolution = Resolution::findOrFail($request->input('resolution_id'));
+		    $resolution->booking_id = $id;
+		    $resolution->save();
+        } else {
+		    Resolution::where('booking_id', $id)->update(['booking_id' => null]);
+        }
 
 		return \Redirect::route('bookings');
 	}

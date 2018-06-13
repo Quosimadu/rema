@@ -58,6 +58,7 @@
                     <li><a href="{{ route('providers') }}">Providers</a></li>
                     <li><a href="{{ route('listings') }}">Listings</a></li>
                     <li><a href="{{ route('reports') }}">Reports</a></li>
+                    <li><a href="{{ route('accounting') }}">Accounting</a></li>
                 </ul>
                 @endif
 
