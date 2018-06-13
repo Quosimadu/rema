@@ -16,6 +16,7 @@ class CreateTableResolutions extends Migration
         Schema::create('resolutions', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('booking_id')->length(10)->unsigned()->nullable();
+            $table->date('date')->nullable();
             $table->string('code', 50)->nullable();
             $table->integer('created_by')->unsigned()->nullable();
             $table->integer('changed_by')->unsigned()->nullable();
