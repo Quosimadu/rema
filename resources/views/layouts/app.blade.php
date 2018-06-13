@@ -41,8 +41,9 @@
             </div>
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                @if (!Auth::guest())
                 <ul class="nav navbar-nav">
-                    <!-- <li><a href="{{ route('bookings') }}">Bookings</a></li> //-->
+                    <li><a href="{{ route('bookings') }}">Bookings</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown" data-toggle="dropdown" role="button" aria-expanded="false">Messages<span
                                     class="caret"></span></a>
@@ -54,17 +55,16 @@
                             <li><a href="{{ route('message_senders') }}">Senders</a></li>
                         </ul>
                     </li>
-                    <!--
                     <li><a href="{{ route('providers') }}">Providers</a></li>
                     <li><a href="{{ route('listings') }}">Listings</a></li>
                     <li><a href="{{ route('reports') }}">Reports</a></li>
-                    //-->
                 </ul>
+                @endif
 
                 <ul class="nav navbar-nav navbar-right">
                     @if (Auth::guest())
-                        <li><a href="{{ url('/auth/login') }}">Login</a></li>
-                        <li><a href="{{ url('/auth/register') }}">Register</a></li>
+                        <li><a href="{{ route('login') }}">Login</a></li>
+                        <li><a href="{{ route('register') }}">Register</a></li>
                     @else
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
