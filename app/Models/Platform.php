@@ -2,6 +2,8 @@
 
 class Platform extends BaseTable {
 
+    const ID_AIRBNB = 1;
+
 	// Add your validation rules here
 	public static $rules = [
 		'name' => 'required'

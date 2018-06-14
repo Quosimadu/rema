@@ -85,14 +85,8 @@
             </div>
         </div>
     </nav>
-    @if (count($errors))
-        <div class="alert alert-warning">
-            @foreach ($errors->all() as $error)
-                {{ $error }}<br/>
-            @endforeach
-        </div>
-    @endif
-@yield('content')
+    @include('components.notifications')
+    @yield('content')
 </div>
 <!-- Scripts -->
     <script src="{{ elixir('js/app.js') }}"></script>

@@ -4,6 +4,7 @@
  * Class Booking
  * @package App\Models
  * @property int $id
+ * @property string $confirmation_code
  * @property string $guest_name
  * @property string $guest_country
  * @property string $guest_email
@@ -13,6 +14,7 @@
  * @property int $platform_id
  * @property int $booking_status_id
  * @property \DateTime $inquiry_date
+ * @property int $nights
  * @property string $arrival_date
  * @property string $arrival_time
  * @property string $departure_date
@@ -37,13 +39,18 @@ class Booking extends BaseTable {
 	];
 
 	// Don't forget to fill this array
-	protected $fillable = ['guest_name','guest_country','guest_email','guest_phone',
+	protected $fillable = ['confirmation_code','guest_name','guest_country','guest_email','guest_phone',
 		'listing_id','people','platform_id','booking_status_id',
-		'inquiry_date','arrival_date','arrival_time','departure_date','departure_time',
+		'inquiry_date','nights', 'arrival_date','arrival_time','departure_date','departure_time',
 		'airbnb_conversation_id',
 		'comment'];
 
 	protected $guarded = ['id'];
+
+    protected $casts = [
+        'arrival_date' => 'date',
+        'departure_dat' => 'date',
+    ];
 
 
 	public function bookingStatus()

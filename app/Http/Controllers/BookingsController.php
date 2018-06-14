@@ -4,6 +4,8 @@ use App\Http\Controllers\BaseController;
 use App\Models\Booking;
 use App\Models\BookingStatus;
 use App\Models\Listing;
+use App\Models\Payment;
+use App\Models\PaymentType;
 use App\Models\Resolution;
 use Illuminate\Http\Request;
 use Session;
@@ -140,8 +142,15 @@ class BookingsController extends BaseController {
 		    $resolution = Resolution::findOrFail($request->input('resolution_id'));
 		    $resolution->booking_id = $id;
 		    $resolution->save();
+
+            Payment::where('resolution_id', $request->input('resolution_id'))
+                ->where('type_id', PaymentType::ID_RESOLUTION)
+                ->update(['booking_id' => $id]);
         } else {
 		    Resolution::where('booking_id', $id)->update(['booking_id' => null]);
+		    Payment::where('booking_id', $id)
+                ->where('type_id', PaymentType::ID_RESOLUTION)
+                ->update(['booking_id' => null]);
         }
 
 		return \Redirect::route('bookings');

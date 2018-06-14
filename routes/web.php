@@ -90,6 +90,7 @@ Route::group(['middleware' => ['auth', 'permissions:admin']], function () {
 
     Route::group(['prefix' => 'accounting'], function () {
         Route::get('/', ['as' => 'accounting', 'uses' => 'AccountingController@index']);
+        Route::any('/airbnbImport', ['as' => 'airbnbImport', 'uses' => 'AccountingController@airbnbImport']);
     });
 });
 

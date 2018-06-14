@@ -2,6 +2,8 @@
 
 class BookingStatus extends BaseTable {
 
+    const ID_valid = 1;
+
 	// Add your validation rules here
 	public static $rules = [
 		 'name' => 'required'

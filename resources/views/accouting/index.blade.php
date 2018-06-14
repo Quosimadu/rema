@@ -14,7 +14,11 @@
                     </div>
 
                     <div class="panel-body">
-                        <?php /*
+                        <div class="row">
+                            <a class="btn btn-primary" href="{{ route('airbnbImport') }}">Airbnb CSV Import</a>
+                        </div>
+
+                        @if ($bookings->count())
                         <table class="table">
                             <thead>
                             <tr>
@@ -35,7 +39,8 @@
 
                             @endforeach
                         </table>
-*/ ?>
+                        {{ $bookings->links() }}
+                        @endif
                     </div>
                 </div>
             </div>

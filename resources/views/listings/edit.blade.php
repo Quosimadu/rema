@@ -25,6 +25,16 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-2">
+                                {!! Form::label('airbnb_name', 'Airbnb Name', array('class' => 'control-label')) !!}
+                            </div>
+                            <div class="col-md-8">
+                                {!! Form::text('airbnb_name', $listing->airbnb_name, $attributes = array('class' => 'form-control',
+                                'id' =>
+                                'airbnb_name', 'placeholder' => 'airbnb name')) !!}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-2">
                                 {!! Form::label('beds', 'Beds', array('class' => 'control-label')) !!}
                             </div>
                             <div class="col-md-2">
@@ -102,6 +112,18 @@
                                 {!! Form::hidden('is_active', 0) !!}
                                 {!! Form::checkbox('is_active', 1, $listing->is_active, $attributes = ['class' =>
                                 'checkbox', 'id' => 'is_active']) !!}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                {!! Form::label('split', 'Split JSON', array('class' => 'control-label')) !!}
+                            </div>
+                            <div class="col-md-6">
+                                {!! Form::textarea('split', $listing->getOriginal('split'), $attributes = array('class' => 'form-control', 'id' => 'split', 'placeholder' => '{"M91":40,"M92":60}', 'rows' => 3)) !!}
+                                {!! $errors->first('split', '
+                                <div class="note note-error">:message</div>
+                                ') !!}
                             </div>
                         </div>
 

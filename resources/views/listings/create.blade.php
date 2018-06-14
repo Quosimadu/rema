@@ -28,6 +28,17 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-2">
+                                {!! Form::label('airbnb_name', 'Airbnb Name', array('class' => 'control-label')) !!}
+                            </div>
+                            <div class="col-md-8">
+                                {!! Form::text('airbnb_name', \Request::old('airbnb_name'), $attributes = array('class' =>
+                                'form-control', 'id' => 'airbnb_name', 'placeholder' => 'airbnb name')) !!}
+                                {!! $errors->first('airbnb_name', '<div class="note note-error">:message</div>') !!}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-2">
                                 {!! Form::label('beds', 'Beds', array('class' => 'control-label')) !!}
                             </div>
                             <div class="col-md-2">
@@ -93,6 +104,18 @@
                                 {!! Form::text('airbnb_listing_id', \Request::old('airbnb_listing_id'), $attributes = array('class' =>
                                 'form-control', 'id' => 'airbnb_listing_id', 'placeholder' => '172846')) !!}
                                 {!! $errors->first('airbnb_listing_id', '
+                                <div class="note note-error">:message</div>
+                                ') !!}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                {!! Form::label('split', 'Split JSON', array('class' => 'control-label')) !!}
+                            </div>
+                            <div class="col-md-6">
+                                {!! Form::textarea('split', \Request::old('split'), $attributes = array('class' => 'form-control', 'id' => 'split', 'placeholder' => '{"M91":40,"M92":60}', 'rows' => 3)) !!}
+                                {!! $errors->first('split', '
                                 <div class="note note-error">:message</div>
                                 ') !!}
                             </div>
