@@ -15,7 +15,7 @@ class ListingsController extends BaseController {
 	 */
 	public function index()
 	{
-		$listings = Listing::all();
+		$listings = Listing::all()->sortBy('name');
 
 		return \View::make('listings.index', compact('listings'));
 	}
