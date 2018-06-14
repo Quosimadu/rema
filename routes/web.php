@@ -89,8 +89,9 @@ Route::group(['middleware' => ['auth', 'permissions:admin']], function () {
     Route::get('logs', ['uses' => '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index']);
 
     Route::group(['prefix' => 'accounting'], function () {
-        Route::get('/', ['as' => 'accounting', 'uses' => 'AccountingController@index']);
+        Route::any('/', ['as' => 'accounting', 'uses' => 'AccountingController@index']);
         Route::any('/airbnbImport', ['as' => 'airbnbImport', 'uses' => 'AccountingController@airbnbImport']);
+        Route::any('/xmlExport', ['as' => 'xmlExport', 'uses' => 'AccountingController@xmlExport']);
     });
 });
 

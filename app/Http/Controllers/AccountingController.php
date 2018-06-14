@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Accounting;
 use App\Models\Booking;
 use App\Models\BookingStatus;
 use App\Models\Listing;
@@ -10,17 +11,52 @@ use App\Models\PaymentType;
 use App\Models\Platform;
 use App\Models\Resolution;
 use Carbon\Carbon;
+use File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use PHPExcel_IOFactory;
 use Validator;
 
 class AccountingController extends Controller {
 
-    public function index()
+    public function index(Request $request)
     {
-        $bookings = Booking::paginate(50);
+        if ($request->isMethod('post')) {
+            session()->put('accounting_filters', $request->input('filter'));
+        }
 
-        return view('accouting.index', compact('bookings'));
+        $filters = session('accounting_filters');
+
+        $bookings = Booking::filter($filters)
+            ->orderBy('arrival_date', 'ASC')
+            ->paginate(50);
+
+        $listings = Listing::orderBy('name', 'ASC')
+            ->pluck('name', 'id')
+            ->prepend('[Not assigned]', 'null');
+
+        return view('accouting.index', compact('bookings', 'filters', 'listings'));
+    }
+
+    public function xmlExport(Request $request)
+    {
+        $filters = session('accounting_filters');
+
+        $bookings = Booking::filter($filters)
+            ->orderBy('arrival_date', 'ASC')
+            ->get();
+
+        $accounting = new Accounting();
+        $accounting->addInvoices($bookings);
+
+        $xml = view('accouting.xml_invoice', [
+            'invoices' => $accounting->invoices,
+        ])->render();
+
+        $file = storage_path('app/' . uniqid() . '.xml');
+        File::put($file, $xml);
+
+        return response()->download($file, 'accounting_' . date('Y-m-d_H_i_s') . '.xml')->deleteFileAfterSend(true);
     }
 
     public function airbnbImport(Request $request)
@@ -67,6 +103,9 @@ class AccountingController extends Controller {
                     case 'Reservation':
                         $listing = Listing::where('airbnb_name', $worksheet->getCell($columns['listing'] . $rowNumber)->getValue())->first();
 
+                        $startDate = Carbon::createFromFormat('m/d/Y', $worksheet->getCell($columns['start_date'] . $rowNumber)->getValue());
+                        $nights = $worksheet->getCell($columns['nights'] . $rowNumber)->getValue();
+
                         $booking = Booking::updateOrCreate(
                             [
                                 'confirmation_code' => $worksheet->getCell($columns['confirmation_code'] . $rowNumber)->getValue(),
@@ -76,8 +115,9 @@ class AccountingController extends Controller {
                                 'guest_name'     => $worksheet->getCell($columns['guest'] . $rowNumber)->getValue(),
                                 'platform_id'    => Platform::ID_AIRBNB,
                                 'booking_status' => BookingStatus::ID_valid,
-                                'arrival_date'   => Carbon::createFromFormat('m/d/Y', $worksheet->getCell($columns['start_date'] . $rowNumber)->getValue())->toDateString(),
-                                'nights'         => $worksheet->getCell($columns['nights'] . $rowNumber)->getValue(),
+                                'arrival_date'   => $startDate->toDateString(),
+                                'departure_date' => $startDate->addDays($nights)->toDateString(),
+                                'nights'         => $nights,
                             ]);
 
                         $entryDate = Carbon::createFromFormat('m/d/Y', $worksheet->getCell($columns['date'] . $rowNumber)->getValue())->toDateString();

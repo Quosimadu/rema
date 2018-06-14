@@ -15,8 +15,33 @@
 
                     <div class="panel-body">
                         <div class="row">
-                            <a class="btn btn-primary" href="{{ route('airbnbImport') }}">Airbnb CSV Import</a>
+                            <a class="btn btn-default" href="{{ route('airbnbImport') }}">Airbnb CSV Import</a>
+                            <a class="btn btn-default" href="{{ route('xmlExport') }}">XML Export</a>
                         </div>
+
+                        {!! Form::open(['route' => 'accounting', 'method' => 'post', 'class' => 'form-horizontal']) !!}
+                        <div class="row">
+                            <div class="form-group">
+                                {!! Form::label('filter[date_from]', 'From', array('class' => 'col-md-1 control-label'))!!}
+                                <div class="col-md-2">
+                                    {!! Form::date('filter[date_from]', array_get($filters, 'filter[date_from]'), ['class' => 'form-control']) !!}
+                                </div>
+
+                                {!! Form::label('filter[date_to]', 'To', array('class' => 'col-md-1 control-label'))!!}
+                                <div class="col-md-2">
+                                    {!! Form::date('filter[date_to]', array_get($filters, 'filter[date_to]'), ['class' => 'form-control']) !!}
+                                </div>
+
+                                {!! Form::label('filter[listings][]', 'Listings', array('class' => 'col-md-1 control-label'))!!}
+                                <div class="col-md-2">
+                                    {!! Form::select('filter[listings][]', $listings, array_get($filters, 'listings'), ['id' => 'filter[listings][]', 'class' => 'select2-multiple form-control', 'multiple' => 'multiple']) !!}
+                                </div>
+                                <div class="col-md-1">
+                                    {{ Form::submit('Filter', ['class' => 'btn btn-primary']) }}
+                                </div>
+                            </div>
+                        </div>
+                        {{ Form::close() }}
 
                         @if ($bookings->count())
                         <table class="table">
@@ -29,8 +54,8 @@
                             <thead>
                             @foreach($bookings as $booking)
                                 <tr>
-                                    <td>{!! $booking->arrival_date !!}</td>
-                                    <td>{!! $booking->departure_date !!}</td>
+                                    <td>{!! $booking->arrival_date->toDateString() !!}</td>
+                                    <td>{!! $booking->departure_date->toDateString() !!}</td>
                                     <td>
                                         <a href="{!! route('bookingShow', $booking->id) !!}">{!! $booking->guest_name !!}</a>
                                     </td>
@@ -50,7 +75,7 @@
 @section('javascript')
     <script type="text/javascript">
         $(document).ready(function () {
-
+            $('.select2-multiple').select2();
         })
     </script>
 @stop

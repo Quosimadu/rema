@@ -49,23 +49,23 @@ class Booking extends BaseTable {
 
     protected $casts = [
         'arrival_date' => 'date',
-        'departure_dat' => 'date',
+        'departure_date' => 'date',
     ];
 
 
 	public function bookingStatus()
 	{
-		return $this->belongsTo('BookingStatus');
+		return $this->belongsTo(BookingStatus::class);
 	}
 
 	public function listing()
 	{
-		return $this->belongsTo('Listing');
+		return $this->belongsTo(Listing::class);
 	}
 
 	public function platform()
 	{
-		return $this->belongsTo('Platform');
+		return $this->belongsTo(Platform::class);
 	}
 
     public function scopeOfTime($query, $time)
@@ -82,6 +82,49 @@ class Booking extends BaseTable {
     public function resolution()
     {
         return $this->hasOne(Resolution::class, 'booking_id');
+    }
+
+    public function scopeFilter($query, $filters)
+    {
+        if ($dateFrom = array_get($filters, 'date_from')) {
+            $query->where('arrival_date', '>=', $dateFrom);
+        }
+        if ($dateTo = array_get($filters, 'date_to')) {
+            $query->where('departure_date', '>=', $dateTo);
+        }
+        if ($listingsFilter = array_get($filters, 'listings')) {
+            $query->where(function($query) use ($listingsFilter) {
+                if (($key = array_search('null', $listingsFilter)) !== false) {
+                    $query->whereNull('listing_id');
+                    array_forget($listingsFilter, $key);
+                }
+                $query->OrWhereIn('listing_id', $listingsFilter);
+            });
+        }
+
+        return $query;
+    }
+
+    public function paymentHost()
+    {
+        return $this->hasOne(Payment::class)->where('type_id', PaymentType::ID_HOST);
+    }
+
+    public function paymentReservation()
+    {
+        return $this->hasOne(Payment::class)->where('type_id', PaymentType::ID_RESERVATION);
+    }
+    public function paymentCleaning()
+    {
+        return $this->hasOne(Payment::class)->where('type_id', PaymentType::ID_CLEANING);
+    }
+    public function paymentPayout()
+    {
+        return $this->hasOne(Payment::class)->where('type_id', PaymentType::ID_PAYOUT);
+    }
+    public function paymentResolution()
+    {
+        return $this->hasOne(Payment::class)->where('type_id', PaymentType::ID_RESOLUTION);
     }
 
 }

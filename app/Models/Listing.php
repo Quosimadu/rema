@@ -53,9 +53,18 @@ class Listing extends BaseTable
         return $this->hasMany('TimeLog');
     }
 
-    public function getSplitAttribute()
+    public function getCostCenters()
     {
-        return json_decode($this->split);
+        if (!empty($this->split)) {
+            return json_decode($this->split, true);
+        }
+
+        return [$this->cost_center => 100];
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
     }
 
 }
