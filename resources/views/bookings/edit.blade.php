@@ -40,8 +40,15 @@
                                 ') !!}
                             </div>
 
-                            {!! Form::label('guest_name', 'Name', array('class' => 'col-md-1 control-label')) !!}
+                            {!! Form::label('nights', 'Nights', array('class' => 'col-md-1 control-label')) !!}
+                            <div class="col-md-1">
+                                {!! Form::number('nights', $booking->nights, $attributes = array('class' => 'form-control', 'id' => 'nights', 'placeholder' => '2')) !!}
+                                {!! $errors->first('nights', '<div class="note note-error">:message</div>') !!}
+                            </div>
+                        </div>
 
+                        <div class="form-group">
+                            {!! Form::label('guest_name', 'Name', array('class' => 'col-md-1 control-label')) !!}
                             <div class="col-md-4">
                                 {!! Form::text('guest_name', $booking->guest_name, $attributes = array('class' =>
                                 'form-control', 'id' => 'guest_name', 'placeholder' => 'John Doe')) !!}

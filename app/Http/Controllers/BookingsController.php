@@ -110,13 +110,13 @@ class BookingsController extends BaseController {
 	 */
 	public function edit($id)
 	{
-		$booking = Booking::find($id);
+		$booking = Booking::findOrFail($id);
 
 		$listings = Listing::query()->orderBy('name')->get(['id','name'])->pluck('name', 'id');
 		$bookingStatuses = BookingStatus::all(['id','name'])->pluck('name', 'id');
 
 		$resolutions = Resolution::orderBy('date', 'DESC')
-            ->select([DB::raw("CONCAT(code, ' : ', date) as title"), 'id'])
+            ->select([DB::raw("CONCAT(code, ' (', date, ') Assigned booking ID: ', IFNULL(booking_id, '')) as title"), 'id'])
             ->pluck('title', 'id');
 
 		return \View::make('bookings.edit', compact('booking','listings','bookingStatuses', 'resolutions'));

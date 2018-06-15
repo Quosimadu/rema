@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use InvalidArgumentException;
 use PHPExcel_IOFactory;
 use Validator;
 
@@ -125,6 +126,7 @@ class AccountingController extends Controller {
 
             return redirect()->route('accounting')->with('success', trans('accounting.success_rows_processed', ['total' => $recordsUpdated]));
         }
+
         return view('accouting.accouting_xml_import');
     }
 
@@ -175,11 +177,18 @@ class AccountingController extends Controller {
 
             $recordsUpdated = 0;
             $warnings = $errors = [];
+            $lastPayout = null;
 
             foreach ($worksheet->getRowIterator() as $row) {
                 $rowNumber = $row->getRowIndex();
+                if ($rowNumber == 1) {
+                    continue;
+                }
 
-                if ($rowNumber < 3) {
+                try {
+                    $entryDate = Carbon::createFromFormat('m/d/Y', $worksheet->getCell($columns['date'] . $rowNumber)->getValue())->toDateString();
+                } catch (InvalidArgumentException  $e) {
+                    $errors[] = trans('accounting.text_line', ['line' => $rowNumber]) . ': ' . trans('accounting.error_invalid_date_format');
                     continue;
                 }
 
@@ -190,6 +199,10 @@ class AccountingController extends Controller {
                         if (empty($listing)) {
                             $errors[] = trans('accounting.text_line', ['line' => $rowNumber]) . ': ' . trans('accounting.error_listing_not_matched');
                             continue;
+                        }
+
+                        if (empty($lastPayout)) {
+                            $warnings[] = trans('accounting.text_line', ['line' => $rowNumber]) . ': ' . trans('accounting.warning_no_payout_found');
                         }
 
                         $startDate = Carbon::createFromFormat('m/d/Y', $worksheet->getCell($columns['start_date'] . $rowNumber)->getValue());
@@ -209,30 +222,65 @@ class AccountingController extends Controller {
                                 'nights'         => $nights,
                             ]);
 
-                        $entryDate = Carbon::createFromFormat('m/d/Y', $worksheet->getCell($columns['date'] . $rowNumber)->getValue())->toDateString();
+                        $amount = str_replace(",", ".", $worksheet->getCell($columns['amount'] . $rowNumber)->getValue());
                         Payment::updateOrCreate([
                             'type_id'    => PaymentType::ID_RESERVATION,
                             'booking_id' => $booking->id,
                             'entry_date' => $entryDate,
+                            'payout_id'  => optional($lastPayout)->id,
                         ], [
-                            'amount' => str_replace(",", ".", $worksheet->getCell($columns['amount'] . $rowNumber)->getValue()),
+                            'amount' => $amount,
                         ]);
+                        $lastPayout->totalCalculated += (float)$amount;
 
+                        $amount = str_replace(",", ".", $worksheet->getCell($columns['host_fee'] . $rowNumber)->getValue());
                         Payment::updateOrCreate([
                             'type_id'    => PaymentType::ID_HOST,
                             'booking_id' => $booking->id,
                             'entry_date' => $entryDate,
+                            'payout_id'  => optional($lastPayout)->id,
                         ], [
-                            'amount' => str_replace(",", ".", $worksheet->getCell($columns['host_fee'] . $rowNumber)->getValue()),
+                            'amount' => $amount,
                         ]);
 
+                        $amount = str_replace(",", ".", $worksheet->getCell($columns['cleaning_fee'] . $rowNumber)->getValue());
                         Payment::updateOrCreate([
                             'type_id'    => PaymentType::ID_CLEANING,
                             'booking_id' => $booking->id,
                             'entry_date' => $entryDate,
+                            'payout_id'  => optional($lastPayout)->id,
                         ], [
-                            'amount' => str_replace(",", ".", $worksheet->getCell($columns['cleaning_fee'] . $rowNumber)->getValue()),
+                            'amount' => $amount,
                         ]);
+
+                        $recordsUpdated++;
+                        break;
+                    case 'Resolution Payout':
+                    case 'Resolution Adjustment':
+                        if (empty($lastPayout)) {
+                            $warnings[] = trans('accounting.text_line', ['line' => $rowNumber]) . ': ' . trans('accounting.warning_no_payout_found');
+                        }
+
+                        $code = $worksheet->getCell($columns['details'] . $rowNumber)->getValue();
+                        preg_match('/\d+/', $code, $matches);
+                        $code = $matches[0];
+
+                        $resolution = Resolution::updateOrCreate([
+                            'code' => $code,
+                            'date' => $entryDate,
+                        ]);
+
+                        $amount = str_replace(",", ".", $worksheet->getCell($columns['amount'] . $rowNumber)->getValue());
+                        Payment::updateOrCreate([
+                            'type_id'       => PaymentType::ID_RESOLUTION,
+                            'resolution_id' => $resolution->id,
+                            'entry_date'    => $entryDate,
+                            'payout_id'     => optional($lastPayout)->id,
+                        ], [
+                            'amount' => $amount,
+                        ]);
+
+                        $lastPayout->totalCalculated += (float)$amount;
 
                         $recordsUpdated++;
                         break;
@@ -246,32 +294,23 @@ class AccountingController extends Controller {
                             $accountNumber = $matches[0];
                         }
 
-                        Payment::updateOrCreate([
+                        if (!empty($lastPayout) && number_format($lastPayout->amount, 2) != number_format($lastPayout->totalCalculated, 2)) {
+                            $warnings[] = trans('accounting.text_line', ['line' => $lastPayout->line]) . ': ' . trans('accounting.payout_amounts_do_not_match', [
+                                    'amount'          => $lastPayout->amount,
+                                    'totalCalculated' => $lastPayout->totalCalculated,
+                                    'payout_id'       => $lastPayout->id,
+                                ]);
+                        }
+
+                        $lastPayout = Payment::updateOrCreate([
                             'type_id'        => PaymentType::ID_PAYOUT,
-                            'entry_date'     => Carbon::createFromFormat('m/d/Y', $worksheet->getCell($columns['date'] . $rowNumber)->getValue())->toDateString(),
+                            'entry_date'     => $entryDate,
                             'amount'         => str_replace(",", ".", $worksheet->getCell($columns['paid_out'] . $rowNumber)->getValue()),
                             'account_number' => $accountNumber,
                         ]);
-                        $recordsUpdated++;
-                        break;
-                    case 'Resolution Payout':
-                    case 'Resolution Adjustment':
-                        $code = $worksheet->getCell($columns['details'] . $rowNumber)->getValue();
-                        preg_match('/\d+/', $code, $matches);
-                        $code = $matches[0];
 
-                        $resolution = Resolution::updateOrCreate([
-                            'code' => $code,
-                            'date' => Carbon::createFromFormat('m/d/Y', $worksheet->getCell($columns['date'] . $rowNumber)->getValue())->toDateString(),
-                        ]);
-
-                        Payment::updateOrCreate([
-                            'type_id'       => PaymentType::ID_RESOLUTION,
-                            'resolution_id' => $resolution->id,
-                            'entry_date'    => Carbon::createFromFormat('m/d/Y', $worksheet->getCell($columns['date'] . $rowNumber)->getValue())->toDateString(),
-                        ], [
-                            'amount' => str_replace(",", ".", $worksheet->getCell($columns['amount'] . $rowNumber)->getValue()),
-                        ]);
+                        $lastPayout->totalCalculated = 0;   //assign new variable to calculate totals
+                        $lastPayout->line = $rowNumber;
 
                         $recordsUpdated++;
                         break;
