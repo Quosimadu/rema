@@ -6,6 +6,7 @@ use App\Models\Booking;
 
 class Invoice
 {
+    public $id;
     public $taxDate;
     public $documentDate;
 

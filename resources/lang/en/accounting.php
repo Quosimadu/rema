@@ -9,5 +9,5 @@ return [
     'error_listing_not_matched'                     => 'Counld not match listing',
     'error_unknown_type'                            => 'Unknown type',
     'text_line'                                     => 'Line :line',
-
+    'error_xml_import_can_not_match_booking' => 'Can not match booking. rdc id :number'
 ];

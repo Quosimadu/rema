@@ -82,7 +82,7 @@ class AccountingController extends Controller {
             $accounting->addPayoutInvoice($booking);
         }
 
-        $xml = view('accouting.xml_invoice', [
+        $xml = view('accouting.xml_payout_invoice', [
             'invoices' => $accounting->invoices,
         ])->render();
 
@@ -100,22 +100,28 @@ class AccountingController extends Controller {
             ])->validate();
 
             $xml = File::get($request->file('xml')->getRealPath());
-            $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+
+            //get rid of namespaces
+            $xml = preg_replace('/(<\/?)[a-zA-Z]+:/', '$1', $xml);
+            $xml = simplexml_load_string($xml, 'SimpleXMLElement');
 
             $json = json_encode($xml);
             $data = json_decode($json, true);
 
             $recordsUpdated = 0;
-            if (array_has($data, 'dataPackItem.invoice')) {
-                foreach ($this->getMultiArray(array_get($data, 'dataPackItem.invoice')) as $item) {
-                    $confirmCode = array_get($item, 'invoiceHeader.originalDocument');
-                    $assignedDocument = uniqid();
+            $errors = [];
+            if (array_has($data, 'responsePackItem')) {
+                foreach ($this->getMultiArray(array_get($data, 'responsePackItem')) as $item) {
+                    list($bookingId, $invoiceType) = explode("_", array_get($item, 'invoiceResponse.producedDetails.id'));
+                    $assignedDocument = array_get($item, 'invoiceResponse.producedDetails.number');
 
-                    $booking = Booking::where('confirmation_code', $confirmCode)->first();
+                    $booking = Booking::find($bookingId);
+                    if (empty($booking)) {
+                        $errors[] = trans('accounting.error_xml_import_can_not_match_booking', ['number' => $assignedDocument]);
+                        continue;
+                    }
 
-                    $types = [PaymentType::ID_RESERVATION, PaymentType::ID_CLEANING, PaymentType::ID_HOST];
-
-                    foreach ($types as $typeId) {
+                    foreach (Accounting::getPaymentTypesByInvoiceType($invoiceType) as $typeId) {
                         Payment::where('booking_id', $booking->id)
                             ->where('type_id', $typeId)
                             ->update(['internal_document_number' => $assignedDocument]);
@@ -124,7 +130,10 @@ class AccountingController extends Controller {
                 }
             }
 
-            return redirect()->route('accounting')->with('success', trans('accounting.success_rows_processed', ['total' => $recordsUpdated]));
+            return redirect()
+                ->route('accounting')
+                ->with('success', trans('accounting.success_rows_processed', ['total' => $recordsUpdated]))
+                ->with('error', $errors);
         }
 
         return view('accouting.accouting_xml_import');

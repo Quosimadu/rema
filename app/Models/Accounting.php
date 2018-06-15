@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Accounting\Address;
 use App\Models\Accounting\Invoice;
 use App\Models\Accounting\InvoicePosition;
+use Exception;
 
 class Accounting
 {
@@ -15,35 +16,113 @@ class Accounting
     const ACCOUNT_CLEANING_FEE = 'AirClean';
     const ACCOUNT_PORTAL_FEE = 'PoplAir';
 
+    const INVOICE_TYPE_HOST = 'HOST';
+    const INVOICE_TYPE_PAYOUT = 'PAYOUT';
+    const INVOICE_TYPE_CUSTOMER = 'CUSTOMER';
+    const INVOICE_TYPE_RESOLUTION = 'RESOLUTION';
+
     public $invoices;
+
+    public static function getPaymentTypesByInvoiceType($invoiceType)
+    {
+        switch ($invoiceType) {
+            case self::INVOICE_TYPE_CUSTOMER:
+                return [PaymentType::ID_RESERVATION, PaymentType::ID_CLEANING];
+                break;
+            case self::INVOICE_TYPE_HOST:
+                return [PaymentType::ID_HOST];
+                break;
+            case self::INVOICE_TYPE_PAYOUT:
+                return [PaymentType::ID_PAYOUT];
+                break;
+            case self::INVOICE_TYPE_RESOLUTION:
+                return [PaymentType::ID_RESOLUTION];
+                break;
+            default:
+                throw new Exception('Unrecognised invoice type');
+        }
+    }
+
+    private function getAccountingCoding($type)
+    {
+        switch ($type) {
+            case PaymentType::ID_RESERVATION:
+                return self::ACCOUNT_RESERVATION;
+                break;
+            case PaymentType::ID_HOST:
+                return self::ACCOUNT_PORTAL_FEE;
+                break;
+            case PaymentType::ID_CLEANING:
+                return self::ACCOUNT_CLEANING_FEE;
+                break;
+            case PaymentType::ID_RESOLUTION:
+                return self::ACCOUNT_UNKNOWN;   #TODO
+                break;
+            default:
+                return self::ACCOUNT_UNKNOWN;
+        }
+    }
 
     public function addPayoutInvoice(Booking $booking)
     {
-        $invoice = new Invoice();
+        $internalDocuments = Payment::where('booking_id', $booking->id)
+            ->whereNotNull('internal_document_number')
+            ->groupBy('internal_document_number')
+            ->get();
+        if (!$internalDocuments->count()) {
+            return;
+        }
 
-        $invoice->type = 'TODO';
-        $invoice->vatClassification = 'inland';
-        $invoice->documentDate = $booking->arrival_date;
-        $invoice->taxDate = $booking->arrival_date;
-        $invoice->accountingDate = $booking->arrival_date;
-        $invoice->reference = $booking->confirmation_code;
-        $invoice->accountingCoding = self::ACCOUNT_PORTAL_FEE . optional($booking->listing->account)->accounting_suffix;
-        $invoice->text = $booking->confirmation_code . ', Provize ' . $booking->platform->name . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
+        foreach ($internalDocuments as $internalDocument) {
+            $invoice = new Invoice();
 
-        $address = new Address();
-        $address->name = $booking->platform->name;
-        $invoice->partner = $address;
+            $invoice->id = $booking->id . '_' . self::INVOICE_TYPE_PAYOUT . '_' . $internalDocument->internal_document_number;
+            $invoice->type = $internalDocument->internal_document_number;
+            $invoice->vatClassification = 'nonSubsume';
+            $invoice->documentDate = $booking->arrival_date;
+            $invoice->taxDate = $booking->arrival_date;
+            $invoice->accountingDate = $booking->arrival_date;
+            $invoice->reference = $booking->confirmation_code;
+            $invoice->accountingCoding = $this->getAccountingCoding($internalDocument->type_id) . optional($booking->listing->account)->accounting_suffix;
+            $invoice->text = $booking->confirmation_code . ', Provize ' . $booking->platform->name . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
 
-        $costCenters = $booking->listing->getCostCenters();
+            $address = new Address();
+            $address->name = 'Airbnb Ireland UC, private unlimited company';
+            $address->city = 'Dublin 4';
+            $address->street = 'The Watermarque Building, South Lotts Road';
+            $invoice->partner = $address;
 
-        foreach ($costCenters as $costCenter => $splitPercent) {
-            $invoice->costCenter = $costCenter;
-            $invoice->positions[] = $this->getPayoutPosition($booking, $costCenter, $splitPercent);
+            $costCenters = $booking->listing->getCostCenters();
 
-            $this->invoices[] = $invoice;
+            $paymentsWithDocumentAssigned = Payment::where('booking_id', $booking->id)
+                ->where('internal_document_number', $internalDocument->internal_document_number)
+                ->get();
 
-            $invoice = clone $invoice;
-            $invoice->positions = [];
+            foreach ($costCenters as $costCenter => $splitPercent) {
+                $invoice->costCenter = $costCenter;
+
+                foreach ($paymentsWithDocumentAssigned as $payment) {
+
+                    $position = new InvoicePosition();
+                    $position->text = 'Úhrada OP č. ' . $payment->internal_document_number;
+                    $position->quantity = 1;
+                    $hasVat = $this->vatIncluded($booking->nights);
+                    $position->vatClassification = $hasVat ? 'nonSubsume' : 'inland';
+                    $position->accountingCoding = $this->getAccountingCoding($payment->type_id);
+                    $price = $this->calculatePrice($payment->amount, $splitPercent, false);
+                    $position->price = $price['price'];
+                    $position->priceVat = $price['vat'];
+                    $position->note = '';
+                    $position->costCenter = $costCenter;
+
+                    $invoice->positions[] = $position;
+                }
+
+                $this->invoices[] = $invoice;
+
+                $invoice = clone $invoice;
+                $invoice->positions = [];
+            }
         }
     }
 
@@ -51,17 +130,18 @@ class Accounting
     {
         $invoice = new Invoice();
 
+        $invoice->id = $booking->id . '_' . self::INVOICE_TYPE_HOST;
         $invoice->type = 'commitment';
         $invoice->vatClassification = 'inland';
         $invoice->documentDate = $booking->arrival_date;
         $invoice->taxDate = $booking->arrival_date;
         $invoice->accountingDate = $booking->arrival_date;
         $invoice->reference = $booking->confirmation_code;
-        $invoice->accountingCoding = self::ACCOUNT_PORTAL_FEE . optional($booking->listing->account)->accounting_suffix;
+        $invoice->accountingCoding = $this->getAccountingCoding(PaymentType::ID_HOST) . optional($booking->listing->account)->accounting_suffix;
         $invoice->text = $booking->confirmation_code . ', Provize ' . $booking->platform->name . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
 
         $address = new Address();
-        $address->name = $booking->platform->name;
+        $address->name = 'AirBnB, Inc.';
         $invoice->partner = $address;
 
         $costCenters = $booking->listing->getCostCenters();
@@ -81,13 +161,14 @@ class Accounting
     {
         $invoice = new Invoice();
 
+        $invoice->id = $booking->id . '_' . self::INVOICE_TYPE_CUSTOMER;
         $invoice->type = 'receivable';
         $invoice->vatClassification = 'nonSubsume';
         $invoice->documentDate = $booking->arrival_date;
         $invoice->taxDate = $booking->arrival_date;
         $invoice->accountingDate = $booking->arrival_date;
         $invoice->reference = $booking->confirmation_code;
-        $invoice->accountingCoding = self::ACCOUNT_RESERVATION . optional($booking->listing->account)->accounting_suffix;
+        $invoice->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESERVATION) . optional($booking->listing->account)->accounting_suffix;
         $invoice->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
 
         $address = new Address();
@@ -108,29 +189,13 @@ class Accounting
         }
     }
 
-    private function getPayoutPosition(Booking $booking, $costCenter, $splitPercent = null)
-    {
-        $position = new InvoicePosition();
-        $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
-        $position->quantity = 1;
-        $position->vatClassification = 'inland';
-        $position->accountingCoding = self::ACCOUNT_PORTAL_FEE;
-        $price = $this->calculatePrice(optional($booking->paymentPayout)->amount, $splitPercent, false);
-        $position->price = $price['price'];
-        $position->priceVat = $price['vat'];
-        $position->note = 'Provize ' . $booking->platform->name;
-        $position->costCenter = $costCenter;
-
-        return $position;
-    }
-
     private function getHostFeePosition(Booking $booking, $costCenter, $splitPercent = null)
     {
         $position = new InvoicePosition();
         $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
         $position->quantity = 1;
         $position->vatClassification = 'inland';
-        $position->accountingCoding = self::ACCOUNT_PORTAL_FEE;
+        $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_HOST);
         $price = $this->calculatePrice(optional($booking->paymentHost)->amount, $splitPercent, false);
         $position->price = $price['price'];
         $position->priceVat = $price['vat'];
@@ -147,7 +212,7 @@ class Accounting
         $position->quantity = 1;
         $hasVat = $this->vatIncluded($booking->nights);
         $position->vatClassification = $hasVat ? 'nonSubsume' : 'inland';
-        $position->accountingCoding = self::ACCOUNT_RESERVATION . optional($booking->listing->account)->accounting_suffix;
+        $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESERVATION) . optional($booking->listing->account)->accounting_suffix;
         $price = $this->calculatePrice(optional($booking->paymentReservation)->amount, $splitPercent, $hasVat);
         $position->price = $price['price'];
         $position->priceVat = $price['vat'];
@@ -164,7 +229,7 @@ class Accounting
         $position->quantity = 1;
         $hasVat = $this->vatIncluded($booking->nights);
         $position->vatClassification = 'inland';
-        $position->accountingCoding = self::ACCOUNT_CLEANING_FEE . optional($booking->listing->account)->accounting_suffix;
+        $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_CLEANING) . optional($booking->listing->account)->accounting_suffix;
         $price = $this->calculatePrice(optional($booking->paymentCleaning)->amount, $splitPercent, $hasVat);
         $position->price = $price['price'];
         $position->priceVat = $price['vat'];

@@ -4,7 +4,7 @@
               xmlns:int="http://www.stormware.cz/schema/version_2/invoice.xsdclassificationVATType"
               xmlns:typ="http://www.stormware.cz/schema/version_2/type.xsd">
     @foreach ($invoices as $invoice)
-        <dat:dataPackItem version="2.0" id="INT001">
+        <dat:dataPackItem version="2.0" id="{{ $invoice->id }}">
             <!-- interní doklad s položkami -->
             <int:invoice version="2.0">
                 <int:invoiceHeader>
