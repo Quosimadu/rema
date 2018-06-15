@@ -45,9 +45,15 @@ class AccountingController extends Controller {
         $bookings = Booking::filter($filters)
             ->orderBy('arrival_date', 'ASC')
             ->get();
+        if (!$bookings->count()) {
+            return redirect()->back()->with('error', 'Nothing to export')->withInput();
+        }
 
         $accounting = new Accounting();
-        $accounting->addInvoices($bookings);
+        foreach ($bookings as $booking) {
+            $accounting->addHostInvoice($booking);
+            $accounting->addCustomerInvoice($booking);
+        }
 
         $xml = view('accouting.xml_invoice', [
             'invoices' => $accounting->invoices,
@@ -57,6 +63,82 @@ class AccountingController extends Controller {
         File::put($file, $xml);
 
         return response()->download($file, 'accounting_' . date('Y-m-d_H_i_s') . '.xml')->deleteFileAfterSend(true);
+    }
+
+    public function payoutXmlExport(Request $request)
+    {
+        $filters = session('accounting_filters');
+
+        $bookings = Booking::filter($filters)
+            ->orderBy('arrival_date', 'ASC')
+            ->get();
+        if (!$bookings->count()) {
+            return redirect()->back()->with('error', 'Nothing to export')->withInput();
+        }
+
+        $accounting = new Accounting();
+        foreach ($bookings as $booking) {
+            $accounting->addPayoutInvoice($booking);
+        }
+
+        $xml = view('accouting.xml_invoice', [
+            'invoices' => $accounting->invoices,
+        ])->render();
+
+        $file = storage_path('app/' . uniqid() . '.xml');
+        File::put($file, $xml);
+
+        return response()->download($file, 'accounting_payout_' . date('Y-m-d_H_i_s') . '.xml')->deleteFileAfterSend(true);
+    }
+
+    public function xmlImport(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            Validator::make($request->all(), [
+                'xml' => 'required|file',
+            ])->validate();
+
+            $xml = File::get($request->file('xml')->getRealPath());
+            $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+
+            $json = json_encode($xml);
+            $data = json_decode($json, true);
+
+            $recordsUpdated = 0;
+            if (array_has($data, 'dataPackItem.invoice')) {
+                foreach ($this->getMultiArray(array_get($data, 'dataPackItem.invoice')) as $item) {
+                    $confirmCode = array_get($item, 'invoiceHeader.originalDocument');
+                    $assignedDocument = uniqid();
+
+                    $booking = Booking::where('confirmation_code', $confirmCode)->first();
+
+                    $types = [PaymentType::ID_RESERVATION, PaymentType::ID_CLEANING, PaymentType::ID_HOST];
+
+                    foreach ($types as $typeId) {
+                        Payment::where('booking_id', $booking->id)
+                            ->where('type_id', $typeId)
+                            ->update(['internal_document_number' => $assignedDocument]);
+                    }
+                    $recordsUpdated++;
+                }
+            }
+
+            return redirect()->route('accounting')->with('success', trans('accounting.success_rows_processed', ['total' => $recordsUpdated]));
+        }
+        return view('accouting.accouting_xml_import');
+    }
+
+    private function getMultiArray($array)
+    {
+        if (is_null($array)) {
+            return null;
+        }
+
+        if (is_array($array) && !empty($array[0])) {
+            return $array;
+        }
+
+        return ['0' => $array];
     }
 
     public function airbnbImport(Request $request)
@@ -106,7 +188,8 @@ class AccountingController extends Controller {
                     case 'Reservation':
                         $listing = Listing::where('airbnb_name', $worksheet->getCell($columns['listing'] . $rowNumber)->getValue())->first();
                         if (empty($listing)) {
-                            $warnings[] = trans('accounting.text_line', ['line' => $rowNumber]) . ': ' . trans('accounting.warning_listing_not_matched');
+                            $errors[] = trans('accounting.text_line', ['line' => $rowNumber]) . ': ' . trans('accounting.error_listing_not_matched');
+                            continue;
                         }
 
                         $startDate = Carbon::createFromFormat('m/d/Y', $worksheet->getCell($columns['start_date'] . $rowNumber)->getValue());

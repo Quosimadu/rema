@@ -11,9 +11,9 @@
                     <int:invoiceType>{{ $invoice->type }}</int:invoiceType>
                     <int:symVar>997</int:symVar>
                     <int:originalDocument>{{ $invoice->reference }}</int:originalDocument>
-                    <int:date>{{ $invoice->documentDate }}</int:date>
-                    <int:dateTax>{{ $invoice->taxDate }}</int:dateTax>
-                    <int:dateAccounting>{{ $invoice->accountingDate }}</int:dateAccounting>
+                    <int:date>{{ $invoice->documentDate->toDateString() }}</int:date>
+                    <int:dateTax>{{ $invoice->taxDate->toDateString() }}</int:dateTax>
+                    <int:dateAccounting>{{ $invoice->accountingDate->toDateString() }}</int:dateAccounting>
                     <int:accounting>
                         <typ:ids>{{ $invoice->accountingCoding }}</typ:ids>
                     </int:accounting>

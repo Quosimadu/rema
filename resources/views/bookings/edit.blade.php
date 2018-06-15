@@ -157,6 +157,17 @@
                         </div>
 
                         <div class="form-group">
+                            {!! Form::label('confirmation_code', 'Confirmation code', array('class' =>'col-md-2 control-label')) !!}
+                            <div class="col-md-4">
+                                {!! Form::text('confirmation_code', $booking->confirmation_code, $attributes =
+                                array('class' => 'form-control', 'id' => 'confirmation_code', 'placeholder' => '1id8x912'))
+                                !!}
+                                {!! $errors->first('confirmation_code', '
+                                <div class="note note-error">:message</div>
+                                ') !!}
+                            </div>
+                        </div>
+                        <div class="form-group">
                             {!! Form::label('booking_status_id', 'Status', array('class' => 'col-md-1 control-label')) !!}
                             <div class="col-md-2">
                                 {!! Form::select('booking_status_id', $bookingStatuses, $booking->booking_status_id,array('class' =>

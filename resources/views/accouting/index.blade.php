@@ -17,6 +17,8 @@
                         <div class="row">
                             <a class="btn btn-default" href="{{ route('airbnbImport') }}">Airbnb CSV Import</a>
                             <a class="btn btn-default" href="{{ route('xmlExport') }}">XML Export</a>
+                            <a class="btn btn-default" href="{{ route('xmlImport') }}">Stormware Pohoda XML Import</a>
+                            <a class="btn btn-default" href="{{ route('payoutXmlExport') }}">Payout XML Export</a>
                         </div>
 
                         {!! Form::open(['route' => 'accounting', 'method' => 'post', 'class' => 'form-horizontal']) !!}
@@ -24,12 +26,12 @@
                             <div class="form-group">
                                 {!! Form::label('filter[date_from]', 'From', array('class' => 'col-md-1 control-label'))!!}
                                 <div class="col-md-2">
-                                    {!! Form::date('filter[date_from]', array_get($filters, 'filter[date_from]'), ['class' => 'form-control']) !!}
+                                    {!! Form::date('filter[date_from]', array_get($filters, 'date_from'), ['class' => 'form-control']) !!}
                                 </div>
 
                                 {!! Form::label('filter[date_to]', 'To', array('class' => 'col-md-1 control-label'))!!}
                                 <div class="col-md-2">
-                                    {!! Form::date('filter[date_to]', array_get($filters, 'filter[date_to]'), ['class' => 'form-control']) !!}
+                                    {!! Form::date('filter[date_to]', array_get($filters, 'date_to'), ['class' => 'form-control']) !!}
                                 </div>
 
                                 {!! Form::label('filter[listings][]', 'Listings', array('class' => 'col-md-1 control-label'))!!}

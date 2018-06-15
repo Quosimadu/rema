@@ -7,6 +7,7 @@ use App\Models\Listing;
 use App\Models\Payment;
 use App\Models\PaymentType;
 use App\Models\Resolution;
+use DB;
 use Illuminate\Http\Request;
 use Session;
 
@@ -114,7 +115,9 @@ class BookingsController extends BaseController {
 		$listings = Listing::query()->orderBy('name')->get(['id','name'])->pluck('name', 'id');
 		$bookingStatuses = BookingStatus::all(['id','name'])->pluck('name', 'id');
 
-		$resolutions = Resolution::pluck('code', 'id');
+		$resolutions = Resolution::orderBy('date', 'DESC')
+            ->select([DB::raw("CONCAT(code, ' : ', date) as title"), 'id'])
+            ->pluck('title', 'id');
 
 		return \View::make('bookings.edit', compact('booking','listings','bookingStatuses', 'resolutions'));
 	}
