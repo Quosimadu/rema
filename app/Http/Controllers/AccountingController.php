@@ -54,6 +54,11 @@ class AccountingController extends Controller {
         foreach ($bookings as $booking) {
             $accounting->addHostInvoice($booking);
             $accounting->addCustomerInvoice($booking);
+            $accounting->addResolutionInvoice($booking);
+        }
+
+        if (empty($accounting->invoices)) {
+            return redirect()->route('accounting')->with('error', 'No items were exported');
         }
 
         $xml = view('accouting.xml_invoice', [
@@ -80,6 +85,10 @@ class AccountingController extends Controller {
         $accounting = new Accounting();
         foreach ($bookings as $booking) {
             $accounting->addPayoutInvoice($booking);
+        }
+
+        if (empty($accounting->invoices)) {
+            return redirect()->route('accounting')->with('error', 'No items were exported');
         }
 
         $xml = view('accouting.xml_payout_invoice', [

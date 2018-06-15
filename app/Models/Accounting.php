@@ -148,7 +148,23 @@ class Accounting
 
         foreach ($costCenters as $costCenter => $splitPercent) {
             $invoice->costCenter = $costCenter;
-            $invoice->positions[] = $this->getHostFeePosition($booking, $costCenter, $splitPercent);
+
+            $position = new InvoicePosition();
+            $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
+            $position->quantity = 1;
+            $position->vatClassification = 'inland';
+            $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_HOST);
+            $payment = $booking->paymentHost;
+            if (empty($payment)) {
+                return;
+            }
+            $price = $this->calculatePrice($payment->amount, $splitPercent, false);
+            $position->price = $price['price'];
+            $position->priceVat = $price['vat'];
+            $position->note = 'Provize ' . $booking->platform->name;
+            $position->costCenter = $costCenter;
+
+            $invoice->positions[] = $position;
 
             $this->invoices[] = $invoice;
 
@@ -179,8 +195,44 @@ class Accounting
 
         foreach ($costCenters as $costCenter => $splitPercent) {
             $invoice->costCenter = $costCenter;
-            $invoice->positions[] = $this->getReservationPosition($booking, $costCenter, $splitPercent);
-            $invoice->positions[] = $this->getCleaningPosition($booking, $costCenter, $splitPercent);
+
+            $position = new InvoicePosition();
+            $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
+            $position->quantity = 1;
+            $hasVat = $this->vatIncluded($booking->nights);
+            $position->vatClassification = $hasVat ? 'nonSubsume' : 'inland';
+            $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESERVATION) . optional($booking->listing->account)->accounting_suffix;
+            $payment = $booking->paymentReservation;
+            if (empty($payment)){
+                return;
+            }
+            $price = $this->calculatePrice($payment->amount, $splitPercent, $hasVat);
+            $position->price = $price['price'];
+            $position->priceVat = $price['vat'];
+            $position->note = $booking->confirmation_code;
+            $position->costCenter = $costCenter;
+
+            $invoice->positions[] = $position;
+
+
+            $position = new InvoicePosition();
+            $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
+            $position->quantity = 1;
+            $hasVat = $this->vatIncluded($booking->nights);
+            $position->vatClassification = 'inland';
+            $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_CLEANING) . optional($booking->listing->account)->accounting_suffix;
+            $payment = $booking->paymentCleaning;
+            if (empty($payment)){
+                return;
+            }
+            $price = $this->calculatePrice($payment->amount, $splitPercent, $hasVat);
+            $position->price = $price['price'];
+            $position->priceVat = $price['vat'];
+            $position->note = $booking->confirmation_code;
+            $position->costCenter = $costCenter;
+
+            $invoice->positions[] = $position;
+
 
             $this->invoices[] = $invoice;
 
@@ -189,54 +241,52 @@ class Accounting
         }
     }
 
-    private function getHostFeePosition(Booking $booking, $costCenter, $splitPercent = null)
+    public function addResolutionInvoice(Booking $booking)
     {
-        $position = new InvoicePosition();
-        $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
-        $position->quantity = 1;
-        $position->vatClassification = 'inland';
-        $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_HOST);
-        $price = $this->calculatePrice(optional($booking->paymentHost)->amount, $splitPercent, false);
-        $position->price = $price['price'];
-        $position->priceVat = $price['vat'];
-        $position->note = 'Provize ' . $booking->platform->name;
-        $position->costCenter = $costCenter;
+        $invoice = new Invoice();
 
-        return $position;
-    }
+        $invoice->id = $booking->id . '_' . self::INVOICE_TYPE_RESOLUTION;
+        $invoice->type = 'receivable';                  #TODO resolution might be also negative. Is it still receivable?
+        $invoice->vatClassification = 'nonSubsume';
+        $invoice->documentDate = $booking->arrival_date;
+        $invoice->taxDate = $booking->arrival_date;
+        $invoice->accountingDate = $booking->arrival_date;
+        $invoice->reference = $booking->confirmation_code;
+        $invoice->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESOLUTION) . optional($booking->listing->account)->accounting_suffix;
+        $invoice->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
 
-    private function getReservationPosition(Booking $booking, $costCenter, $splitPercent = null)
-    {
-        $position = new InvoicePosition();
-        $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
-        $position->quantity = 1;
-        $hasVat = $this->vatIncluded($booking->nights);
-        $position->vatClassification = $hasVat ? 'nonSubsume' : 'inland';
-        $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESERVATION) . optional($booking->listing->account)->accounting_suffix;
-        $price = $this->calculatePrice(optional($booking->paymentReservation)->amount, $splitPercent, $hasVat);
-        $position->price = $price['price'];
-        $position->priceVat = $price['vat'];
-        $position->note = $booking->confirmation_code;
-        $position->costCenter = $costCenter;
+        $address = new Address();
+        $address->name = $booking->guest_name;
+        $invoice->partner = $address;
 
-        return $position;
-    }
+        $costCenters = $booking->listing->getCostCenters();
 
-    private function getCleaningPosition(Booking $booking, $costCenter, $splitPercent = null)
-    {
-        $position = new InvoicePosition();
-        $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
-        $position->quantity = 1;
-        $hasVat = $this->vatIncluded($booking->nights);
-        $position->vatClassification = 'inland';
-        $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_CLEANING) . optional($booking->listing->account)->accounting_suffix;
-        $price = $this->calculatePrice(optional($booking->paymentCleaning)->amount, $splitPercent, $hasVat);
-        $position->price = $price['price'];
-        $position->priceVat = $price['vat'];
-        $position->note = $booking->confirmation_code;
-        $position->costCenter = $costCenter;
+        foreach ($costCenters as $costCenter => $splitPercent) {
+            $invoice->costCenter = $costCenter;
 
-        return $position;
+            $position = new InvoicePosition();
+            $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name; #TODO
+            $position->quantity = 1;
+            $hasVat = $this->vatIncluded($booking->nights);
+            $position->vatClassification = $hasVat ? 'nonSubsume' : 'inland';
+            $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESOLUTION) . optional($booking->listing->account)->accounting_suffix;
+            $payment = $booking->paymentResolution;
+            if (empty($payment)) {
+                return;
+            }
+            $price = $this->calculatePrice($payment->amount, $splitPercent, $hasVat);
+            $position->price = $price['price'];
+            $position->priceVat = $price['vat'];
+            $position->note = $booking->confirmation_code;
+            $position->costCenter = $costCenter;
+
+            $invoice->positions[] = $position;
+
+            $this->invoices[] = $invoice;
+
+            $invoice = clone $invoice;
+            $invoice->positions = [];
+        }
     }
 
     private function calculatePrice($price, $splitPercent = null, $exludeVat = false)
