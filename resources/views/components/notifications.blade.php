@@ -5,9 +5,6 @@
         'warning' => session('warning'),
         'info' => session('info'),
     ];
-    if (empty($messages['danger']) && session()->has('errors')) {
-        $messages['danger'] = session('errors')->all();
-    }
 @endphp
 @foreach ($messages as $notificationType => $message)
     @if (!empty($message))

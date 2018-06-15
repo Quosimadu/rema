@@ -92,16 +92,22 @@ class AccountingController extends Controller {
             $worksheet = $objPHPExcel->getActiveSheet();
 
             $recordsUpdated = 0;
+            $warnings = $errors = [];
+
             foreach ($worksheet->getRowIterator() as $row) {
                 $rowNumber = $row->getRowIndex();
-                //ignore first 2 rows
+
                 if ($rowNumber < 3) {
                     continue;
                 }
 
                 switch ($worksheet->getCell($columns['type'] . $rowNumber)->getValue()) {
+                    case 'Adjustment':
                     case 'Reservation':
                         $listing = Listing::where('airbnb_name', $worksheet->getCell($columns['listing'] . $rowNumber)->getValue())->first();
+                        if (empty($listing)) {
+                            $warnings[] = trans('accounting.text_line', ['line' => $rowNumber]) . ': ' . trans('accounting.warning_listing_not_matched');
+                        }
 
                         $startDate = Carbon::createFromFormat('m/d/Y', $worksheet->getCell($columns['start_date'] . $rowNumber)->getValue());
                         $nights = $worksheet->getCell($columns['nights'] . $rowNumber)->getValue();
@@ -148,13 +154,24 @@ class AccountingController extends Controller {
                         $recordsUpdated++;
                         break;
                     case 'Payout':
+                        preg_match("/\**\d+/", $worksheet->getCell($columns['details'] . $rowNumber)->getValue(), $matches);
+
+                        if (empty($matches[0])) {
+                            $warnings[] = trans('accounting.text_line', ['line' => $rowNumber]) . ': ' . trans('accounting.warning_can_not_extract_payout_account_number');
+                            $accountNumber = '';
+                        } else {
+                            $accountNumber = $matches[0];
+                        }
+
                         Payment::updateOrCreate([
-                            'type_id'    => PaymentType::ID_PAYOUT,
-                            'entry_date' => Carbon::createFromFormat('m/d/Y', $worksheet->getCell($columns['date'] . $rowNumber)->getValue())->toDateString(),
-                            'amount'     => str_replace(",", ".", $worksheet->getCell($columns['paid_out'] . $rowNumber)->getValue()),
+                            'type_id'        => PaymentType::ID_PAYOUT,
+                            'entry_date'     => Carbon::createFromFormat('m/d/Y', $worksheet->getCell($columns['date'] . $rowNumber)->getValue())->toDateString(),
+                            'amount'         => str_replace(",", ".", $worksheet->getCell($columns['paid_out'] . $rowNumber)->getValue()),
+                            'account_number' => $accountNumber,
                         ]);
                         $recordsUpdated++;
                         break;
+                    case 'Resolution Payout':
                     case 'Resolution Adjustment':
                         $code = $worksheet->getCell($columns['details'] . $rowNumber)->getValue();
                         preg_match('/\d+/', $code, $matches);
@@ -175,10 +192,16 @@ class AccountingController extends Controller {
 
                         $recordsUpdated++;
                         break;
+                    default:
+                        $errors[] = trans('accounting.text_line', ['line' => $rowNumber]) . ': ' . trans('accounting.error_unknown_type');
                 }
             }
 
-            return redirect()->route('accounting')->with('success', trans('accounting.success_rows_processed', ['total' => $recordsUpdated]));
+            return redirect()
+                ->route('accounting')
+                ->with('success', trans('accounting.success_rows_processed', ['total' => $recordsUpdated]))
+                ->with('warning', $warnings)
+                ->with('error', $errors);
         }
 
         return view('accouting.airbnb_import');
