@@ -11,4 +11,9 @@ class Payment extends BaseTable
     protected $casts = [
         'entry_date' => 'date',
     ];
+
+    public function booking()
+    {
+        return $this->belongsTo(Booking::class, 'booking_id');
+    }
 }

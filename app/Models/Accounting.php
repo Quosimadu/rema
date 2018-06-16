@@ -7,8 +7,8 @@ use App\Models\Accounting\Invoice;
 use App\Models\Accounting\InvoicePosition;
 use Exception;
 
-class Accounting
-{
+class Accounting {
+
     const VAT = 21;
 
     const ACCOUNT_UNKNOWN = 'Nevím';
@@ -63,65 +63,55 @@ class Accounting
         }
     }
 
-    public function addPayoutInvoice(Booking $booking)
+    public function addPayoutInvoice(Payment $payout)
     {
-        $internalDocuments = Payment::where('booking_id', $booking->id)
-            ->whereNotNull('internal_document_number')
-            ->groupBy('internal_document_number')
-            ->get();
-        if (!$internalDocuments->count()) {
+        $payoutPayments = Payment::where('payout_id', $payout->id)->get();
+
+        if (!$payoutPayments->count()) {
             return;
         }
 
-        foreach ($internalDocuments as $internalDocument) {
-            $invoice = new Invoice();
+        $invoice = new Invoice();
 
-            $invoice->id = $booking->id . '_' . self::INVOICE_TYPE_PAYOUT . '_' . $internalDocument->internal_document_number;
-            $invoice->type = $internalDocument->internal_document_number;
-            $invoice->vatClassification = 'nonSubsume';
-            $invoice->documentDate = $booking->arrival_date;
-            $invoice->taxDate = $booking->arrival_date;
-            $invoice->accountingDate = $booking->arrival_date;
-            $invoice->reference = $booking->confirmation_code;
-            $invoice->accountingCoding = $this->getAccountingCoding($internalDocument->type_id) . optional($booking->listing->account)->accounting_suffix;
-            $invoice->text = $booking->confirmation_code . ', Provize ' . $booking->platform->name . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
+        $invoice->id = $payout->id . '_' . self::INVOICE_TYPE_PAYOUT;
+        $invoice->type = 'TODO';
+        $invoice->vatClassification = 'nonSubsume';
+        $invoice->documentDate = $payout->entry_date;
+        $invoice->taxDate = $payout->entry_date;
+        $invoice->accountingDate = $payout->entry_date;
+        $invoice->reference = 'TODO';
+        $invoice->accountingCoding = 'TODO';
+        $invoice->text = '';
 
-            $address = new Address();
-            $address->name = 'Airbnb Ireland UC, private unlimited company';
-            $address->city = 'Dublin 4';
-            $address->street = 'The Watermarque Building, South Lotts Road';
-            $invoice->partner = $address;
+        $address = new Address();
+        $address->name = 'Airbnb Ireland UC, private unlimited company';
+        $address->city = 'Dublin 4';
+        $address->street = 'The Watermarque Building, South Lotts Road';
+        $invoice->partner = $address;
 
-            $costCenters = $booking->listing->getCostCenters();
-
-            $paymentsWithDocumentAssigned = Payment::where('booking_id', $booking->id)
-                ->where('internal_document_number', $internalDocument->internal_document_number)
-                ->get();
+        $confirmationCodes = [];
+        foreach ($payoutPayments as $payment) {
+            $costCenters = $payment->booking->listing->getCostCenters();
+            $confirmationCodes [] = $payment->booking->confirmation_code;
 
             foreach ($costCenters as $costCenter => $splitPercent) {
-                $invoice->costCenter = $costCenter;
+                $position = new InvoicePosition();
+                $position->text = 'Úhrada OP č. ' . $payment->internal_document_number;
+                $position->quantity = 1;
+                $position->accountingCoding = $this->getAccountingCoding($payment->type_id) . optional($payment->booking->listing->account)->accounting_suffix;
+                $price = $this->calculatePrice($payment->amount, $splitPercent, false);
+                $position->price = $price['price'];
+                $position->priceVat = $price['vat'];
+                $position->note = '';
+                $position->costCenter = $costCenter;
 
-                foreach ($paymentsWithDocumentAssigned as $payment) {
-
-                    $position = new InvoicePosition();
-                    $position->text = 'Úhrada OP č. ' . $payment->internal_document_number;
-                    $position->quantity = 1;
-                    $position->accountingCoding = $this->getAccountingCoding($payment->type_id) . optional($booking->listing->account)->accounting_suffix;
-                    $price = $this->calculatePrice($payment->amount, $splitPercent, false);
-                    $position->price = $price['price'];
-                    $position->priceVat = $price['vat'];
-                    $position->note = '';
-                    $position->costCenter = $costCenter;
-
-                    $invoice->positions[] = $position;
-                }
-
-                $this->invoices[] = $invoice;
-
-                $invoice = clone $invoice;
-                $invoice->positions = [];
+                $invoice->positions[] = $position;
             }
         }
+        $confirmationCodes = array_unique($confirmationCodes);
+        $invoice->text = implode(",", $confirmationCodes) . ', ' . $payout->amount . 'Kc';
+
+        $this->invoices[] = $invoice;
     }
 
     public function addHostInvoice(Booking $booking)
@@ -242,7 +232,6 @@ class Accounting
                 $invoice->positions[] = $position;
             }
 
-
             $this->invoices[] = $invoice;
 
             $invoice = clone $invoice;
@@ -261,7 +250,7 @@ class Accounting
         $invoice->documentDate = $booking->arrival_date;
         $invoice->taxDate = $booking->arrival_date;
         $invoice->accountingDate = $booking->arrival_date;
-        $invoice->reference = 'R'.$booking->confirmation_code;
+        $invoice->reference = 'R' . $booking->confirmation_code;
         $invoice->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESOLUTION) . optional($booking->listing->account)->accounting_suffix;
         $invoice->text = 'Resolution ' . $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
         $invoice->hasVat = $this->vatIncluded($booking->nights);

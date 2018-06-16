@@ -76,16 +76,22 @@ class AccountingController extends Controller {
     {
         $filters = session('accounting_filters');
 
-        $bookings = Booking::filter($filters)
-            ->orderBy('arrival_date', 'ASC')
-            ->get();
-        if (!$bookings->count()) {
+        $payouts = Payment::where('type_id', PaymentType::ID_PAYOUT);
+        if ($dateFrom = array_get($filters, 'date_from')) {
+            $payouts->where('entry_date', '>=', $dateFrom);
+        }
+        if ($dateTo = array_get($filters, 'date_to')) {
+            $payouts->where('entry_date', '<=', $dateTo);
+        }
+        $payouts = $payouts->get();
+
+        if (!$payouts->count()) {
             return redirect()->back()->with('error', 'Nothing to export')->withInput();
         }
 
         $accounting = new Accounting();
-        foreach ($bookings as $booking) {
-            $accounting->addPayoutInvoice($booking);
+        foreach ($payouts as $payout) {
+            $accounting->addPayoutInvoice($payout);
         }
 
         if (empty($accounting->invoices)) {
