@@ -1,4 +1,4 @@
-<? xml version = "1.0" encoding = "Windows-1250" ?>
+<?xml version = "1.0" encoding = "Windows-1250" ?>
 <dat:dataPack version="2.0" id="int002" ico="06632637" application="StwTest" note="Import Interních dokladů"
               xmlns:dat="http://www.stormware.cz/schema/version_2/data.xsd"
               xmlns:int="http://www.stormware.cz/schema/version_2/invoice.xsd"

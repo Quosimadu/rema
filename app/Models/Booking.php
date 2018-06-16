@@ -107,24 +107,24 @@ class Booking extends BaseTable {
 
     public function paymentHost()
     {
-        return $this->hasOne(Payment::class)->where('type_id', PaymentType::ID_HOST);
+        return $this->hasMany(Payment::class)->where('type_id', PaymentType::ID_HOST);
     }
 
     public function paymentReservation()
     {
-        return $this->hasOne(Payment::class)->where('type_id', PaymentType::ID_RESERVATION);
+        return $this->hasMany(Payment::class)->where('type_id', PaymentType::ID_RESERVATION);
     }
     public function paymentCleaning()
     {
-        return $this->hasOne(Payment::class)->where('type_id', PaymentType::ID_CLEANING);
+        return $this->hasMany(Payment::class)->where('type_id', PaymentType::ID_CLEANING);
     }
     public function paymentPayout()
     {
-        return $this->hasOne(Payment::class)->where('type_id', PaymentType::ID_PAYOUT);
+        return $this->hasMany(Payment::class)->where('type_id', PaymentType::ID_PAYOUT);
     }
     public function paymentResolution()
     {
-        return $this->hasOne(Payment::class)->where('type_id', PaymentType::ID_RESOLUTION);
+        return $this->hasMany(Payment::class)->where('type_id', PaymentType::ID_RESOLUTION);
     }
 
 }
