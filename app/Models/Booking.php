@@ -90,7 +90,7 @@ class Booking extends BaseTable {
             $query->where('arrival_date', '>=', $dateFrom);
         }
         if ($dateTo = array_get($filters, 'date_to')) {
-            $query->where('departure_date', '>=', $dateTo);
+            $query->where('departure_date', '<=', $dateTo);
         }
         if ($listingsFilter = array_get($filters, 'listings')) {
             $query->where(function($query) use ($listingsFilter) {
