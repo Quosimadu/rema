@@ -8,7 +8,7 @@
             <int:invoice version="2.0">
                 <int:invoiceHeader>
                     <int:invoiceType>{{ $invoice->type }}</int:invoiceType>
-                    <int:symVar>997</int:symVar>
+                    <int:symVar>{{ $invoice->reference }}</int:symVar>
                     <int:originalDocument>{{ $invoice->reference }}</int:originalDocument>
                     <int:date>{{ $invoice->documentDate->toDateString() }}</int:date>
                     <int:dateTax>{{ $invoice->taxDate->toDateString() }}</int:dateTax>

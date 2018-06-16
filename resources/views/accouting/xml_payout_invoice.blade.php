@@ -145,7 +145,7 @@
                             <int:quantity>{{ $invoicePosition->quantity }}</int:quantity>
                             <int:coefficient>1.0</int:coefficient>
                             <int:payVAT>false</int:payVAT>
-                            <int:rateVAT>{{ $invoicePosition->vatClassification }}</int:rateVAT>
+                            <int:rateVAT>none</int:rateVAT>
                             <int:discountPercentage>0.0</int:discountPercentage>
                             <int:homeCurrency>
                                 <typ:unitPrice>{{ $invoicePosition->price }}</typ:unitPrice>
@@ -157,6 +157,9 @@
                             <int:accounting>
                                 <typ:ids>{{ $invoice->accountingCoding }}</typ:ids>
                             </int:accounting>
+                            <int:centre>
+                                <typ:ids>{{ $invoice->costCenter }}</typ:ids>
+                            </int:centre>
                             <int:PDP>false</int:PDP>
                         </int:intDocItem>
                     @endforeach
