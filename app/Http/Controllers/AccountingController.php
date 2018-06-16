@@ -122,7 +122,8 @@ class AccountingController extends Controller {
             $errors = [];
             if (array_has($data, 'responsePackItem')) {
                 foreach ($this->getMultiArray(array_get($data, 'responsePackItem')) as $item) {
-                    list($bookingId, $invoiceType) = explode("_", array_get($item, 'invoiceResponse.producedDetails.id'));
+
+                    list($bookingId, $invoiceType) = explode("_", array_get($item, '@attributes.id'));
                     $assignedDocument = array_get($item, 'invoiceResponse.producedDetails.number');
 
                     $booking = Booking::find($bookingId);

@@ -22,6 +22,8 @@ class Invoice
     public $note = 'XML Import';
     public $internalNote = 'XML imported as outgoing invoice';
 
+    public $hasVat = false;
+
     /**
      * @var Address
      */

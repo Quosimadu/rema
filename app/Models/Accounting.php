@@ -106,8 +106,6 @@ class Accounting
                     $position = new InvoicePosition();
                     $position->text = 'Úhrada OP č. ' . $payment->internal_document_number;
                     $position->quantity = 1;
-                    $hasVat = $this->vatIncluded($booking->nights);
-                    $position->vatClassification = $hasVat ? 'nonSubsume' : 'inland';
                     $position->accountingCoding = $this->getAccountingCoding($payment->type_id) . optional($booking->listing->account)->accounting_suffix;
                     $price = $this->calculatePrice($payment->amount, $splitPercent, false);
                     $position->price = $price['price'];
@@ -132,7 +130,7 @@ class Accounting
 
         $invoice->id = $booking->id . '_' . self::INVOICE_TYPE_HOST;
         $invoice->type = 'commitment';
-        $invoice->vatClassification = 'inland';
+        $invoice->vatClassification = 'none';
         $invoice->documentDate = $booking->arrival_date;
         $invoice->taxDate = $booking->arrival_date;
         $invoice->accountingDate = $booking->arrival_date;
@@ -141,7 +139,9 @@ class Accounting
         $invoice->text = $booking->confirmation_code . ', Provize ' . $booking->platform->name . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
 
         $address = new Address();
-        $address->name = 'AirBnB, Inc.';
+        $address->name = 'Airbnb Ireland UC, private unlimited company';
+        $address->city = 'Dublin 4';
+        $address->street = 'The Watermarque Building, South Lotts Road';
         $invoice->partner = $address;
 
         $costCenters = $booking->listing->getCostCenters();
@@ -152,7 +152,8 @@ class Accounting
             $position = new InvoicePosition();
             $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
             $position->quantity = 1;
-            $position->vatClassification = 'inland';
+            $position->payVat = 'false';
+            $position->rateVat = 'none';
             $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_HOST) . optional($booking->listing->account)->accounting_suffix;
             $payment = $booking->paymentHost;
             if (empty($payment)) {
@@ -186,6 +187,7 @@ class Accounting
         $invoice->reference = $booking->confirmation_code;
         $invoice->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESERVATION) . optional($booking->listing->account)->accounting_suffix;
         $invoice->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
+        $invoice->hasVat = $this->vatIncluded($booking->nights);
 
         $address = new Address();
         $address->name = $booking->guest_name;
@@ -199,14 +201,14 @@ class Accounting
             $position = new InvoicePosition();
             $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
             $position->quantity = 1;
-            $hasVat = $this->vatIncluded($booking->nights);
-            $position->vatClassification = $hasVat ? 'nonSubsume' : 'inland';
+            $position->payVat = $invoice->hasVat ? 'true' : 'false';
+            $position->rateVat = $invoice->hasVat ? 'low' : 'none';
             $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESERVATION) . optional($booking->listing->account)->accounting_suffix;
             $payment = $booking->paymentReservation;
             if (empty($payment)){
                 return;
             }
-            $price = $this->calculatePrice($payment->amount, $splitPercent, $hasVat);
+            $price = $this->calculatePrice($payment->amount, $splitPercent, $position->payVat);
             $position->price = $price['price'];
             $position->priceVat = $price['vat'];
             $position->note = $booking->confirmation_code;
@@ -219,7 +221,8 @@ class Accounting
             $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
             $position->quantity = 1;
             $hasVat = $this->vatIncluded($booking->nights);
-            $position->vatClassification = 'inland';
+            $position->payVat = $invoice->hasVat ? 'true' : 'false';
+            $position->rateVat = $invoice->hasVat ? 'low' : 'none';
             $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_CLEANING) . optional($booking->listing->account)->accounting_suffix;
             $payment = $booking->paymentCleaning;
             if (empty($payment)){
@@ -248,12 +251,14 @@ class Accounting
         $invoice->id = $booking->id . '_' . self::INVOICE_TYPE_RESOLUTION;
         $invoice->type = 'receivable';                  #TODO resolution might be also negative. Is it still receivable?
         $invoice->vatClassification = 'nonSubsume';
+        $invoice->hasVat = $this->vatIncluded($booking->nights);
         $invoice->documentDate = $booking->arrival_date;
         $invoice->taxDate = $booking->arrival_date;
         $invoice->accountingDate = $booking->arrival_date;
         $invoice->reference = 'R'.$booking->confirmation_code;
         $invoice->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESOLUTION) . optional($booking->listing->account)->accounting_suffix;
         $invoice->text = 'Resolution ' . $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
+        $invoice->hasVat = $this->vatIncluded($booking->nights);
 
         $address = new Address();
         $address->name = $booking->guest_name;
@@ -267,8 +272,8 @@ class Accounting
             $position = new InvoicePosition();
             $position->text = 'Resolution ' . $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name; #TODO
             $position->quantity = 1;
-            $hasVat = $this->vatIncluded($booking->nights);
-            $position->vatClassification = $hasVat ? 'nonSubsume' : 'inland';
+            $position->payVat = $invoice->hasVat ? 'true' : 'false';
+            $position->rateVat = $invoice->hasVat ? 'low' : 'none';
             $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESOLUTION) . optional($booking->listing->account)->accounting_suffix;
             $payment = $booking->paymentResolution;
             if (empty($payment)) {
