@@ -60,7 +60,7 @@ class Booking extends BaseTable {
 
 	public function listing()
 	{
-		return $this->belongsTo(Listing::class);
+		return $this->belongsTo(Listing::class, 'listing_id');
 	}
 
 	public function platform()

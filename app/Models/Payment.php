@@ -16,4 +16,9 @@ class Payment extends BaseTable
     {
         return $this->belongsTo(Booking::class, 'booking_id');
     }
+
+    public function resolution()
+    {
+        return $this->belongsTo(Resolution::class, 'resolution_id');
+    }
 }

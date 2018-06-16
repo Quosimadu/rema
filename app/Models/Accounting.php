@@ -9,7 +9,7 @@ use Exception;
 
 class Accounting {
 
-    const VAT = 21;
+    const VAT = 15;
 
     const ACCOUNT_UNKNOWN = 'Nevím';
     const ACCOUNT_RESERVATION = 'AirRes';
@@ -100,11 +100,18 @@ class Accounting {
         $address->countryCode = 'US';
         $invoice->partner = $address;
 
-        die(print_r($payoutPayments));
+
 
         $confirmationCodes = [];
         foreach ($payoutPayments as $payment) {
+
+            if (!empty($payment->resolution)) {
+                #todo: this does not work for some reason, resolution is empty
+                $payment->booking = $payment->resolution->booking;
+
+            }
             $costCenters = $payment->booking->listing->getCostCenters();
+
             $confirmationCodes [] = $payment->booking->confirmation_code;
 
             foreach ($costCenters as $costCenter => $splitPercent) {
@@ -113,7 +120,8 @@ class Accounting {
                 $position->quantity = 1;
                 $position->accountingCoding = $this->getAccountingCoding($payment->type_id) . optional($payment->booking->listing->account)->accounting_suffix;
                 $price = $this->calculatePrice($payment->amount, $splitPercent, false);
-                $position->price = $price['price'];
+                $position->priceGross = $price['price_gross'];
+                $position->priceNet = $price['price_net'];
                 $position->priceVat = $price['vat'];
                 $position->note = '';
                 $position->costCenter = $costCenter;
@@ -171,7 +179,8 @@ class Accounting {
                 $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_HOST) . optional($booking->listing->account)->accounting_suffix;
 
                 $price = $this->calculatePrice($payment->amount, $splitPercent, false);
-                $position->price = $price['price'];
+                $position->priceGross = $price['price_gross'];
+                $position->priceNet = $price['price_net'];
                 $position->priceVat = $price['vat'];
                 $position->note = 'Provize ' . $booking->platform->name;
                 $position->costCenter = $costCenter;
@@ -226,7 +235,8 @@ class Accounting {
                 $position->rateVat = $invoice->hasVat ? 'low' : 'none';
                 $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESERVATION) . optional($booking->listing->account)->accounting_suffix;
                 $price = $this->calculatePrice($payment->amount, $splitPercent, $invoice->hasVat);
-                $position->price = $price['price'];
+                $position->priceGross = $price['price_gross'];
+                $position->priceNet = $price['price_net'];
                 $position->priceVat = $price['vat'];
                 $position->note = $booking->confirmation_code;
                 $position->costCenter = $costCenter;
@@ -246,7 +256,8 @@ class Accounting {
                 $position->rateVat = $invoice->hasVat ? 'low' : 'none';
                 $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_CLEANING) . optional($booking->listing->account)->accounting_suffix;
                 $price = $this->calculatePrice($payment->amount, $splitPercent, $invoice->hasVat);
-                $position->price = $price['price'];
+                $position->priceGross = $price['price_gross'];
+                $position->priceNet = $price['price_net'];
                 $position->priceVat = $price['vat'];
                 $position->note = $booking->confirmation_code;
                 $position->costCenter = $costCenter;
@@ -302,7 +313,8 @@ class Accounting {
                 $position->rateVat = $invoice->hasVat ? 'low' : 'none';
                 $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESOLUTION) . optional($booking->listing->account)->accounting_suffix;
                 $price = $this->calculatePrice($payment->amount, $splitPercent, $hasVat);
-                $position->price = $price['price'];
+                $position->priceGross = $price['price_gross'];
+                $position->priceNet = $price['price_net'];
                 $position->priceVat = $price['vat'];
                 $position->note = $booking->confirmation_code;
                 $position->costCenter = $costCenter;
@@ -324,7 +336,8 @@ class Accounting {
         }
 
         if ($exludeVat) {
-            $priceWithoutVat = round($price / (1 + self::VAT / 100), 2);
+            $priceWithoutVat = round(($price / 100 ) * (100 - self::VAT), 2);
+            #$test = round ( 2168.44 / ( 1 + 15 / 100), 2);
             $vat = $price - $priceWithoutVat;
         } else {
             $priceWithoutVat = $price;
@@ -332,7 +345,8 @@ class Accounting {
         }
 
         return [
-            'price' => number_format($priceWithoutVat, 2, '.', ''),
+            'price_gross' => $price,
+            'price_net' => number_format($priceWithoutVat, 2, '.', ''),
             'vat'   => (empty($vat) ? 0 : number_format($vat, 2, '.', '')),
         ];
     }

@@ -53,8 +53,10 @@
                             <int:payVAT>{{ $invoicePosition->payVat }}</int:payVAT>
                             <int:rateVAT>{{ $invoicePosition->rateVat }}</int:rateVAT>
                             <int:homeCurrency>
-                                <typ:unitPrice>{{ $invoicePosition->price }}</typ:unitPrice>
+                                <typ:unitPrice>{{ $invoicePosition->priceGross }}</typ:unitPrice>
+                                <typ:price>{{ $invoicePosition->priceNet }}</typ:price>
                                 <typ:priceVAT>{{ $invoicePosition->priceVat }}</typ:priceVAT>
+                                <typ:priceSum>{{ $invoicePosition->priceGross }}</typ:priceSum>
                             </int:homeCurrency>
                             <int:note>{{ $invoicePosition->note }}</int:note>
                             <int:accounting>
@@ -66,6 +68,10 @@
                         </int:invoiceItem>
                     @endforeach
                 </int:invoiceDetail>
+                <int:invoiceSummary>
+                    <int:roundingDocument>none</int:roundingDocument>
+                    <int:roundingVAT>none</int:roundingVAT>
+                </int:invoiceSummary>
             </int:invoice>
         </dat:dataPackItem>
     @endforeach
