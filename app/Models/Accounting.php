@@ -56,7 +56,7 @@ class Accounting
                 return self::ACCOUNT_CLEANING_FEE;
                 break;
             case PaymentType::ID_RESOLUTION:
-                return self::ACCOUNT_UNKNOWN;   #TODO
+                return self::ACCOUNT_RESERVATION;   #TODO set from ACCOUNT_UNKNOWN to ACCOUNT_RESERVATION
                 break;
             default:
                 return self::ACCOUNT_UNKNOWN;
@@ -251,9 +251,9 @@ class Accounting
         $invoice->documentDate = $booking->arrival_date;
         $invoice->taxDate = $booking->arrival_date;
         $invoice->accountingDate = $booking->arrival_date;
-        $invoice->reference = $booking->confirmation_code;
+        $invoice->reference = 'R'.$booking->confirmation_code;
         $invoice->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESOLUTION) . optional($booking->listing->account)->accounting_suffix;
-        $invoice->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
+        $invoice->text = 'Resolution ' . $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
 
         $address = new Address();
         $address->name = $booking->guest_name;
@@ -265,7 +265,7 @@ class Accounting
             $invoice->costCenter = $costCenter;
 
             $position = new InvoicePosition();
-            $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name; #TODO
+            $position->text = 'Resolution ' . $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name; #TODO
             $position->quantity = 1;
             $hasVat = $this->vatIncluded($booking->nights);
             $position->vatClassification = $hasVat ? 'nonSubsume' : 'inland';
