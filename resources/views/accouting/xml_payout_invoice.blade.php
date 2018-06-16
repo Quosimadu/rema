@@ -48,7 +48,7 @@
                                   xmlns:gdp="http://www.stormware.cz/schema/version_2/GDPR.xsd"
                                   xmlns:ftr="http://www.stormware.cz/schema/version_2/filter.xsd">
                     <int:number>
-                        <typ:numberRequested>{{ $invoice->type }}</typ:numberRequested>
+                        <typ:numberRequested>{{ $invoice->number }}</typ:numberRequested>
                     </int:number>
                     <int:symVar>{{ $invoice->reference }}</int:symVar>
                     <int:date>{{ $invoice->documentDate->toDateString() }}</int:date>
@@ -64,9 +64,11 @@
                     <int:text>{{ $invoice->text }}</int:text>
                     <int:partnerIdentity>
                         <typ:address>
-                            <typ:company>{{ $invoice->partner->name }}</typ:company>
+                            <typ:name>{{ $invoice->partner->name }}</typ:name>
                             <typ:city>{{ $invoice->partner->city }}</typ:city>
                             <typ:street>{{ $invoice->partner->street }}</typ:street>
+                            <typ:zip>{{ $invoice->partner->postalCode }}</typ:zip>
+                            <typ:country><typ:ids>{{ $invoice->partner->countryCode }}</typ:ids></typ:country>
                         </typ:address>
                         <typ:shipToAddress>
                             <typ:company></typ:company>
@@ -84,7 +86,7 @@
                             <typ:ico>06632637</typ:ico>
                             <typ:dic>CZ06632637</typ:dic>
                             <typ:phone>778001155</typ:phone>
-                            <typ:email>wehle.paul@gmail.com</typ:email>
+                            <typ:email>acc@home-for-prague.com</typ:email>
                         </typ:address>
                     </int:myIdentity>
                     <int:liquidation>true</int:liquidation>

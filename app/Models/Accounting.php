@@ -15,6 +15,8 @@ class Accounting {
     const ACCOUNT_RESERVATION = 'AirRes';
     const ACCOUNT_CLEANING_FEE = 'AirClea';
     const ACCOUNT_PORTAL_FEE = 'AirFee';
+    const ACCOUNT_PAYMENT_FEE = 'AirPO';
+    const ACCOUNT_PAYMENT_OTHERS = 'AirPay';
 
     const INVOICE_TYPE_HOST = 'HOST';
     const INVOICE_TYPE_PAYOUT = 'PAYOUT';
@@ -22,6 +24,13 @@ class Accounting {
     const INVOICE_TYPE_RESOLUTION = 'RESOLUTION';
 
     public $invoices;
+
+    public $receivablesNumberPrefix = '1800';
+    public $receivablesIncrementalDocumentNumber = 149;
+    public $commitmentsNumberPrefix = '18AIR';
+    public $commitmentsIncrementalDocumentNumber = 216;
+    public $payoutNumberPrefix = 'AIR100';
+    public $payoutIncrementalDocumentNumber = 3;
 
     public static function getPaymentTypesByInvoiceType($invoiceType)
     {
@@ -74,20 +83,24 @@ class Accounting {
         $invoice = new Invoice();
 
         $invoice->id = $payout->id . '_' . self::INVOICE_TYPE_PAYOUT;
-        $invoice->type = 'TODO';
+        $invoice->type = 'internal';
         $invoice->vatClassification = 'nonSubsume';
         $invoice->documentDate = $payout->entry_date;
         $invoice->taxDate = $payout->entry_date;
         $invoice->accountingDate = $payout->entry_date;
         $invoice->reference = 'TODO';
-        $invoice->accountingCoding = 'TODO';
-        $invoice->text = '';
+
+        $invoice->number = $this->payoutNumberPrefix . sprintf('%04d', $this->payoutIncrementalDocumentNumber);
+        $this->payoutIncrementalDocumentNumber++;
 
         $address = new Address();
-        $address->name = 'Airbnb Ireland UC, private unlimited company';
-        $address->city = 'Dublin 4';
-        $address->street = 'The Watermarque Building, South Lotts Road';
+        $address->name = 'AirBnB, Inc.';
+        $address->city = 'San Francisco';
+        $address->street = '888 Brannan Street';
+        $address->countryCode = 'US';
         $invoice->partner = $address;
+
+        die(print_r($payoutPayments));
 
         $confirmationCodes = [];
         foreach ($payoutPayments as $payment) {
@@ -112,6 +125,7 @@ class Accounting {
         $invoice->text = implode(",", $confirmationCodes) . ', ' . $payout->amount . 'Kc';
 
         $this->invoices[] = $invoice;
+        $invoice->accountingCoding = self::ACCOUNT_PAYMENT_OTHERS .  optional($payment->booking->listing->account)->accounting_suffix;
     }
 
     public function addHostInvoice(Booking $booking)
@@ -127,11 +141,16 @@ class Accounting {
         $invoice->reference = $booking->confirmation_code;
         $invoice->accountingCoding = $this->getAccountingCoding(PaymentType::ID_HOST) . optional($booking->listing->account)->accounting_suffix;
         $invoice->text = $booking->confirmation_code . ', Provize ' . $booking->platform->name . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
+        $invoice->vatClassificationId = 'PN';
+
+        $invoice->number = $this->commitmentsNumberPrefix . sprintf('%04d', $this->commitmentsIncrementalDocumentNumber);
+        $this->commitmentsIncrementalDocumentNumber++;
 
         $address = new Address();
-        $address->name = 'Airbnb Ireland UC, private unlimited company';
-        $address->city = 'Dublin 4';
-        $address->street = 'The Watermarque Building, South Lotts Road';
+        $address->name = 'AirBnB, Inc.';
+        $address->city = 'San Francisco';
+        $address->street = '888 Brannan Street';
+        $address->countryCode = 'US';
         $invoice->partner = $address;
 
         $costCenters = $booking->listing->getCostCenters();
@@ -180,7 +199,11 @@ class Accounting {
         $invoice->reference = $booking->confirmation_code;
         $invoice->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESERVATION) . optional($booking->listing->account)->accounting_suffix;
         $invoice->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
-        $invoice->hasVat = $this->vatIncluded($booking->nights);
+        $invoice->hasVat = $this->vatIncluded($booking->nights, $invoice->taxDate);
+        $invoice->vatClassificationId = $invoice->hasVat ? 'UD' : 'UN';
+
+        $invoice->number = $this->receivablesNumberPrefix . sprintf('%04d', $this->receivablesIncrementalDocumentNumber);
+        $this->receivablesIncrementalDocumentNumber++;
 
         $address = new Address();
         $address->name = $booking->guest_name;
@@ -202,7 +225,7 @@ class Accounting {
                 $position->payVat = $invoice->hasVat ? 'true' : 'false';
                 $position->rateVat = $invoice->hasVat ? 'low' : 'none';
                 $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESERVATION) . optional($booking->listing->account)->accounting_suffix;
-                $price = $this->calculatePrice($payment->amount, $splitPercent, $position->payVat);
+                $price = $this->calculatePrice($payment->amount, $splitPercent, $invoice->hasVat);
                 $position->price = $price['price'];
                 $position->priceVat = $price['vat'];
                 $position->note = $booking->confirmation_code;
@@ -219,11 +242,10 @@ class Accounting {
                 $position = new InvoicePosition();
                 $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
                 $position->quantity = 1;
-                $hasVat = $this->vatIncluded($booking->nights);
                 $position->payVat = $invoice->hasVat ? 'true' : 'false';
                 $position->rateVat = $invoice->hasVat ? 'low' : 'none';
                 $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_CLEANING) . optional($booking->listing->account)->accounting_suffix;
-                $price = $this->calculatePrice($payment->amount, $splitPercent, $hasVat);
+                $price = $this->calculatePrice($payment->amount, $splitPercent, $invoice->hasVat);
                 $position->price = $price['price'];
                 $position->priceVat = $price['vat'];
                 $position->note = $booking->confirmation_code;
@@ -246,14 +268,17 @@ class Accounting {
         $invoice->id = $booking->id . '_' . self::INVOICE_TYPE_RESOLUTION;
         $invoice->type = 'receivable';                  #TODO resolution might be also negative. Is it still receivable?
         $invoice->vatClassification = 'nonSubsume';
-        $invoice->hasVat = $this->vatIncluded($booking->nights);
         $invoice->documentDate = $booking->arrival_date;
         $invoice->taxDate = $booking->arrival_date;
+        $invoice->hasVat = $this->vatIncluded($booking->nights, $invoice->taxDate);
         $invoice->accountingDate = $booking->arrival_date;
         $invoice->reference = 'R' . $booking->confirmation_code;
         $invoice->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESOLUTION) . optional($booking->listing->account)->accounting_suffix;
         $invoice->text = 'Resolution ' . $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
-        $invoice->hasVat = $this->vatIncluded($booking->nights);
+        $invoice->vatClassificationId = $invoice->hasVat ? 'UD' : 'UN';
+
+        $invoice->number = $this->receivablesNumberPrefix . sprintf('%04d', $this->receivablesIncrementalDocumentNumber);
+        $this->receivablesIncrementalDocumentNumber++;
 
         $address = new Address();
         $address->name = $booking->guest_name;
@@ -272,7 +297,7 @@ class Accounting {
                 $position = new InvoicePosition();
                 $position->text = 'Resolution ' . $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name; #TODO
                 $position->quantity = 1;
-                $hasVat = $this->vatIncluded($booking->nights);
+                $hasVat = $invoice->hasVat;
                 $position->payVat = $invoice->hasVat ? 'true' : 'false';
                 $position->rateVat = $invoice->hasVat ? 'low' : 'none';
                 $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_RESOLUTION) . optional($booking->listing->account)->accounting_suffix;
@@ -312,8 +337,8 @@ class Accounting {
         ];
     }
 
-    private function vatIncluded($nights)
+    private function vatIncluded($nights, string $documentDate)
     {
-        return $nights <= 2;
+        return $nights <= 2 && $documentDate > '2018-02-28';
     }
 }

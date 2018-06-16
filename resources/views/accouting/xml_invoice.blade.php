@@ -1,4 +1,4 @@
-<?xml version = "1.0" encoding = "Windows-1250" ?>
+<?xml version="1.0" encoding="Windows-1250" ?>
 <dat:dataPack version="2.0" id="int002" ico="06632637" application="StwTest" note="Import Interních dokladů"
               xmlns:dat="http://www.stormware.cz/schema/version_2/data.xsd"
               xmlns:int="http://www.stormware.cz/schema/version_2/invoice.xsd"
@@ -18,7 +18,7 @@
                     </int:accounting>
                     @if ($invoice->hasVat)
                         <int:classificationVAT>
-                            <typ:ids>PN</typ:ids>
+                            <typ:ids>{{ $invoice->vatClassificationId }}</typ:ids>
                             <typ:classificationVATType>{{ $invoice->vatClassification }}</typ:classificationVATType>
                         </int:classificationVAT>
                     @endif
@@ -29,6 +29,7 @@
                             <typ:city>{{ $invoice->partner->city }}</typ:city>
                             <typ:street>{{ $invoice->partner->street }}</typ:street>
                             <typ:zip>{{ $invoice->partner->postalCode }}</typ:zip>
+                            <typ:country><typ:ids>{{ $invoice->partner->countryCode }}</typ:ids></typ:country>
                         </typ:address>
                     </int:partnerIdentity>
                     <int:centre>
@@ -40,6 +41,9 @@
                     <int:note>{{ $invoice->note }}</int:note>
                     <int:intNote>{{ $invoice->internalNote }}
                     </int:intNote>
+                    <int:number>
+                        <typ:numberRequested>{{ $invoice->number }}</typ:numberRequested>
+                    </int:number>
                 </int:invoiceHeader>
                 <int:invoiceDetail>
                     @foreach ($invoice->positions as $invoicePosition)

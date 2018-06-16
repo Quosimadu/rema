@@ -23,11 +23,17 @@ class Invoice
     public $internalNote = 'XML imported as outgoing invoice';
 
     public $hasVat = false;
+    public $vatClassificationId;
 
     /**
      * @var Address
      */
     public $partner;
+
+    /**
+     * @var string
+     */
+    public $number;
 
     /**
      * @var array

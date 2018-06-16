@@ -16,4 +16,5 @@ class Address
     public $street;
     public $city;
     public $postalCode;
+    public $countryCode;
 }
