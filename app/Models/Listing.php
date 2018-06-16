@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \DateTime $created_at
  * @property \DateTime $changed_at
  * @property \DateTime $deleted_at
+ * @property int $account_id
  */
 class Listing extends BaseTable
 {
@@ -66,5 +67,6 @@ class Listing extends BaseTable
     {
         return $this->belongsTo(Account::class);
     }
+
 
 }

@@ -8,4 +8,9 @@ class Account extends BaseTable
 {
     protected $guarded = ['id'];
 
+    public function listings()
+    {
+        return $this->hasMany(Listing::class);
+    }
+
 }

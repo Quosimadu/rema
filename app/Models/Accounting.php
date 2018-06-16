@@ -11,10 +11,10 @@ class Accounting
 {
     const VAT = 21;
 
-    const ACCOUNT_UNKNOWN = '90000';
-    const ACCOUNT_RESERVATION = 'AiRBnB';
-    const ACCOUNT_CLEANING_FEE = 'AirClean';
-    const ACCOUNT_PORTAL_FEE = 'PoplAir';
+    const ACCOUNT_UNKNOWN = 'Nevím';
+    const ACCOUNT_RESERVATION = 'AirRes';
+    const ACCOUNT_CLEANING_FEE = 'AirClea';
+    const ACCOUNT_PORTAL_FEE = 'AirFee';
 
     const INVOICE_TYPE_HOST = 'HOST';
     const INVOICE_TYPE_PAYOUT = 'PAYOUT';
@@ -108,7 +108,7 @@ class Accounting
                     $position->quantity = 1;
                     $hasVat = $this->vatIncluded($booking->nights);
                     $position->vatClassification = $hasVat ? 'nonSubsume' : 'inland';
-                    $position->accountingCoding = $this->getAccountingCoding($payment->type_id);
+                    $position->accountingCoding = $this->getAccountingCoding($payment->type_id) . optional($booking->listing->account)->accounting_suffix;
                     $price = $this->calculatePrice($payment->amount, $splitPercent, false);
                     $position->price = $price['price'];
                     $position->priceVat = $price['vat'];
@@ -153,7 +153,7 @@ class Accounting
             $position->text = $booking->confirmation_code . ', ' . $booking->nights . 'n, ' . $booking->guest_name;
             $position->quantity = 1;
             $position->vatClassification = 'inland';
-            $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_HOST);
+            $position->accountingCoding = $this->getAccountingCoding(PaymentType::ID_HOST) . optional($booking->listing->account)->accounting_suffix;
             $payment = $booking->paymentHost;
             if (empty($payment)) {
                 return;

@@ -44,6 +44,7 @@ class AccountingController extends Controller {
         $filters = session('accounting_filters');
 
         $bookings = Booking::filter($filters)
+            ->with('listing.account')
             ->orderBy('arrival_date', 'ASC')
             ->get();
         if (!$bookings->count()) {
