@@ -104,21 +104,23 @@ class Accounting {
 
         $confirmationCodes = [];
         foreach ($payoutPayments as $payment) {
-
-            if (!empty($payment->resolution)) {
-                #todo: this does not work for some reason, resolution is empty
-                $payment->booking = $payment->resolution->booking;
-
+            $booking = $payment->booking;
+            if (empty($booking) && $payment->type_id == PaymentType::ID_RESOLUTION) {
+                $booking = $payment->resolution->booking;
             }
-            $costCenters = $payment->booking->listing->getCostCenters();
+            if (empty($booking)) {
+                throw new Exception('Payment ' . $payment->id .' does npot have assigned booking!');
+            }
 
-            $confirmationCodes [] = $payment->booking->confirmation_code;
+            $costCenters = $booking->listing->getCostCenters();
+
+            $confirmationCodes [] = $booking->confirmation_code;
 
             foreach ($costCenters as $costCenter => $splitPercent) {
                 $position = new InvoicePosition();
                 $position->text = 'Úhrada OP č. ' . $payment->internal_document_number;
                 $position->quantity = 1;
-                $position->accountingCoding = $this->getAccountingCoding($payment->type_id) . optional($payment->booking->listing->account)->accounting_suffix;
+                $position->accountingCoding = $this->getAccountingCoding($payment->type_id) . optional($booking->listing->account)->accounting_suffix;
                 $price = $this->calculatePrice($payment->amount, $splitPercent, false);
                 $position->priceGross = $price['price_gross'];
                 $position->priceNet = $price['price_net'];
@@ -133,7 +135,7 @@ class Accounting {
         $invoice->text = implode(",", $confirmationCodes) . ', ' . $payout->amount . 'Kc';
 
         $this->invoices[] = $invoice;
-        $invoice->accountingCoding = self::ACCOUNT_PAYMENT_OTHERS .  optional($payment->booking->listing->account)->accounting_suffix;
+        $invoice->accountingCoding = self::ACCOUNT_PAYMENT_OTHERS .  optional($booking->listing->account)->accounting_suffix;
     }
 
     public function addHostInvoice(Booking $booking)

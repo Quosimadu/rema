@@ -57,7 +57,11 @@ class Listing extends BaseTable
     public function getCostCenters()
     {
         if (!empty($this->split)) {
-            return json_decode($this->split, true);
+            $costCenters = json_decode($this->split, true);
+            if (empty($costCenters)) {
+                throw new \Exception('Invalid split value of listing '.$this->id.' - must be valid json!');
+            }
+            return $costCenters;
         }
 
         return [$this->cost_center => 100];

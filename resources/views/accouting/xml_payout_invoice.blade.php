@@ -157,7 +157,7 @@
                             </int:homeCurrency>
                             <int:symPar>{{ $invoice->reference }}</int:symPar>
                             <int:accounting>
-                                <typ:ids>{{ $invoice->accountingCoding }}</typ:ids>
+                                <typ:ids>{{ $invoicePosition->accountingCoding }}</typ:ids>
                             </int:accounting>
                             <int:centre>
                                 <typ:ids>{{ $invoice->costCenter }}</typ:ids>
