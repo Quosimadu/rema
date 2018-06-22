@@ -390,7 +390,11 @@ class AccountingController extends Controller {
                     $content .= substr($line, 0, 61) . '29' . sprintf('%08d', $matchPayout[0]->id) . substr($line, 71);
                 } else {
                     $content .= $line;
-                    $warnings[] = 'Payout not found for line :' . $i;
+                    if ($matchPayout->count() > 1) {
+                        $warnings[] = 'Multiple payout matches found for line :' . $i;
+                    } else {
+                        $warnings[] = 'Payout not found for line :' . $i;
+                    }
                 }
 
 
