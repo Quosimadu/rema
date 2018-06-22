@@ -21,4 +21,9 @@ class Payment extends BaseTable
     {
         return $this->belongsTo(Resolution::class, 'resolution_id');
     }
+
+    public function payoutPayments()
+    {
+        return $this->hasMany(Payment::class, 'payout_id', 'id');
+    }
 }

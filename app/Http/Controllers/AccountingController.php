@@ -354,4 +354,75 @@ class AccountingController extends Controller {
 
         return view('accouting.airbnb_import');
     }
+
+    public function bankStatementImport(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $handle = fopen($request->file('file')->getRealPath(), "r");
+
+            if (!$handle) {
+                return redirect()->route('bankStatementImport')->with('error', 'Failed to read uplaoded file!');
+            }
+
+            $content = '';
+            $i=0;
+
+            $warnings = [];
+            while (($line = fgets($handle)) !== false) {
+                $i++;
+                if (strpos($line, 'Worldpay AP') === false) {
+                    $content .= $line;
+                    continue;
+                }
+
+                $amount = (int)substr($line, 48, 12);
+                $amount = number_format($amount / 100, 2, '.', '');
+
+                $date = Carbon::createFromFormat('dmy', substr($line, 91, 6))->startOfDay();
+
+                $matchPayout = Payment::where('type_id', PaymentType::ID_PAYOUT)
+                    ->where('amount', $amount)
+                    ->where('entry_date', '<=', $date->toDateString())
+                    ->where('entry_date', '>', $date->copy()->subDays(4)->toDateString())
+                    ->get();
+
+                if ($matchPayout->count() == 1) {
+                    $content .= substr($line, 0, 61) . '29' . sprintf('%08d', $matchPayout[0]->id) . substr($line, 71);
+                } else {
+                    $content .= $line;
+                    $warnings[] = 'Payout not found for line :' . $i;
+                }
+
+
+            }
+
+            $file = storage_path('app/' . uniqid() . '.');
+            File::put($file, $content);
+
+            session()->put('modifiedBankStatement', [
+                'original_filename' => $request->file('file')->getClientOriginalName(),
+                'modified_file' => $file,
+            ]);
+
+            if (empty($warnings)) {
+                return $this->bankStatementDownload($request);
+            }
+
+            return redirect()->route('bankStatementImport')->with('warning', $warnings);
+        }
+
+        return view('accouting.bank_statement_import');
+    }
+
+    public function bankStatementDownload(Request $request)
+    {
+        if (!session()->has('modifiedBankStatement')) {
+            return redirect()->route('bankStatementImport')->with('error', 'File does not exist anymore!');
+        }
+
+        $modifiedBankStatement = session('modifiedBankStatement');
+        session()->forget('modifiedBankStatement');
+
+        return response()->download(array_get($modifiedBankStatement, 'modified_file'), array_get($modifiedBankStatement, 'original_filename'))->deleteFileAfterSend(true);
+    }
 }

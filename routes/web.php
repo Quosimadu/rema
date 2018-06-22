@@ -91,6 +91,8 @@ Route::group(['middleware' => ['auth', 'permissions:admin']], function () {
     Route::group(['prefix' => 'accounting'], function () {
         Route::any('/', ['as' => 'accounting', 'uses' => 'AccountingController@index']);
         Route::any('/airbnbImport', ['as' => 'airbnbImport', 'uses' => 'AccountingController@airbnbImport']);
+        Route::any('/bankStatementImport', ['as' => 'bankStatementImport', 'uses' => 'AccountingController@bankStatementImport']);
+        Route::any('/bankStatementDownload', ['as' => 'bankStatementDownload', 'uses' => 'AccountingController@bankStatementDownload']);
         Route::any('/xmlExport', ['as' => 'xmlExport', 'uses' => 'AccountingController@xmlExport']);
         Route::any('/xmlImport', ['as' => 'xmlImport', 'uses' => 'AccountingController@xmlImport']);
         Route::any('/payoutXmlExport', ['as' => 'payoutXmlExport', 'uses' => 'AccountingController@payoutXmlExport']);

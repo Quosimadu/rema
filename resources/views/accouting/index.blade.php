@@ -19,6 +19,8 @@
                             <a class="btn btn-default" href="{{ route('xmlExport') }}">XML Export</a>
                             <a class="btn btn-default" href="{{ route('xmlImport') }}">Stormware Pohoda XML Import</a>
                             <a class="btn btn-default" href="{{ route('payoutXmlExport') }}">*Payout XML Export</a>
+                            <a class="btn btn-default" href="{{ route('bankStatementImport') }}">Bank statement Import</a>
+                            <br />
                             * Payout XML export works with filters date from/to only. Need another accounting view to show properly matched payouts
                         </div>
 
