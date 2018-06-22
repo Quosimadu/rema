@@ -380,6 +380,8 @@ class AccountingController extends Controller {
 
                 $date = Carbon::createFromFormat('dmy', substr($line, 91, 6))->startOfDay();
 
+                $accountNumber = (int)substr($line, 19, 16);
+
                 $matchPayout = Payment::where('type_id', PaymentType::ID_PAYOUT)
                     ->where('amount', $amount)
                     ->where('entry_date', '<=', $date->toDateString())
